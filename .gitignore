@@ -1,8 +1,8 @@
 /.quarto/
-/_book/
 /_site/
 *_files/
 *_cache/
 .ipynb_checkpoints/
 __pycache__/
 .Rproj.user/
+**/*.quarto_ipynb
