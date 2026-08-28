@@ -2,6 +2,8 @@
 
 This is a Quarto book for capturing notes associated with DS6400 Advanced ML 1.
 
+Original class notes are copied from [https://tgstewart.cloud/ml1/](https://tgstewart.cloud/ml1/) to retain formulas and original exercises.
+
 This is a book created from markdown and executable code. It contains topics on machine learning, estimation, and various mathematical concepts.
 
 It will be continually populated over the course of the semester.

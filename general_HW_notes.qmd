@@ -1,0 +1,19 @@
+## Suggestions:
+1. Read the paper yourself
+2. Take notes and write your own questions
+3. Ask claude for explanations of the things that you don't understand
+
+- Bring your own real connections to this to make the conversation more interesting
+
+## Questions to consider:
+1. What is the problem? 
+2. What limitation, bias, inefficiency, or unresolved issue motivated the paper?
+3. What are the authors trying to persuade me to do or believe?
+4. Why isn't the exising method good enough?
+5. What do the authors propose instead?
+5. How do they persuade me that their proposal is better?
+    - Mathematical/theoretical arguments?
+    - Simulations?
+    - Real-data examples?
+    - Comparisons with competing methods?
+
