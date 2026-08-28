@@ -1,5 +1,7 @@
 # Preface {.unnumbered}
 
-This is a Quarto book.
+This is a Quarto book for capturing notes associated with DS6400 Advanced ML 1.
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+This is a book created from markdown and executable code. It contains topics on machine learning, estimation, and various mathematical concepts.
+
+It will be continually populated over the course of the semester.

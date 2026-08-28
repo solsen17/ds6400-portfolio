@@ -1,0 +1,27 @@
+# Performance Measures
+
+## In class exploration and discussion
+
+### Exercise
+
+Consider two generic prediction models {f_1} and {f_2} for univariate, continuous outcome 
+ with multivariate predictors 
+. Without knowing anything about how the prediction models were created, describe how you might evaluate the performance of 
+ and 
+ if you know the true relationship between 
+ and 
+. Try to be precise in your description, using mathematical notation if helpful.
+
+### Exercise
+
+Read [RMS 5.1.2](https://hbiostat.org/rmsc/validate#sec-val-index).
+
+Describe/define/develop an example of the following terms
+
+- Discrimination (rank based and variation based)
+- Calibration
+- Calibration curve
+
+### Exercise
+1. Sketch a calibration curve that represents poor discrimination but good calibration
+2. Sketch a calibration curve that represents good discrimination but poor calibration

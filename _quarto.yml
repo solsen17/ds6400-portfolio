@@ -3,13 +3,11 @@ project:
 
 book:
   title: "DS6400 Portfolio"
-  author: "Norah Jones"
-  date: "8/27/2026"
+  author: "Stephen Olsen"
+  date: ""
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+    - 01_Performance_Measures.qmd
 
 bibliography: references.bib
 
