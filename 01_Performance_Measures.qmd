@@ -6,20 +6,75 @@
 
 Consider two generic prediction models $f_1$ and $f_2$ for univariate, continuous outcome $Y \in \mathbb{R}$ with multivariate predictors $X \in \mathbb{R}^d$. Without knowing anything about how the prediction models were created, describe how you might evaluate the performance of $f_1$ and $f_2$ if you know the true relationship between $X$ and $Y$. Try to be precise in your description, using mathematical notation if helpful.
 
+> In class we discussed $X$ as a matrix $D$, for data, and $Y$ as an output vector or single number $P$, for predicitons. In between $D$ and $P$ there may be a $D'$ matrix where the data is transformed. The prediction is related to some target quantity that we care about.
+> 
+> One way we might validate the model, is to run $X$ through $f$ to get $\hat{Y}$, and then we can compare $\hat{Y}$ to $Y$. The specific formula from class is below:
+> $$f: D -> D' -> P\qquad f(x_0) = {\hat{y_0}}\qquad  P \in \mathbb{R}$$
+> 
+> Then, we will have to consider what is the method of comparison between $Y$ and $\hat{Y}$?
+> 
+> Some options include the following one-number summary values:
+
+> 1. Mean Squared Error: $$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+> 2. Root Mean Squared Error: $$\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}$$
+> 3. Mean Absolute Error: $$\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|$$
+
+> Alternatively, we might use a visualization to evaluate this. We would plot $Y$ vs. $\hat{Y}$. 
+>
+> ![Calibration Curve](01_images/calibration_curve.png){width="75%"}
+>
+> The plot above is the calibration curve. It is more descriptive than the available one number-summaries listed.
+>
+> Q: What is the mathematical definition for "well-calibrated"? in the calibration curve?
+> A: The expected value at $y$ given a specific $\hat{y}_0$ is equal to $\hat{y}_0$.
+> $$\mathbb{E}[y \mid \hat{y}_0] = \hat{y}_0$$
+> OR
+> $$\mathbb{E}[y - \hat{y}_0 \mid \hat{y}_0] = 0$$
+> Calibration is all about the average or expectation, NOT about the spread around the line.
+> Discrimination is another metric that looks at tightness around the line.
+> These measures will be overly optimistic if we use the same data that built the model.
+> More robust definitions and exploration of these concepts are continued below.
+
+
 ### Exercise
 
 Read [RMS 5.1.2](https://hbiostat.org/rmsc/validate#sec-val-index). Describe/define/develop an example of the following terms
 
 1. Discrimination (rank based and variation based)
+
+> Rank based discrimination is an assessment of whether predicted values are ordered correctly. From RMS 5.1.2, it is a rank correlation of $\hat{Y}$ and $Y$, with examples including Spearman’s $ρ$, Kendall’s $τ$, and Somers’ $D_{xy}$.
+> Variation based discrimination is an assessment of whether the predicted values differ or spread across predictions. From RMS 5.1.2, it is a measure based on variation in $\hat{Y}$, with examples including the regression sum of squares and the $g$–Index.
+
 2. Calibration
+
+> Calibration is a measure of the average predictive accuracy for $f$. From RMS 5.1.2, these measures assess absolute prediction accuracy. *Calibration–in–the–large* compares the average $\hat{Y}$ with the average $Y$. Calibration curves are a part of the overall calibration measures definition.
+
 3. Calibration curve
+
+> This is a plots $Y$ values (actuals) versus $\hat{Y}$ values (predictions), which shows you the relationship between them, and can help assess performance at individual predicted values of $\hat{y}_0$.
+> From RMS 5.1.2, a high-resolution calibration curve or *calibration–in–the–small* assesses the absolute forecast accuracy of predictions at individual levels of $\hat{Y}$.
+> From class and as we can see below, this can help you observe calibration and discrimination.
+
+> From Claude's assistance: <br>
+> * Discrimination = "does it sort people correctly (and by how much)?" <br>
+> * Calibration = "are its actual numbers trustworthy?"
 
 ### Exercise
 
 1. Sketch a calibration curve that represents poor discrimination but good calibration
+
+> ![Good Calibration, Bad Discrimination](01_images/good_cali_bad_disc.png){width="75%"}
+
+> This plot is clustered around the line (good calibration), but it is not spread on $\hat{Y}$ (poor discrimination).
+
+
 2. Sketch a calibration curve that represents good discrimination but poor calibration
 
-### Exercise
+> ![Bad Calibration, Good Discrimination](01_images/bad_cali_good_disc.png){width="75%"}
+
+> This plot is spread on $\hat{Y}$ (good discrimination) but not following the line (poor calibration).
+
+### Exercise [incomplete]
 
 ```r
 # may need to be installed first pak::pak("thomasgstewart/ds6021b")
@@ -40,9 +95,16 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
 ## Student exploration
 
 1. Select one of the papers from the list below
+
+> Selected Paper: [Steyerberg et al. (2001)](https://www.sciencedirect.com/science/article/pii/S0895435601003419) - Internal validation of predictive models: efficiency of some procedures for logistic regression analysis
+
 2. For the initial exploration, do the following:
    - Prepare a summary of the key ideas. Be prepared to describe/illustrate the concepts in a concrete example.
    - Review the instructions for the student presentation and come with an idea/sketch of the simulation you'll perform.
+
+> Key Ideas
+> 
+
 3. For the student presentation, do one of the following and come prepared to present it to the class:
    - Replicate a simulation or example from the paper
    - Develop your own simulation study which explores a concept discussed in the paper
@@ -103,3 +165,24 @@ The paper considers models 1 and 2, but an extension might consider more:
 1. Before beginning the simulation, consider how you will display the results. Devise a figure that will succinctly show the results and support the goal of the paper.
 2. Consider modular programming
 3. Start with a single simulation setting (method/model/N).
+
+
+### Extra notes for later
+
+```{r}
+
+library(ggplot2)
+
+y <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+yhat <- c(1, 2.5, 4, 3.4, 5, 6, 6.5, 10, 9, 11)
+
+df <- data.frame(predicted = yhat, actual = y)
+
+ggplot(df, aes(x = predicted, y = actual)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(x = "Predicted Values (yhat)",
+       y = "Actual Values (y)") +
+  theme_minimal()
+
+```

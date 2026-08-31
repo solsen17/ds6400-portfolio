@@ -203,12 +203,13 @@ window.Quarto = {
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="header-section-number">1.1.1</span> Exercise</a></li>
   <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1"><span class="header-section-number">1.1.2</span> Exercise</a></li>
   <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="header-section-number">1.1.3</span> Exercise</a></li>
-  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3"><span class="header-section-number">1.1.4</span> Exercise</a></li>
+  <li><a href="#exercise-incomplete" id="toc-exercise-incomplete" class="nav-link" data-scroll-target="#exercise-incomplete"><span class="header-section-number">1.1.4</span> Exercise [incomplete]</a></li>
   </ul></li>
   <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link" data-scroll-target="#student-exploration"><span class="header-section-number">1.2</span> Student exploration</a>
   <ul class="collapse">
   <li><a href="#paper-list" id="toc-paper-list" class="nav-link" data-scroll-target="#paper-list"><span class="header-section-number">1.2.1</span> Paper list</a></li>
   <li><a href="#simulation-study-efron-and-tibshirani-1997" id="toc-simulation-study-efron-and-tibshirani-1997" class="nav-link" data-scroll-target="#simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.2.2</span> Simulation study (Efron and Tibshirani 1997)</a></li>
+  <li><a href="#extra-notes-for-later" id="toc-extra-notes-for-later" class="nav-link" data-scroll-target="#extra-notes-for-later"><span class="header-section-number">1.2.3</span> Extra notes for later</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -240,25 +241,89 @@ window.Quarto = {
 <section id="exercise" class="level3" data-number="1.1.1">
 <h3 data-number="1.1.1" class="anchored" data-anchor-id="exercise"><span class="header-section-number">1.1.1</span> Exercise</h3>
 <p>Consider two generic prediction models <span class="math inline">\(f_1\)</span> and <span class="math inline">\(f_2\)</span> for univariate, continuous outcome <span class="math inline">\(Y \in \mathbb{R}\)</span> with multivariate predictors <span class="math inline">\(X \in \mathbb{R}^d\)</span>. Without knowing anything about how the prediction models were created, describe how you might evaluate the performance of <span class="math inline">\(f_1\)</span> and <span class="math inline">\(f_2\)</span> if you know the true relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Try to be precise in your description, using mathematical notation if helpful.</p>
+<blockquote class="blockquote">
+<p>In class we discussed <span class="math inline">\(X\)</span> as a matrix <span class="math inline">\(D\)</span>, for data, and <span class="math inline">\(Y\)</span> as an output vector or single number <span class="math inline">\(P\)</span>, for predicitons. In between <span class="math inline">\(D\)</span> and <span class="math inline">\(P\)</span> there may be a <span class="math inline">\(D'\)</span> matrix where the data is transformed. The prediction is related to some target quantity that we care about.</p>
+<p>One way we might validate the model, is to run <span class="math inline">\(X\)</span> through <span class="math inline">\(f\)</span> to get <span class="math inline">\(\hat{Y}\)</span>, and then we can compare <span class="math inline">\(\hat{Y}\)</span> to <span class="math inline">\(Y\)</span>. The specific formula from class is below: <span class="math display">\[f: D -&gt; D' -&gt; P\qquad f(x_0) = {\hat{y_0}}\qquad  P \in \mathbb{R}\]</span></p>
+<p>Then, we will have to consider what is the method of comparison between <span class="math inline">\(Y\)</span> and <span class="math inline">\(\hat{Y}\)</span>?</p>
+<p>Some options include the following one-number summary values:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ol type="1">
+<li>Mean Squared Error: <span class="math display">\[\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\]</span></li>
+<li>Root Mean Squared Error: <span class="math display">\[\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}\]</span></li>
+<li>Mean Absolute Error: <span class="math display">\[\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|\]</span></li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<p>Alternatively, we might use a visualization to evaluate this. We would plot <span class="math inline">\(Y\)</span> vs.&nbsp;<span class="math inline">\(\hat{Y}\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="01_images/calibration_curve.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>Calibration Curve</figcaption>
+</figure>
+</div>
+<p>The plot above is the calibration curve. It is more descriptive than the available one number-summaries listed.</p>
+<p>Q: What is the mathematical definition for “well-calibrated”? in the calibration curve? A: The expected value at <span class="math inline">\(y\)</span> given a specific <span class="math inline">\(\hat{y}_0\)</span> is equal to <span class="math inline">\(\hat{y}_0\)</span>. <span class="math display">\[\mathbb{E}[y \mid \hat{y}_0] = \hat{y}_0\]</span> OR <span class="math display">\[\mathbb{E}[y - \hat{y}_0 \mid \hat{y}_0] = 0\]</span> Calibration is all about the average or expectation, NOT about the spread around the line. Discrimination is another metric that looks at tightness around the line. These measures will be overly optimistic if we use the same data that built the model. More robust definitions and exploration of these concepts are continued below.</p>
+</blockquote>
 </section>
 <section id="exercise-1" class="level3" data-number="1.1.2">
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">1.1.2</span> Exercise</h3>
 <p>Read <a href="https://hbiostat.org/rmsc/validate#sec-val-index">RMS 5.1.2</a>. Describe/define/develop an example of the following terms</p>
 <ol type="1">
 <li>Discrimination (rank based and variation based)</li>
+</ol>
+<blockquote class="blockquote">
+<p>Rank based discrimination is an assessment of whether predicted values are ordered correctly. From RMS 5.1.2, it is a rank correlation of <span class="math inline">\(\hat{Y}\)</span> and <span class="math inline">\(Y\)</span>, with examples including Spearman’s <span class="math inline">\(ρ\)</span>, Kendall’s <span class="math inline">\(τ\)</span>, and Somers’ <span class="math inline">\(D_{xy}\)</span>. Variation based discrimination is an assessment of whether the predicted values differ or spread across predictions. From RMS 5.1.2, it is a measure based on variation in <span class="math inline">\(\hat{Y}\)</span>, with examples including the regression sum of squares and the <span class="math inline">\(g\)</span>–Index.</p>
+</blockquote>
+<ol start="2" type="1">
 <li>Calibration</li>
+</ol>
+<blockquote class="blockquote">
+<p>Calibration is a measure of the average predictive accuracy for <span class="math inline">\(f\)</span>. From RMS 5.1.2, these measures assess absolute prediction accuracy. <em>Calibration–in–the–large</em> compares the average <span class="math inline">\(\hat{Y}\)</span> with the average <span class="math inline">\(Y\)</span>. Calibration curves are a part of the overall calibration measures definition.</p>
+</blockquote>
+<ol start="3" type="1">
 <li>Calibration curve</li>
 </ol>
+<blockquote class="blockquote">
+<p>This is a plots <span class="math inline">\(Y\)</span> values (actuals) versus <span class="math inline">\(\hat{Y}\)</span> values (predictions), which shows you the relationship between them, and can help assess performance at individual predicted values of <span class="math inline">\(\hat{y}_0\)</span>. From RMS 5.1.2, a high-resolution calibration curve or <em>calibration–in–the–small</em> assesses the absolute forecast accuracy of predictions at individual levels of <span class="math inline">\(\hat{Y}\)</span>. From class and as we can see below, this can help you observe calibration and discrimination.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>From Claude’s assistance: <br> * Discrimination = “does it sort people correctly (and by how much)?” <br> * Calibration = “are its actual numbers trustworthy?”</p>
+</blockquote>
 </section>
 <section id="exercise-2" class="level3" data-number="1.1.3">
 <h3 data-number="1.1.3" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">1.1.3</span> Exercise</h3>
 <ol type="1">
 <li>Sketch a calibration curve that represents poor discrimination but good calibration</li>
+</ol>
+<blockquote class="blockquote">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="01_images/good_cali_bad_disc.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>Good Calibration, Bad Discrimination</figcaption>
+</figure>
+</div>
+</blockquote>
+<blockquote class="blockquote">
+<p>This plot is clustered around the line (good calibration), but it is not spread on <span class="math inline">\(\hat{Y}\)</span> (poor discrimination).</p>
+</blockquote>
+<ol start="2" type="1">
 <li>Sketch a calibration curve that represents good discrimination but poor calibration</li>
 </ol>
+<blockquote class="blockquote">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="01_images/bad_cali_good_disc.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>Bad Calibration, Good Discrimination</figcaption>
+</figure>
+</div>
+</blockquote>
+<blockquote class="blockquote">
+<p>This plot is spread on <span class="math inline">\(\hat{Y}\)</span> (good discrimination) but not following the line (poor calibration).</p>
+</blockquote>
 </section>
-<section id="exercise-3" class="level3" data-number="1.1.4">
-<h3 data-number="1.1.4" class="anchored" data-anchor-id="exercise-3"><span class="header-section-number">1.1.4</span> Exercise</h3>
+<section id="exercise-incomplete" class="level3" data-number="1.1.4">
+<h3 data-number="1.1.4" class="anchored" data-anchor-id="exercise-incomplete"><span class="header-section-number">1.1.4</span> Exercise [incomplete]</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># may need to be installed first pak::pak("thomasgstewart/ds6021b")</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(ds6021b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Consider the three predictor setting: <span class="math inline">\(X \in \mathbb{R}^3\)</span>. Let</p>
@@ -276,13 +341,20 @@ window.Quarto = {
 <h2 data-number="1.2" class="anchored" data-anchor-id="student-exploration"><span class="header-section-number">1.2</span> Student exploration</h2>
 <ol type="1">
 <li>Select one of the papers from the list below</li>
+</ol>
+<blockquote class="blockquote">
+<p>Selected Paper: <a href="https://www.sciencedirect.com/science/article/pii/S0895435601003419">Steyerberg et al.&nbsp;(2001)</a> - Internal validation of predictive models: efficiency of some procedures for logistic regression analysis</p>
+</blockquote>
+<ol start="2" type="1">
 <li>For the initial exploration, do the following:
 <ul>
 <li>Prepare a summary of the key ideas. Be prepared to describe/illustrate the concepts in a concrete example.</li>
 <li>Review the instructions for the student presentation and come with an idea/sketch of the simulation you’ll perform.</li>
 </ul></li>
 </ol>
-<p>Questions to consider: 1. What is the problem? WHat limitation, bias, inefficiency, or unresolved issue motivated the paper? 2. What are the authors trying to persuade me to do/believe? 3. Why isn’t the exising method good enough? 4. What do the authors propose instead? 5. How do they persuade me that their proposal is better? Mathematical/theoretical arguments? Simulations? real-data examples? comparisons with competing methods?</p>
+<blockquote class="blockquote">
+<p>Key Ideas</p>
+</blockquote>
 <ol start="3" type="1">
 <li>For the student presentation, do one of the following and come prepared to present it to the class:
 <ul>
@@ -365,6 +437,31 @@ window.Quarto = {
 <li>Consider modular programming</li>
 <li>Start with a single simulation setting (method/model/N).</li>
 </ol>
+</section>
+<section id="extra-notes-for-later" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="extra-notes-for-later"><span class="header-section-number">1.2.3</span> Extra notes for later</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>yhat <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">4</span>, <span class="fl">3.4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="fl">6.5</span>, <span class="dv">10</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">predicted =</span> yhat, <span class="at">actual =</span> y)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> predicted, <span class="at">y =</span> actual)) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Predicted Values (yhat)"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Actual Values (y)"</span>) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Performance_Measures_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
