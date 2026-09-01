@@ -102,7 +102,58 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
    - Prepare a summary of the key ideas. Be prepared to describe/illustrate the concepts in a concrete example.
    - Review the instructions for the student presentation and come with an idea/sketch of the simulation you'll perform.
 
-> Key Ideas
+> **Key Ideas**
+>
+> 1. From the opening line of the abstract: *"The performance of a predictive model is overestimated when simply determined on the sample of subjects that was used to construct the model."* <br>
+> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.
+>
+> 2. From the closing paragraph of the introduction: *"In this study we compare the efficiency of internal validation procedures for predictive logistic regression models."* (also basically the title lol) <br>
+> The authors walked through a comparison of the split-sample approach (test-train splits), cross-validation, and bootstrapping. Each one is an internal validation procedure that is commonly used for evaluating models.
+>
+> 3. From the opening line of section 2.4: "We evaluated several internal validation procedures that aim to test performance more accurately than is achieved by the apparent performance estimate." <br>
+> The authors set out to determine which validation procedure of those listed above is best for the logistic regression model in question. They used the GUSTO-I dataset, detailed below, and fit multiple regression models for prediction.
+> 
+> **Dataset:** GUSTO-I; n=40,830; 2851 deaths <br>
+> Working with a dataset of 30-day mortality after an acute myocardial infarction.
+> What does that mean? They're looking at the % of patients who die from any cause within 30 days of a heart attack.
+>
+> **What they want us to do:**
+> Stop doing CV and split-sample (test-train splits), and start doing regular bootstraping instead for estimation of accuracy!
+> 
+> **How they showed it:** Logistic regression was fitted in each sample with a previously specified set of eight dichotomous predictors (including shock, age>65, diabetes, etc).
+> The apparent performance of the model fitted to the full GUSTO-I data was the reference point from which they compared the other performance measures. *"The large size of the total GUSTO-I data set makes sure that the optimism in this performance estimate is negligible."*
+> As mentioned above, they compared variants of split-sample, cross-validation, and bootstrap (including the .632 and .632+ methods) specifically at EPV=10 to analyze estimates of model performance.
+>
+> **Some results:**
+> 
+> - The optimism and the variability of the model performance estimates reduced as sample size increased.
+> - *"The regular bootstrap resulted in the most accurate estimates of model performance: the bias was clsoe to zero and the variability similar to that of the apparent performance."*
+> - Bootstrap resampling resulted in stable and nearly unbiased estimates of performance.
+> - Relation to some other papers: *"a puzzling observation was that the .632 and the .632+ bootstrap variants were not superior to the regular bootstrap."*
+> 
+> **Definitions** <br>
+>
+> - *Events Per Variable (EPV)*: The number of outcome events (i.e. number of deaths) divided by the number of predictor variables in the model. Recommended to be at least 10 to provide an adequate predictive model. <br>
+> - *Internal Validation*: All methods of assessing performance using only the dataset you were provided. <br>
+> - *External Validation*: Assessing performance using a TRULY NEW dataset. Something from another clinic, a separate experiment, real world data, etc. <br>
+> - *Apparent Performance*: Predictive performance estimated on the training sample. Optimistically biased, because the same data is used to fit and evaluate the model. <br>
+> - *Test Performance*: Predictive performance estimated on the test data (held-out sample), an independent test set consisting of all patients from GUSTO-I except the patients in the random sample. <br>
+> - *Optimism*: The difference between apparent performance and a model's true performance on new data. <br>
+> - *Split-sample approach*: Randomly split training data in two parts: one to develop the model and another to measure its performance. <br>
+> - *Cross-validation*: Model is developed on one part of the data and tested on the other part, while these samples are randomly taken repeatedly and the average is taken as an estimate of the performance. <br>
+> - *Bootstrap*: Replicates the process of sample generation from an underlying population by drawing samples with replacement from the original data set, of the same size as the original data set. <br>
+> - *Discrimination*: The ability to distinguish high-risk subjects from low-risk subjects. Commonly quantified by a measure of concordance, the *c* statistic. <br>
+> - *Calibration*: Whether the predicted probabilities agree with the observed probabilities. Well-calibrated models have a slope of 1, while models providing too extreme predictions have a slope less than 1. Well-calibrated models also have an intercept of 0, while models providing predictions that are too high or too low on average have an intercept different from 0.
+
+> **Sketch of the simulation**: Replicate a simulation from the paper 
+> 
+> The goal is to demonstrate that the regular bootstrap returns the optimal estimates of internal validity.
+>
+> - Start with the GUSTO-I dataset (from R or Python package)
+> - Generate sample and independent test sets for EPV = 10
+>
+> - Complete split sample and regular boostrap on the sample dataset
+> - Compare Predictive performance (*c* statistic, calibration scope, Brier score, D(=scaled$X^2$), $R^2$)
 > 
 
 3. For the student presentation, do one of the following and come prepared to present it to the class:
@@ -166,7 +217,7 @@ The paper considers models 1 and 2, but an extension might consider more:
 2. Consider modular programming
 3. Start with a single simulation setting (method/model/N).
 
-
+<!--
 ### Extra notes for later
 
 ```{r}
@@ -186,3 +237,4 @@ ggplot(df, aes(x = predicted, y = actual)) +
   theme_minimal()
 
 ```
+-->

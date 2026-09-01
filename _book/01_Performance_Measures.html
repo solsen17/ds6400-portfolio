@@ -209,7 +209,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#paper-list" id="toc-paper-list" class="nav-link" data-scroll-target="#paper-list"><span class="header-section-number">1.2.1</span> Paper list</a></li>
   <li><a href="#simulation-study-efron-and-tibshirani-1997" id="toc-simulation-study-efron-and-tibshirani-1997" class="nav-link" data-scroll-target="#simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.2.2</span> Simulation study (Efron and Tibshirani 1997)</a></li>
-  <li><a href="#extra-notes-for-later" id="toc-extra-notes-for-later" class="nav-link" data-scroll-target="#extra-notes-for-later"><span class="header-section-number">1.2.3</span> Extra notes for later</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -353,7 +352,46 @@ window.Quarto = {
 </ul></li>
 </ol>
 <blockquote class="blockquote">
-<p>Key Ideas</p>
+<p><strong>Key Ideas</strong></p>
+<ol type="1">
+<li><p>From the opening line of the abstract: <em>“The performance of a predictive model is overestimated when simply determined on the sample of subjects that was used to construct the model.”</em> <br> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.</p></li>
+<li><p>From the closing paragraph of the introduction: <em>“In this study we compare the efficiency of internal validation procedures for predictive logistic regression models.”</em> (also basically the title lol) <br> The authors walked through a comparison of the split-sample approach (test-train splits), cross-validation, and bootstrapping. Each one is an internal validation procedure that is commonly used for evaluating models.</p></li>
+<li><p>From the opening line of section 2.4: “We evaluated several internal validation procedures that aim to test performance more accurately than is achieved by the apparent performance estimate.” <br> The authors set out to determine which validation procedure of those listed above is best for the logistic regression model in question. They used the GUSTO-I dataset, detailed below, and fit multiple regression models for prediction.</p></li>
+</ol>
+<p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2851 deaths <br> Working with a dataset of 30-day mortality after an acute myocardial infarction. What does that mean? They’re looking at the % of patients who die from any cause within 30 days of a heart attack.</p>
+<p><strong>What they want us to do:</strong> Stop doing CV and split-sample (test-train splits), and start doing regular bootstraping instead for estimation of accuracy!</p>
+<p><strong>How they showed it:</strong> Logistic regression was fitted in each sample with a previously specified set of eight dichotomous predictors (including shock, age&gt;65, diabetes, etc). The apparent performance of the model fitted to the full GUSTO-I data was the reference point from which they compared the other performance measures. <em>“The large size of the total GUSTO-I data set makes sure that the optimism in this performance estimate is negligible.”</em> As mentioned above, they compared variants of split-sample, cross-validation, and bootstrap (including the .632 and .632+ methods) specifically at EPV=10 to analyze estimates of model performance.</p>
+<p><strong>Some results:</strong></p>
+<ul>
+<li>The optimism and the variability of the model performance estimates reduced as sample size increased.</li>
+<li><em>“The regular bootstrap resulted in the most accurate estimates of model performance: the bias was clsoe to zero and the variability similar to that of the apparent performance.”</em></li>
+<li>Bootstrap resampling resulted in stable and nearly unbiased estimates of performance.</li>
+<li>Relation to some other papers: <em>“a puzzling observation was that the .632 and the .632+ bootstrap variants were not superior to the regular bootstrap.”</em></li>
+</ul>
+<p><strong>Definitions</strong> <br></p>
+<ul>
+<li><em>Events Per Variable (EPV)</em>: The number of outcome events (i.e.&nbsp;number of deaths) divided by the number of predictor variables in the model. Recommended to be at least 10 to provide an adequate predictive model. <br></li>
+<li><em>Internal Validation</em>: All methods of assessing performance using only the dataset you were provided. <br></li>
+<li><em>External Validation</em>: Assessing performance using a TRULY NEW dataset. Something from another clinic, a separate experiment, real world data, etc. <br></li>
+<li><em>Apparent Performance</em>: Predictive performance estimated on the training sample. Optimistically biased, because the same data is used to fit and evaluate the model. <br></li>
+<li><em>Test Performance</em>: Predictive performance estimated on the test data (held-out sample), an independent test set consisting of all patients from GUSTO-I except the patients in the random sample. <br></li>
+<li><em>Optimism</em>: The difference between apparent performance and a model’s true performance on new data. <br></li>
+<li><em>Split-sample approach</em>: Randomly split training data in two parts: one to develop the model and another to measure its performance. <br></li>
+<li><em>Cross-validation</em>: Model is developed on one part of the data and tested on the other part, while these samples are randomly taken repeatedly and the average is taken as an estimate of the performance. <br></li>
+<li><em>Bootstrap</em>: Replicates the process of sample generation from an underlying population by drawing samples with replacement from the original data set, of the same size as the original data set. <br></li>
+<li><em>Discrimination</em>: The ability to distinguish high-risk subjects from low-risk subjects. Commonly quantified by a measure of concordance, the <em>c</em> statistic. <br></li>
+<li><em>Calibration</em>: Whether the predicted probabilities agree with the observed probabilities. Well-calibrated models have a slope of 1, while models providing too extreme predictions have a slope less than 1. Well-calibrated models also have an intercept of 0, while models providing predictions that are too high or too low on average have an intercept different from 0.</li>
+</ul>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Sketch of the simulation</strong>: Replicate a simulation from the paper</p>
+<p>The goal is to demonstrate that the regular bootstrap returns the optimal estimates of internal validity.</p>
+<ul>
+<li><p>Start with the GUSTO-I dataset (from R or Python package)</p></li>
+<li><p>Generate sample and independent test sets for EPV = 10</p></li>
+<li><p>Complete split sample and regular boostrap on the sample dataset</p></li>
+<li><p>Compare Predictive performance (<em>c</em> statistic, calibration scope, Brier score, D(=scaled<span class="math inline">\(X^2\)</span>), <span class="math inline">\(R^2\)</span>)</p></li>
+</ul>
 </blockquote>
 <ol start="3" type="1">
 <li>For the student presentation, do one of the following and come prepared to present it to the class:
@@ -437,31 +475,34 @@ window.Quarto = {
 <li>Consider modular programming</li>
 <li>Start with a single simulation setting (method/model/N).</li>
 </ol>
-</section>
-<section id="extra-notes-for-later" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="extra-notes-for-later"><span class="header-section-number">1.2.3</span> Extra notes for later</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>yhat <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">4</span>, <span class="fl">3.4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="fl">6.5</span>, <span class="dv">10</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">predicted =</span> yhat, <span class="at">actual =</span> y)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> predicted, <span class="at">y =</span> actual)) <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Predicted Values (yhat)"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Actual Values (y)"</span>) <span class="sc">+</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="01_Performance_Measures_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<!--
+### Extra notes for later
+
+
+::: {.cell}
+
+```{.r .cell-code}
+library(ggplot2)
+
+y <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+yhat <- c(1, 2.5, 4, 3.4, 5, 6, 6.5, 10, 9, 11)
+
+df <- data.frame(predicted = yhat, actual = y)
+
+ggplot(df, aes(x = predicted, y = actual)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(x = "Predicted Values (yhat)",
+       y = "Actual Values (y)") +
+  theme_minimal()
+```
+
+::: {.cell-output-display}
+![](01_Performance_Measures_files/figure-html/unnamed-chunk-1-1.png){width=672}
+:::
+:::
+
+-->
 
 
 </section>

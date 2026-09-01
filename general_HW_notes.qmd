@@ -11,7 +11,7 @@
 3. What are the authors trying to persuade me to do or believe?
 4. Why isn't the exising method good enough?
 5. What do the authors propose instead?
-5. How do they persuade me that their proposal is better?
+6. How do they persuade me that their proposal is better?
     - Mathematical/theoretical arguments?
     - Simulations?
     - Real-data examples?
