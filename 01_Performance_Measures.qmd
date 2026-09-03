@@ -168,13 +168,6 @@ THURSDAY'S GOAL:
 > **Replicating the example from the paper**
 > **Dataset:** GUSTO-I; n=40,830; 2,851 deaths <br>
 > Available in full anonymized version via `predtools` package in R.
-```{r}
-
-## Loading in Gusto-I dataset from predtools
-
-
-
-```
 
 > **Figures:** Replicating a version of Figure 2 from the paper
 > In the paper, figure 2 shows differences between estimated and test performance in data sets with EPV = 10, for apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. 
@@ -190,6 +183,96 @@ THURSDAY'S GOAL:
 > 6. Use model to compute split-sample performance on sub-sample dataset
 > 7. Use model to compute bootstrap performance on sub-sample dataset
 > 8. Build figure 2 to compare performance!
+
+```{r setup}
+
+## Loading in Gusto-I dataset from predtools
+
+#install.packages("predtools")
+library(predtools)
+data(gusto)
+
+str(gusto)
+```
+
+> From the paper: *"A logistic regression model was fitted in each sample consisting of a previously specified set of eight dichotomous predictors: shock, age>65 years, high risk (anterior infarct location or previous MI), diabetes, hypotension (systolic blood pressure <100 mmHg), tachycardia (pulse>80), relief of chest pain>1 hr, female gender"*
+
+> Variables we want are:
+> 
+> - Outcome: `day30`
+> - Predictors:
+> - Shock: `sho`
+> - Age > 65 years: `age` (needs transform to binary)
+> - High Risk: `ant` or `pmi` (needs transform to binary)
+> - Diabetes: `dia`
+> - Hypotension: `sysbp` (needs transform to binary)
+> - Tachycardia: `pulse` (needs transform to binary)
+> - Relief of chest pain > 1hr: `ttr`
+> - Female gender: `sex`
+
+```{r transform}
+
+gusto_df <- data.frame(
+   day30 = as.integer(gusto$day30),
+   shock = as.integer(gusto$sho),
+   age65 = as.integer(gusto$age > 65),
+   highrisk = as.integer(gusto$ant == 1 | gusto$pmi == "yes"),
+   diabetes = as.integer(gusto$dia),
+   hypotension = as.integer(gusto$sysbp < 100),
+   tachycardia = as.integer(gusto$pulse > 80),
+   ttr = as.integer(gusto$ttr),
+   female = as.integer(gusto$sex == "female")
+)
+
+head(gusto_df)
+
+```
+
+> All variables are now transformed to match the "eight dichotomous predictors" from the paper.
+
+> From the paper: *"For example, for EPV=10 and 7.0% mortality, all training and test samples consisted of 1145 and 39,685 patients, with 80 and 2771 deaths, respectively."*
+```{r sample}
+
+## set seed for reproducibility
+set.seed(17)
+
+## EPV = 10 with 8 predictors requires 80 events (deaths)
+target_events <- 80
+target_non_events <- 1145-80 
+
+## Stratified sampling to ensure desired number of events
+# Split into events and non-events
+events_pool     <- gusto_df[gusto_df$day30 == 1, ]
+nonevents_pool  <- gusto_df[gusto_df$day30 == 0, ]
+
+# Draw the stratified subsample
+dev_events    <- events_pool[sample(nrow(events_pool), target_events), ]
+dev_nonevents <- nonevents_pool[sample(nrow(nonevents_pool), target_non_events), ]
+
+dev_sample <- rbind(dev_events, dev_nonevents)
+
+# Shuffle row order so events aren't grouped together
+dev_sample <- dev_sample[sample(nrow(dev_sample)), ]
+rownames(dev_sample) <- NULL
+
+```
+
+> Samples created!
+
+```{r model definition}
+
+model_formula <- day30 ~ shock + age65 + highrisk + diabetes + hypotension + tachycardia + ttr + female
+
+```
+
+```{r benchmark-model}
+benchmark_fit <- glm(model_formula, data = gusto_df, family = binomial())
+
+benchmark_pred <- predict(benchmark_fit, type = "response")
+
+```
+
+> **To be continued...**
 
 ### Paper list
 

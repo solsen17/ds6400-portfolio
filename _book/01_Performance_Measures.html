@@ -405,9 +405,6 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p><strong>Replicating the example from the paper</strong> <strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Available in full anonymized version via <code>predtools</code> package in R.</p>
 </blockquote>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading in Gusto-I dataset from predtools</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 <blockquote class="blockquote">
 <p><strong>Figures:</strong> Replicating a version of Figure 2 from the paper In the paper, figure 2 shows differences between estimated and test performance in data sets with EPV = 10, for apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (<em>c</em> statistic, calibration slope, Brier score).</p>
 </blockquote>
@@ -425,6 +422,152 @@ window.Quarto = {
 <li>Use model to compute bootstrap performance on sub-sample dataset</li>
 <li>Build figure 2 to compare performance!</li>
 </ol>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading in Gusto-I dataset from predtools</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("predtools")</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(predtools)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gusto)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gusto)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   40830 obs. of  29 variables:
+ $ day30   : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ sho     : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ hig     : int  1 1 0 0 1 0 0 0 1 0 ...
+ $ dia     : 'labelled' int  0 0 0 0 0 0 0 0 0 0 ...
+  ..- attr(*, "label")= chr "Diabetes"
+ $ hyp     : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ hrt     : int  0 1 0 0 1 1 1 0 0 1 ...
+ $ ttr     : 'labelled' int  1 1 0 1 0 1 0 1 1 1 ...
+  ..- attr(*, "label")= chr "Time to Relief of Chest Pain &gt; 1h"
+ $ sex     : Factor w/ 2 levels "male","female": 1 1 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "Sex"
+ $ Killip  : Factor w/ 4 levels "I","II","III",..: 1 2 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "Killip Class"
+ $ age     : num  19 19 20.3 20.8 21 ...
+ $ ste     : 'labelled' int  4 6 5 8 5 1 0 4 8 6 ...
+  ..- attr(*, "label")= chr "Number of ECG Leads with ST Elevation"
+ $ pulse   : 'labelled' int  60 90 77 75 85 90 90 50 70 95 ...
+  ..- attr(*, "label")= chr "Heart Rate"
+  ..- attr(*, "units")= chr "beats/min"
+ $ sysbp   : 'labelled' int  130 150 106 124 135 129 130 120 157 130 ...
+  ..- attr(*, "label")= chr "Systolic Blood Pressure"
+  ..- attr(*, "units")= chr "mmHg"
+ $ ant     : int  1 1 0 0 1 0 0 0 1 0 ...
+ $ miloc   : Factor w/ 3 levels "Inferior","Other",..: 3 3 1 1 3 1 2 1 3 1 ...
+  ..- attr(*, "label")= chr "MI Location"
+ $ height  : 'labelled' num  170 161 171 180 188 ...
+  ..- attr(*, "label")= chr "Height"
+  ..- attr(*, "units")= chr "cm"
+ $ weight  : 'labelled' num  60 72 72.5 69 107 115 60 80 65 76 ...
+  ..- attr(*, "label")= chr "Weight"
+  ..- attr(*, "units")= chr "kg"
+ $ pmi     : Factor w/ 2 levels "no","yes": 1 2 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "Previous MI"
+ $ htn     : 'labelled' int  1 2 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "History of Hypertension"
+ $ smk     : Factor w/ 3 levels "never","quit",..: 1 1 3 1 2 1 1 2 1 1 ...
+  ..- attr(*, "label")= chr "Smoking"
+ $ pan     : int  1 2 1 2 1 1 2 1 2 1 ...
+ $ fam     : 'labelled' int  2 2 1 2 2 2 2 1 2 1 ...
+  ..- attr(*, "label")= chr "Family History of MI"
+ $ prevcvd : int  1 1 1 1 1 1 1 1 1 1 ...
+ $ prevcabg: int  1 1 1 1 1 1 1 1 1 1 ...
+ $ regl    : int  6 8 7 7 2 10 2 3 5 8 ...
+ $ grpl    : int  17 24 18 19 6 30 5 9 15 24 ...
+ $ grps    : int  98 53 40 42 95 67 13 19 32 54 ...
+ $ tpa     : int  0 NA NA 1 0 1 NA NA 0 NA ...
+ $ tx      : Factor w/ 3 levels "SK+tPA","SK",..: 2 1 1 3 2 3 1 1 2 1 ...
+  ..- attr(*, "label")= Named chr "Tx in 3 groups"
+  .. ..- attr(*, "names")= chr "TX"</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>From the paper: <em>“A logistic regression model was fitted in each sample consisting of a previously specified set of eight dichotomous predictors: shock, age&gt;65 years, high risk (anterior infarct location or previous MI), diabetes, hypotension (systolic blood pressure &lt;100 mmHg), tachycardia (pulse&gt;80), relief of chest pain&gt;1 hr, female gender”</em></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Variables we want are:</p>
+<ul>
+<li>Outcome: <code>day30</code></li>
+<li>Predictors:</li>
+<li>Shock: <code>sho</code></li>
+<li>Age &gt; 65 years: <code>age</code> (needs transform to binary)</li>
+<li>High Risk: <code>ant</code> or <code>pmi</code> (needs transform to binary)</li>
+<li>Diabetes: <code>dia</code></li>
+<li>Hypotension: <code>sysbp</code> (needs transform to binary)</li>
+<li>Tachycardia: <code>pulse</code> (needs transform to binary)</li>
+<li>Relief of chest pain &gt; 1hr: <code>ttr</code></li>
+<li>Female gender: <code>sex</code></li>
+</ul>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>gusto_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">day30 =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>day30),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">shock =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>sho),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">age65 =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>age <span class="sc">&gt;</span> <span class="dv">65</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">highrisk =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>ant <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> gusto<span class="sc">$</span>pmi <span class="sc">==</span> <span class="st">"yes"</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">diabetes =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>dia),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">hypotension =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>sysbp <span class="sc">&lt;</span> <span class="dv">100</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">tachycardia =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>pulse <span class="sc">&gt;</span> <span class="dv">80</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">ttr =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>ttr),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">female =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">"female"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gusto_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  day30 shock age65 highrisk diabetes hypotension tachycardia ttr female
+1     0     0     0        1        0           0           0   1      0
+2     0     0     0        1        0           0           1   1      0
+3     0     0     0        0        0           0           0   0      0
+4     0     0     0        0        0           0           0   1      0
+5     0     0     0        1        0           0           1   0      0
+6     0     0     0        0        0           0           1   1      0</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>All variables are now transformed to match the “eight dichotomous predictors” from the paper.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>From the paper: <em>“For example, for EPV=10 and 7.0% mortality, all training and test samples consisted of 1145 and 39,685 patients, with 80 and 2771 deaths, respectively.”</em></p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## set seed for reproducibility</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## EPV = 10 with 8 predictors requires 80 events (deaths)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>target_events <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>target_non_events <span class="ot">&lt;-</span> <span class="dv">1145-80</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Stratified sampling to ensure desired number of events</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Split into events and non-events</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>events_pool     <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>nonevents_pool  <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">0</span>, ]</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw the stratified subsample</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>dev_events    <span class="ot">&lt;-</span> events_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(events_pool), target_events), ]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>dev_nonevents <span class="ot">&lt;-</span> nonevents_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(nonevents_pool), target_non_events), ]</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>dev_sample <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dev_events, dev_nonevents)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Shuffle row order so events aren't grouped together</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>dev_sample <span class="ot">&lt;-</span> dev_sample[<span class="fu">sample</span>(<span class="fu">nrow</span>(dev_sample)), ]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(dev_sample) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Samples created!</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model_formula <span class="ot">&lt;-</span> day30 <span class="sc">~</span> shock <span class="sc">+</span> age65 <span class="sc">+</span> highrisk <span class="sc">+</span> diabetes <span class="sc">+</span> hypotension <span class="sc">+</span> tachycardia <span class="sc">+</span> ttr <span class="sc">+</span> female</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>benchmark_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(model_formula, <span class="at">data =</span> gusto_df, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>benchmark_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(benchmark_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p><strong>To be continued…</strong></p>
 </blockquote>
 <section id="paper-list" class="level3" data-number="1.2.1">
 <h3 data-number="1.2.1" class="anchored" data-anchor-id="paper-list"><span class="header-section-number">1.2.1</span> Paper list</h3>
@@ -523,7 +666,7 @@ ggplot(df, aes(x = predicted, y = actual)) +
 ```
 
 ::: {.cell-output-display}
-![](01_Performance_Measures_files/figure-html/unnamed-chunk-2-1.png){width=672}
+![](01_Performance_Measures_files/figure-html/unnamed-chunk-1-1.png){width=672}
 :::
 :::
 
