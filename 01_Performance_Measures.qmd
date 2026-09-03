@@ -105,7 +105,7 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
 > **Key Ideas**
 >
 > 1. From the opening line of the abstract: *"The performance of a predictive model is overestimated when simply determined on the sample of subjects that was used to construct the model."* <br>
-> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.
+> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated performance will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.
 >
 > 2. From the closing paragraph of the introduction: *"In this study we compare the efficiency of internal validation procedures for predictive logistic regression models."* (also basically the title lol) <br>
 > The authors walked through a comparison of the split-sample approach (test-train splits), cross-validation, and bootstrapping. Each one is an internal validation procedure that is commonly used for evaluating models.
@@ -113,7 +113,7 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
 > 3. From the opening line of section 2.4: "We evaluated several internal validation procedures that aim to test performance more accurately than is achieved by the apparent performance estimate." <br>
 > The authors set out to determine which validation procedure of those listed above is best for the logistic regression model in question. They used the GUSTO-I dataset, detailed below, and fit multiple regression models for prediction.
 > 
-> **Dataset:** GUSTO-I; n=40,830; 2851 deaths <br>
+> **Dataset:** GUSTO-I; n=40,830; 2,851 deaths <br>
 > Working with a dataset of 30-day mortality after an acute myocardial infarction.
 > What does that mean? They're looking at the % of patients who die from any cause within 30 days of a heart attack.
 >
@@ -127,7 +127,7 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
 > **Some results:**
 > 
 > - The optimism and the variability of the model performance estimates reduced as sample size increased.
-> - *"The regular bootstrap resulted in the most accurate estimates of model performance: the bias was clsoe to zero and the variability similar to that of the apparent performance."*
+> - *"The regular bootstrap resulted in the most accurate estimates of model performance: the bias was close to zero and the variability similar to that of the apparent performance."*
 > - Bootstrap resampling resulted in stable and nearly unbiased estimates of performance.
 > - Relation to some other papers: *"a puzzling observation was that the .632 and the .632+ bootstrap variants were not superior to the regular bootstrap."*
 > 
@@ -151,15 +151,45 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
 >
 > - Start with the GUSTO-I dataset (from R or Python package)
 > - Generate sample and independent test sets for EPV = 10
->
 > - Complete split sample and regular boostrap on the sample dataset
-> - Compare Predictive performance (*c* statistic, calibration scope, Brier score, D(=scaled$X^2$), $R^2$)
+> - Compare Predictive performance (*c* statistic, calibration slope, Brier score, D(=scaled$\chi^2$), $R^2$)
 > 
 
+THURSDAY'S GOAL:
+- at minimum come with a plan for the simulation of what you're doing to do
+- Tom will provide feedback as a github issue on our repo
+- Outline the dataset, figures, approach, etc.
+
 3. For the student presentation, do one of the following and come prepared to present it to the class:
-   - Replicate a simulation or example from the paper
+   - **Replicate a simulation or example from the paper** [SELECTION]
    - Develop your own simulation study which explores a concept discussed in the paper
    - Complete the simulation study described below.
+
+> **Replicating the example from the paper**
+> **Dataset:** GUSTO-I; n=40,830; 2,851 deaths <br>
+> Available in full anonymized version via `predtools` package in R.
+```{r}
+
+## Loading in Gusto-I dataset from predtools
+
+
+
+```
+
+> **Figures:** Replicating a version of Figure 2 from the paper
+> In the paper, figure 2 shows differences between estimated and test performance in data sets with EPV = 10, for apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. 
+> In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (*c* statistic, calibration slope, Brier score).
+
+> **Methods:** Replicating the steps of the paper
+
+> 1. Load in the dataset
+> 2. Generate a sub-sample for EPV = 10 (set a seed to keep results steady)
+> 3. Define logistic regression model with 8 predictors from the paper
+> 4. Use model to compute the benchmark performance on the full dataset
+> 5. Use model to compute apparent performance on sub-sample dataset
+> 6. Use model to compute split-sample performance on sub-sample dataset
+> 7. Use model to compute bootstrap performance on sub-sample dataset
+> 8. Build figure 2 to compare performance!
 
 ### Paper list
 

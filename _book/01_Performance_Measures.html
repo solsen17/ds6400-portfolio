@@ -354,17 +354,17 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p><strong>Key Ideas</strong></p>
 <ol type="1">
-<li><p>From the opening line of the abstract: <em>“The performance of a predictive model is overestimated when simply determined on the sample of subjects that was used to construct the model.”</em> <br> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.</p></li>
+<li><p>From the opening line of the abstract: <em>“The performance of a predictive model is overestimated when simply determined on the sample of subjects that was used to construct the model.”</em> <br> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated performance will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.</p></li>
 <li><p>From the closing paragraph of the introduction: <em>“In this study we compare the efficiency of internal validation procedures for predictive logistic regression models.”</em> (also basically the title lol) <br> The authors walked through a comparison of the split-sample approach (test-train splits), cross-validation, and bootstrapping. Each one is an internal validation procedure that is commonly used for evaluating models.</p></li>
 <li><p>From the opening line of section 2.4: “We evaluated several internal validation procedures that aim to test performance more accurately than is achieved by the apparent performance estimate.” <br> The authors set out to determine which validation procedure of those listed above is best for the logistic regression model in question. They used the GUSTO-I dataset, detailed below, and fit multiple regression models for prediction.</p></li>
 </ol>
-<p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2851 deaths <br> Working with a dataset of 30-day mortality after an acute myocardial infarction. What does that mean? They’re looking at the % of patients who die from any cause within 30 days of a heart attack.</p>
+<p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Working with a dataset of 30-day mortality after an acute myocardial infarction. What does that mean? They’re looking at the % of patients who die from any cause within 30 days of a heart attack.</p>
 <p><strong>What they want us to do:</strong> Stop doing CV and split-sample (test-train splits), and start doing regular bootstraping instead for estimation of accuracy!</p>
 <p><strong>How they showed it:</strong> Logistic regression was fitted in each sample with a previously specified set of eight dichotomous predictors (including shock, age&gt;65, diabetes, etc). The apparent performance of the model fitted to the full GUSTO-I data was the reference point from which they compared the other performance measures. <em>“The large size of the total GUSTO-I data set makes sure that the optimism in this performance estimate is negligible.”</em> As mentioned above, they compared variants of split-sample, cross-validation, and bootstrap (including the .632 and .632+ methods) specifically at EPV=10 to analyze estimates of model performance.</p>
 <p><strong>Some results:</strong></p>
 <ul>
 <li>The optimism and the variability of the model performance estimates reduced as sample size increased.</li>
-<li><em>“The regular bootstrap resulted in the most accurate estimates of model performance: the bias was clsoe to zero and the variability similar to that of the apparent performance.”</em></li>
+<li><em>“The regular bootstrap resulted in the most accurate estimates of model performance: the bias was close to zero and the variability similar to that of the apparent performance.”</em></li>
 <li>Bootstrap resampling resulted in stable and nearly unbiased estimates of performance.</li>
 <li>Relation to some other papers: <em>“a puzzling observation was that the .632 and the .632+ bootstrap variants were not superior to the regular bootstrap.”</em></li>
 </ul>
@@ -387,20 +387,45 @@ window.Quarto = {
 <p><strong>Sketch of the simulation</strong>: Replicate a simulation from the paper</p>
 <p>The goal is to demonstrate that the regular bootstrap returns the optimal estimates of internal validity.</p>
 <ul>
-<li><p>Start with the GUSTO-I dataset (from R or Python package)</p></li>
-<li><p>Generate sample and independent test sets for EPV = 10</p></li>
-<li><p>Complete split sample and regular boostrap on the sample dataset</p></li>
-<li><p>Compare Predictive performance (<em>c</em> statistic, calibration scope, Brier score, D(=scaled<span class="math inline">\(X^2\)</span>), <span class="math inline">\(R^2\)</span>)</p></li>
+<li>Start with the GUSTO-I dataset (from R or Python package)</li>
+<li>Generate sample and independent test sets for EPV = 10</li>
+<li>Complete split sample and regular boostrap on the sample dataset</li>
+<li>Compare Predictive performance (<em>c</em> statistic, calibration slope, Brier score, D(=scaled<span class="math inline">\(\chi^2\)</span>), <span class="math inline">\(R^2\)</span>)</li>
 </ul>
 </blockquote>
+<p>THURSDAY’S GOAL: - at minimum come with a plan for the simulation of what you’re doing to do - Tom will provide feedback as a github issue on our repo - Outline the dataset, figures, approach, etc.</p>
 <ol start="3" type="1">
 <li>For the student presentation, do one of the following and come prepared to present it to the class:
 <ul>
-<li>Replicate a simulation or example from the paper</li>
+<li><strong>Replicate a simulation or example from the paper</strong> [SELECTION]</li>
 <li>Develop your own simulation study which explores a concept discussed in the paper</li>
 <li>Complete the simulation study described below.</li>
 </ul></li>
 </ol>
+<blockquote class="blockquote">
+<p><strong>Replicating the example from the paper</strong> <strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Available in full anonymized version via <code>predtools</code> package in R.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading in Gusto-I dataset from predtools</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Figures:</strong> Replicating a version of Figure 2 from the paper In the paper, figure 2 shows differences between estimated and test performance in data sets with EPV = 10, for apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (<em>c</em> statistic, calibration slope, Brier score).</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Methods:</strong> Replicating the steps of the paper</p>
+</blockquote>
+<blockquote class="blockquote">
+<ol type="1">
+<li>Load in the dataset</li>
+<li>Generate a sub-sample for EPV = 10 (set a seed to keep results steady)</li>
+<li>Define logistic regression model with 8 predictors from the paper</li>
+<li>Use model to compute the benchmark performance on the full dataset</li>
+<li>Use model to compute apparent performance on sub-sample dataset</li>
+<li>Use model to compute split-sample performance on sub-sample dataset</li>
+<li>Use model to compute bootstrap performance on sub-sample dataset</li>
+<li>Build figure 2 to compare performance!</li>
+</ol>
+</blockquote>
 <section id="paper-list" class="level3" data-number="1.2.1">
 <h3 data-number="1.2.1" class="anchored" data-anchor-id="paper-list"><span class="header-section-number">1.2.1</span> Paper list</h3>
 <table class="caption-top table">
@@ -498,7 +523,7 @@ ggplot(df, aes(x = predicted, y = actual)) +
 ```
 
 ::: {.cell-output-display}
-![](01_Performance_Measures_files/figure-html/unnamed-chunk-1-1.png){width=672}
+![](01_Performance_Measures_files/figure-html/unnamed-chunk-2-1.png){width=672}
 :::
 :::
 
