@@ -17,3 +17,9 @@
     - Real-data examples?
     - Comparisons with competing methods?
 
+
+THURSDAY'S GOAL:
+- at minimum come with a plan for the simulation of what you're doing to do
+- Tom will provide feedback as a github issue on our repo
+- Outline the dataset, figures, approach, etc.
+

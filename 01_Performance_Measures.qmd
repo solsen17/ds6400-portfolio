@@ -155,11 +155,6 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
 > - Compare Predictive performance (*c* statistic, calibration slope, Brier score, D(=scaled$\chi^2$), $R^2$)
 > 
 
-THURSDAY'S GOAL:
-- at minimum come with a plan for the simulation of what you're doing to do
-- Tom will provide feedback as a github issue on our repo
-- Outline the dataset, figures, approach, etc.
-
 3. For the student presentation, do one of the following and come prepared to present it to the class:
    - **Replicate a simulation or example from the paper** [SELECTION]
    - Develop your own simulation study which explores a concept discussed in the paper
