@@ -205,10 +205,14 @@ window.Quarto = {
   <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="header-section-number">1.1.3</span> Exercise</a></li>
   <li><a href="#exercise-incomplete" id="toc-exercise-incomplete" class="nav-link" data-scroll-target="#exercise-incomplete"><span class="header-section-number">1.1.4</span> Exercise [incomplete]</a></li>
   </ul></li>
-  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link" data-scroll-target="#student-exploration"><span class="header-section-number">1.2</span> Student exploration</a>
+  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link" data-scroll-target="#student-exploration"><span class="header-section-number">1.2</span> Student exploration</a></li>
+  <li><a href="#function-7-run-one-full-repetition-ties-everything-together" id="toc-function-7-run-one-full-repetition-ties-everything-together" class="nav-link" data-scroll-target="#function-7-run-one-full-repetition-ties-everything-together"><span class="header-section-number">1.3</span> Function 7: run one full repetition (ties everything together)</a></li>
+  <li><a href="#run-the-simulation-loop" id="toc-run-the-simulation-loop" class="nav-link" data-scroll-target="#run-the-simulation-loop"><span class="header-section-number">1.4</span> Run the simulation loop</a></li>
+  <li><a href="#visualize-recreate-figure-2" id="toc-visualize-recreate-figure-2" class="nav-link" data-scroll-target="#visualize-recreate-figure-2"><span class="header-section-number">1.5</span> Visualize: recreate Figure 2</a></li>
+  <li><a href="#summarize-bias-and-rmse-reproduces-table-2s-structure" id="toc-summarize-bias-and-rmse-reproduces-table-2s-structure" class="nav-link" data-scroll-target="#summarize-bias-and-rmse-reproduces-table-2s-structure"><span class="header-section-number">1.6</span> Summarize bias and RMSE (reproduces Table 2’s structure)</a>
   <ul class="collapse">
-  <li><a href="#paper-list" id="toc-paper-list" class="nav-link" data-scroll-target="#paper-list"><span class="header-section-number">1.2.1</span> Paper list</a></li>
-  <li><a href="#simulation-study-efron-and-tibshirani-1997" id="toc-simulation-study-efron-and-tibshirani-1997" class="nav-link" data-scroll-target="#simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.2.2</span> Simulation study (Efron and Tibshirani 1997)</a></li>
+  <li><a href="#paper-list" id="toc-paper-list" class="nav-link" data-scroll-target="#paper-list"><span class="header-section-number">1.6.1</span> Paper list</a></li>
+  <li><a href="#simulation-study-efron-and-tibshirani-1997" id="toc-simulation-study-efron-and-tibshirani-1997" class="nav-link" data-scroll-target="#simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.6.2</span> Simulation study (Efron and Tibshirani 1997)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -402,10 +406,12 @@ window.Quarto = {
 </ul></li>
 </ol>
 <blockquote class="blockquote">
-<p><strong>Replicating the example from the paper</strong> <strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Available in full anonymized version via <code>predtools</code> package in R.</p>
+<p><strong>Replicating the example from the paper</strong></p>
+<p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Available in full anonymized version via <code>predtools</code> package in R.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p><strong>Figures:</strong> Replicating a version of Figure 2 from the paper In the paper, figure 2 shows differences between estimated and test performance in data sets with EPV = 10, for apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (<em>c</em> statistic, calibration slope, Brier score).</p>
+<p><strong>Figures:</strong> Replicating a version of Figure 2 from the paper</p>
+<p>In the paper, figure 2 shows bias and variability for a few of the procedures for estimating model performance in independent data for EPV = 10, including apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (<em>c</em> statistic, calibration slope, Brier score).</p>
 </blockquote>
 <blockquote class="blockquote">
 <p><strong>Methods:</strong> Replicating the steps of the paper</p>
@@ -413,12 +419,12 @@ window.Quarto = {
 <blockquote class="blockquote">
 <ol type="1">
 <li>Load in the dataset</li>
-<li>Generate a sub-sample for EPV = 10 (set a seed to keep results steady)</li>
 <li>Define logistic regression model with 8 predictors from the paper</li>
-<li>Use model to compute the benchmark performance on the full dataset</li>
-<li>Use model to compute apparent performance on sub-sample dataset</li>
-<li>Use model to compute split-sample performance on sub-sample dataset</li>
-<li>Use model to compute bootstrap performance on sub-sample dataset</li>
+<li>Generate a sub-sample for EPV = 10 (set a seed to keep results steady)</li>
+<li>[Not needed for this simulation] Use model to compute the benchmark performance on the full dataset</li>
+<li>Use model to compute apparent performance on sub-sample dataset [simulated many times to get bias and variability]</li>
+<li>Use model to compute split-sample performance on sub-sample dataset [“”]</li>
+<li>Use model to compute bootstrap performance on sub-sample dataset [“”]</li>
 <li>Build figure 2 to compare performance!</li>
 </ol>
 </blockquote>
@@ -526,50 +532,296 @@ window.Quarto = {
 </div>
 </div>
 <blockquote class="blockquote">
-<p>All variables are now transformed to match the “eight dichotomous predictors” from the paper.</p>
+<p>All variables are now transformed to match the “eight dichotomous predictors” from the paper. Below, the logistic regression model is defined in R code for the upcoming simulations.</p>
 </blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_formula <span class="ot">&lt;-</span> day30 <span class="sc">~</span> shock <span class="sc">+</span> age65 <span class="sc">+</span> highrisk <span class="sc">+</span> diabetes <span class="sc">+</span> hypotension <span class="sc">+</span> tachycardia <span class="sc">+</span> ttr <span class="sc">+</span> female</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <blockquote class="blockquote">
 <p>From the paper: <em>“For example, for EPV=10 and 7.0% mortality, all training and test samples consisted of 1145 and 39,685 patients, with 80 and 2771 deaths, respectively.”</em></p>
 </blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## set seed for reproducibility</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## EPV = 10 with 8 predictors requires 80 events (deaths)</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>target_events <span class="ot">&lt;-</span> <span class="dv">80</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>target_non_events <span class="ot">&lt;-</span> <span class="dv">1145-80</span> </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Stratified sampling to ensure desired number of events</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Split into events and non-events</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>events_pool     <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">1</span>, ]</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>nonevents_pool  <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">0</span>, ]</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw the stratified subsample</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>dev_events    <span class="ot">&lt;-</span> events_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(events_pool), target_events), ]</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>dev_nonevents <span class="ot">&lt;-</span> nonevents_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(nonevents_pool), target_non_events), ]</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>dev_sample <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dev_events, dev_nonevents)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Shuffle row order so events aren't grouped together</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>dev_sample <span class="ot">&lt;-</span> dev_sample[<span class="fu">sample</span>(<span class="fu">nrow</span>(dev_sample)), ]</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(dev_sample) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## set seed for reproducibility</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Creating ID column for tracking which patients are in what samples</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>gusto_df<span class="sc">$</span>row_id <span class="ot">&lt;-</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(gusto_df))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Function to draw the training sample for each time this needs to be run</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>draw_dev_sample <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">sample_total =</span> <span class="dv">1145</span>, <span class="at">target_events =</span> <span class="dv">80</span>){</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>   <span class="do">## EPV = 10 with 8 predictors requires 80 events (deaths)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>   target_events <span class="ot">&lt;-</span> target_events</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>   target_non_events <span class="ot">&lt;-</span> sample_total<span class="sc">-</span>target_events</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>   <span class="do">## Stratified sampling to ensure desired number of events</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Split into events and non-events</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>   events_pool     <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>   nonevents_pool  <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">0</span>, ]</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Draw the stratified subsample</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>   dev_events    <span class="ot">&lt;-</span> events_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(events_pool), target_events), ]</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>   dev_nonevents <span class="ot">&lt;-</span> nonevents_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(nonevents_pool), target_non_events), ]</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>   dev_sample <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dev_events, dev_nonevents)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Shuffle row order so events aren't grouped together</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>   dev_sample <span class="ot">&lt;-</span> dev_sample[<span class="fu">sample</span>(<span class="fu">nrow</span>(dev_sample)), ]</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="do">## Function to draw the testing sample (all the rows that are not in the training sample)</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>draw_test_set <span class="ot">&lt;-</span> <span class="cf">function</span>(data, dev_sample) {</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  data[<span class="sc">!</span>(data<span class="sc">$</span>row_id <span class="sc">%in%</span> dev_sample<span class="sc">$</span>row_id), ]</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
-<p>Samples created!</p>
+<p>Building reusable function for computing desired metrics: ** INSERT LATEX FORMULAS HERE **</p>
 </blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model_formula <span class="ot">&lt;-</span> day30 <span class="sc">~</span> shock <span class="sc">+</span> age65 <span class="sc">+</span> highrisk <span class="sc">+</span> diabetes <span class="sc">+</span> hypotension <span class="sc">+</span> tachycardia <span class="sc">+</span> ttr <span class="sc">+</span> female</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Type 'citation("pROC")' for a citation.</code></pre>
 </div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'pROC'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    cov, smooth, var</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>compute_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(y, pred) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Guard against predicted probabilities of exactly 0 or 1,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># which would break the logit transform below</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  eps <span class="ot">&lt;-</span> <span class="fl">1e-10</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(pred, eps), <span class="dv">1</span> <span class="sc">-</span> eps)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Discrimination: c-statistic (AUC)</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  c_stat <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(pROC<span class="sc">::</span><span class="fu">auc</span>(y, pred, <span class="at">quiet =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calibration slope: regress outcome on the linear predictor (logit of pred)</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  lp <span class="ot">&lt;-</span> <span class="fu">log</span>(pred <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pred))</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  cal_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> lp, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  cal_slope <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(cal_fit)[<span class="st">"lp"</span>])</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Brier score</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  brier <span class="ot">&lt;-</span> <span class="fu">mean</span>((y <span class="sc">-</span> pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">c_stat =</span> c_stat, <span class="at">cal_slope =</span> cal_slope, <span class="at">brier =</span> brier)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Computing apparent performance for the logistic regression model on the training sample dataset</p>
+</blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>benchmark_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(model_formula, <span class="at">data =</span> gusto_df, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>benchmark_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(benchmark_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>get_apparent <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> sample_data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">fit =</span> fit, <span class="at">metrics =</span> <span class="fu">compute_metrics</span>(sample_data<span class="sc">$</span>day30, pred))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#app_pred &lt;- get_apparent(dev_sample, model_formula)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Defining the function to evaluate a given model on new data for the test performance</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>eval_on_data <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, newdata) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> newdata, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute_metrics</span>(newdata<span class="sc">$</span>day30, pred)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#fit &lt;- glm(model_formula, data = dev_sample, family = binomial())</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#test_pred &lt;- eval_on_data(fit, test_sample)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Function for the split-sample validation, essentially running a test-train split on the development sample and fitting the model.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>split_sample_validate <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula, <span class="at">train_frac =</span> <span class="fl">0.6667</span>) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  n_train <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">nrow</span>(sample_data) <span class="sc">*</span> train_frac)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  train_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(sample_data), n_train)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  train_set <span class="ot">&lt;-</span> sample_data[train_idx, ]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  test_set  <span class="ot">&lt;-</span> sample_data[<span class="sc">-</span>train_idx, ]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> train_set, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eval_on_data</span>(fit, test_set)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># split_test &lt;- split_sample_validate(dev_sample, model_formula, train_frac = .6667)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Function for the regular bootstrap method</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bootstrap_correct <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula, apparent_metrics, <span class="at">B =</span> <span class="dv">100</span>) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(sample_data)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  optimism_sum <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">c_stat =</span> <span class="dv">0</span>, <span class="at">cal_slope =</span> <span class="dv">0</span>, <span class="at">brier =</span> <span class="dv">0</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    boot_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(n, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    boot_sample <span class="ot">&lt;-</span> sample_data[boot_idx, ]</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    boot_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> boot_sample, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    boot_apparent <span class="ot">&lt;-</span> <span class="fu">compute_metrics</span>(</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>      boot_sample<span class="sc">$</span>day30,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(boot_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    boot_test <span class="ot">&lt;-</span> <span class="fu">compute_metrics</span>(</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>      sample_data<span class="sc">$</span>day30,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(boot_fit, <span class="at">newdata =</span> sample_data, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    optimism_sum <span class="ot">&lt;-</span> optimism_sum <span class="sc">+</span> (boot_apparent <span class="sc">-</span> boot_test)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  avg_optimism <span class="ot">&lt;-</span> optimism_sum <span class="sc">/</span> B</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  apparent_metrics <span class="sc">-</span> avg_optimism</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
 <p><strong>To be continued…</strong></p>
 </blockquote>
-<section id="paper-list" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="paper-list"><span class="header-section-number">1.2.1</span> Paper list</h3>
+</section>
+<section id="function-7-run-one-full-repetition-ties-everything-together" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="function-7-run-one-full-repetition-ties-everything-together"><span class="header-section-number">1.3</span> Function 7: run one full repetition (ties everything together)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the "outer loop body" -- one full pass of the pipeline,</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># matching one box in each boxplot of Figures 1 and 2.</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>run_one_repetition <span class="ot">&lt;-</span> <span class="cf">function</span>(data, formula, <span class="at">sample_total =</span> <span class="dv">1145</span>, <span class="at">target_events =</span> <span class="dv">80</span>, <span class="at">B =</span> <span class="dv">100</span>) {</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  dev_sample <span class="ot">&lt;-</span> <span class="fu">draw_dev_sample</span>(data, sample_total, target_events)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  test_set   <span class="ot">&lt;-</span> <span class="fu">draw_test_set</span>(data, dev_sample)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Apparent performance + the fitted model (reused below)</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  app <span class="ot">&lt;-</span> <span class="fu">get_apparent</span>(dev_sample, formula)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  apparent_metrics <span class="ot">&lt;-</span> app<span class="sc">$</span>metrics</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Test performance: evaluate the dev_sample-fitted model on truly new patients</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  test_metrics <span class="ot">&lt;-</span> <span class="fu">eval_on_data</span>(app<span class="sc">$</span>fit, test_set)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Split-sample (50/50, matching your simplified scope)</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  split_metrics <span class="ot">&lt;-</span> <span class="fu">split_sample_validate</span>(dev_sample, formula, <span class="at">train_frac =</span> <span class="fl">0.6667</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Bootstrap-corrected</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  boot_metrics <span class="ot">&lt;-</span> <span class="fu">bootstrap_correct</span>(dev_sample, formula, apparent_metrics, <span class="at">B =</span> B)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># MATH </span><span class="al">NOTE</span><span class="co">: delta = method's estimate - test performance.</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># delta = 0 means the method perfectly recovered true generalization</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># performance for this repetition. This is exactly Figure 2's y-axis.</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"apparent"</span>, <span class="st">"split_sample"</span>, <span class="st">"bootstrap"</span>), <span class="at">each =</span> <span class="dv">3</span>),</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">metric =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"c_stat"</span>, <span class="st">"cal_slope"</span>, <span class="st">"brier"</span>), <span class="at">times =</span> <span class="dv">3</span>),</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">delta  =</span> <span class="fu">c</span>(</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>      apparent_metrics <span class="sc">-</span> test_metrics,</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>      split_metrics <span class="sc">-</span> test_metrics,</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>      boot_metrics <span class="sc">-</span> test_metrics</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="run-the-simulation-loop" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="run-the-simulation-loop"><span class="header-section-number">1.4</span> Run the simulation loop</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: reduced from the paper's 500 repetitions to keep runtime</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reasonable for a live presentation. State this explicitly when</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># presenting -- it's a deliberate, documented scope reduction, not</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># an error.</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>n_reps <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>results_list <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, n_reps)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n_reps)) {</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  results_list[[i]] <span class="ot">&lt;-</span> <span class="fu">run_one_repetition</span>(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> gusto_df,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> model_formula,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_total =</span> <span class="dv">1145</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">target_events =</span> <span class="dv">80</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> <span class="dv">100</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, results_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualize-recreate-figure-2" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="visualize-recreate-figure-2"><span class="header-section-number">1.5</span> Visualize: recreate Figure 2</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> delta)) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> metric, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Bias of internal validation methods at EPV = 10"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste0</span>(n_reps, <span class="st">" repetitions (paper used 500)"</span>),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Method"</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Delta (estimated - test performance)"</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Performance_Measures_files/figure-html/plot-figure2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="summarize-bias-and-rmse-reproduces-table-2s-structure" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="summarize-bias-and-rmse-reproduces-table-2s-structure"><span class="header-section-number">1.6</span> Summarize bias and RMSE (reproduces Table 2’s structure)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MATH </span><span class="al">NOTE</span><span class="co">:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   Bias = mean(delta)                -- average signed error</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   RMSE = sqrt(mean(delta^2))        -- root mean SQUARED error,</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                          NOT centered around the bias.</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#          RMSE^2 = Bias^2 + Var(delta)</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(method, metric) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">bias =</span> <span class="fu">mean</span>(delta),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(delta<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>summary_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+  method       metric         bias    rmse
+  &lt;chr&gt;        &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+1 apparent     brier     -0.00140  0.00256
+2 apparent     c_stat     0.0134   0.0292 
+3 apparent     cal_slope  0.0628   0.131  
+4 bootstrap    brier      0.000604 0.00227
+5 bootstrap    c_stat    -0.00397  0.0289 
+6 bootstrap    cal_slope -0.0228   0.129  
+7 split_sample brier      0.000483 0.00803
+8 split_sample c_stat    -0.00737  0.0509 
+9 split_sample cal_slope -0.0385   0.257  </code></pre>
+</div>
+</div>
+<section id="paper-list" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="paper-list"><span class="header-section-number">1.6.1</span> Paper list</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -605,8 +857,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="simulation-study-efron-and-tibshirani-1997" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.2.2</span> Simulation study (Efron and Tibshirani 1997)</h3>
+<section id="simulation-study-efron-and-tibshirani-1997" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.6.2</span> Simulation study (Efron and Tibshirani 1997)</h3>
 <p>The goal of Efron and Tibshirani 1997 was to persuade readers to use the 0.632+ bootstrap estimate of the error rate rather than alternatives. To demonstrate its superiority, the authors began with a simple simulation study involving a binary outcome <span class="math inline">\((Y_i)\)</span> and two predictors <span class="math inline">\((\mathbf{T}_i = (T_{i1}, T_{i2}))\)</span>. The simulation study was to demonstrate that the variance of the estimator (and consequently the mean squared error) of the estimator was lower.</p>
 <p>First, you will replicate the results presented in the paper.</p>
 <p><strong>Data generation model</strong></p>
@@ -688,6 +940,18 @@ ggplot(df, aes(x = predicted, y = actual)) +
 :::
 :::
 
+
+-->
+<!--
+
+::: {.cell}
+
+```{.r .cell-code}
+benchmark_fit <- glm(model_formula, data = gusto_df, family = binomial())
+
+benchmark_pred <- predict(benchmark_fit, type = "response")
+```
+:::
 
 -->
 

@@ -161,22 +161,24 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
    - Complete the simulation study described below.
 
 > **Replicating the example from the paper**
+>
 > **Dataset:** GUSTO-I; n=40,830; 2,851 deaths <br>
 > Available in full anonymized version via `predtools` package in R.
 
 > **Figures:** Replicating a version of Figure 2 from the paper
-> In the paper, figure 2 shows differences between estimated and test performance in data sets with EPV = 10, for apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. 
+>
+> In the paper, figure 2 shows bias and variability for a few of the procedures for estimating model performance in independent data for EPV = 10, including apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. 
 > In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (*c* statistic, calibration slope, Brier score).
 
 > **Methods:** Replicating the steps of the paper
 
 > 1. Load in the dataset
-> 2. Generate a sub-sample for EPV = 10 (set a seed to keep results steady)
-> 3. Define logistic regression model with 8 predictors from the paper
-> 4. Use model to compute the benchmark performance on the full dataset
-> 5. Use model to compute apparent performance on sub-sample dataset
-> 6. Use model to compute split-sample performance on sub-sample dataset
-> 7. Use model to compute bootstrap performance on sub-sample dataset
+> 2. Define logistic regression model with 8 predictors from the paper
+> 3. Generate a sub-sample for EPV = 10 (set a seed to keep results steady)
+> 4. [Not needed for this simulation] Use model to compute the benchmark performance on the full dataset
+> 5. Use model to compute apparent performance on sub-sample dataset [simulated many times to get bias and variability]
+> 6. Use model to compute split-sample performance on sub-sample dataset [""]
+> 7. Use model to compute bootstrap performance on sub-sample dataset [""]
 > 8. Build figure 2 to compare performance!
 
 ```{r setup}
@@ -223,36 +225,7 @@ head(gusto_df)
 
 ```
 
-> All variables are now transformed to match the "eight dichotomous predictors" from the paper.
-
-> From the paper: *"For example, for EPV=10 and 7.0% mortality, all training and test samples consisted of 1145 and 39,685 patients, with 80 and 2771 deaths, respectively."*
-```{r sample}
-
-## set seed for reproducibility
-set.seed(17)
-
-## EPV = 10 with 8 predictors requires 80 events (deaths)
-target_events <- 80
-target_non_events <- 1145-80 
-
-## Stratified sampling to ensure desired number of events
-# Split into events and non-events
-events_pool     <- gusto_df[gusto_df$day30 == 1, ]
-nonevents_pool  <- gusto_df[gusto_df$day30 == 0, ]
-
-# Draw the stratified subsample
-dev_events    <- events_pool[sample(nrow(events_pool), target_events), ]
-dev_nonevents <- nonevents_pool[sample(nrow(nonevents_pool), target_non_events), ]
-
-dev_sample <- rbind(dev_events, dev_nonevents)
-
-# Shuffle row order so events aren't grouped together
-dev_sample <- dev_sample[sample(nrow(dev_sample)), ]
-rownames(dev_sample) <- NULL
-
-```
-
-> Samples created!
+> All variables are now transformed to match the "eight dichotomous predictors" from the paper. Below, the logistic regression model is defined in R code for the upcoming simulations.
 
 ```{r model definition}
 
@@ -260,14 +233,250 @@ model_formula <- day30 ~ shock + age65 + highrisk + diabetes + hypotension + tac
 
 ```
 
-```{r benchmark-model}
-benchmark_fit <- glm(model_formula, data = gusto_df, family = binomial())
+> From the paper: *"For example, for EPV=10 and 7.0% mortality, all training and test samples consisted of 1145 and 39,685 patients, with 80 and 2771 deaths, respectively."*
+```{r sample}
 
-benchmark_pred <- predict(benchmark_fit, type = "response")
+## set seed for reproducibility
+set.seed(17)
+
+## Creating ID column for tracking which patients are in what samples
+gusto_df$row_id <- seq_len(nrow(gusto_df))
+
+## Function to draw the training sample for each time this needs to be run
+draw_dev_sample <- function(data, sample_total = 1145, target_events = 80){
+   
+   ## EPV = 10 with 8 predictors requires 80 events (deaths)
+   target_events <- target_events
+   target_non_events <- sample_total-target_events
+
+   ## Stratified sampling to ensure desired number of events
+   # Split into events and non-events
+   events_pool     <- gusto_df[gusto_df$day30 == 1, ]
+   nonevents_pool  <- gusto_df[gusto_df$day30 == 0, ]
+
+   # Draw the stratified subsample
+   dev_events    <- events_pool[sample(nrow(events_pool), target_events), ]
+   dev_nonevents <- nonevents_pool[sample(nrow(nonevents_pool), target_non_events), ]
+
+   dev_sample <- rbind(dev_events, dev_nonevents)
+
+   # Shuffle row order so events aren't grouped together
+   dev_sample <- dev_sample[sample(nrow(dev_sample)), ]
+}
+
+## Function to draw the testing sample (all the rows that are not in the training sample)
+draw_test_set <- function(data, dev_sample) {
+  data[!(data$row_id %in% dev_sample$row_id), ]
+}
+
+```
+
+> Building reusable function for computing desired metrics:
+> ** INSERT LATEX FORMULAS HERE **
+
+```{r metrics}
+
+library(pROC)
+
+compute_metrics <- function(y, pred) {
+  # Guard against predicted probabilities of exactly 0 or 1,
+  # which would break the logit transform below
+  eps <- 1e-10
+  pred <- pmin(pmax(pred, eps), 1 - eps)
+
+  # Discrimination: c-statistic (AUC)
+  c_stat <- as.numeric(pROC::auc(y, pred, quiet = TRUE))
+
+  # Calibration slope: regress outcome on the linear predictor (logit of pred)
+  lp <- log(pred / (1 - pred))
+  cal_fit <- glm(y ~ lp, family = binomial())
+  cal_slope <- unname(coef(cal_fit)["lp"])
+
+  # Brier score
+  brier <- mean((y - pred)^2)
+
+  c(c_stat = c_stat, cal_slope = cal_slope, brier = brier)
+}
+
+
+```
+
+> Computing apparent performance for the logistic regression model on the training sample dataset
+```{r apparent}
+
+get_apparent <- function(sample_data, formula) {
+  fit <- glm(formula, data = sample_data, family = binomial())
+  pred <- predict(fit, type = "response")
+  list(fit = fit, metrics = compute_metrics(sample_data$day30, pred))
+}
+
+#app_pred <- get_apparent(dev_sample, model_formula)
+
+```
+
+> Defining the function to evaluate a given model on new data for the test performance
+```{r evaluate}
+eval_on_data <- function(fit, newdata) {
+  pred <- predict(fit, newdata = newdata, type = "response")
+  compute_metrics(newdata$day30, pred)
+}
+#fit <- glm(model_formula, data = dev_sample, family = binomial())
+#test_pred <- eval_on_data(fit, test_sample)
+```
+
+> Function for the split-sample validation, essentially running a test-train split on the development sample and fitting the model.
+```{r split-sample}
+
+split_sample_validate <- function(sample_data, formula, train_frac = 0.6667) {
+  n_train <- round(nrow(sample_data) * train_frac)
+  train_idx <- sample(nrow(sample_data), n_train)
+
+  train_set <- sample_data[train_idx, ]
+  test_set  <- sample_data[-train_idx, ]
+
+  fit <- glm(formula, data = train_set, family = binomial())
+  eval_on_data(fit, test_set)
+}
+
+# split_test <- split_sample_validate(dev_sample, model_formula, train_frac = .6667)
+
+```
+
+> Function for the regular bootstrap method
+
+```{r bootstrap}
+
+bootstrap_correct <- function(sample_data, formula, apparent_metrics, B = 100) {
+  n <- nrow(sample_data)
+  optimism_sum <- c(c_stat = 0, cal_slope = 0, brier = 0)
+
+  for (b in 1:B) {
+    boot_idx <- sample(n, n, replace = TRUE)
+    boot_sample <- sample_data[boot_idx, ]
+
+    boot_fit <- glm(formula, data = boot_sample, family = binomial())
+
+    boot_apparent <- compute_metrics(
+      boot_sample$day30,
+      predict(boot_fit, type = "response")
+    )
+    boot_test <- compute_metrics(
+      sample_data$day30,
+      predict(boot_fit, newdata = sample_data, type = "response")
+    )
+
+    optimism_sum <- optimism_sum + (boot_apparent - boot_test)
+  }
+
+  avg_optimism <- optimism_sum / B
+  apparent_metrics - avg_optimism
+}
 
 ```
 
 > **To be continued...**
+
+## Function 7: run one full repetition (ties everything together)
+
+```{r fn-one-repetition}
+# This is the "outer loop body" -- one full pass of the pipeline,
+# matching one box in each boxplot of Figures 1 and 2.
+run_one_repetition <- function(data, formula, sample_total = 1145, target_events = 80, B = 100) {
+
+  dev_sample <- draw_dev_sample(data, sample_total, target_events)
+  test_set   <- draw_test_set(data, dev_sample)
+
+  # Apparent performance + the fitted model (reused below)
+  app <- get_apparent(dev_sample, formula)
+  apparent_metrics <- app$metrics
+
+  # Test performance: evaluate the dev_sample-fitted model on truly new patients
+  test_metrics <- eval_on_data(app$fit, test_set)
+
+  # Split-sample (50/50, matching your simplified scope)
+  split_metrics <- split_sample_validate(dev_sample, formula, train_frac = 0.6667)
+
+  # Bootstrap-corrected
+  boot_metrics <- bootstrap_correct(dev_sample, formula, apparent_metrics, B = B)
+
+  # MATH NOTE: delta = method's estimate - test performance.
+  # delta = 0 means the method perfectly recovered true generalization
+  # performance for this repetition. This is exactly Figure 2's y-axis.
+  data.frame(
+    method = rep(c("apparent", "split_sample", "bootstrap"), each = 3),
+    metric = rep(c("c_stat", "cal_slope", "brier"), times = 3),
+    delta  = c(
+      apparent_metrics - test_metrics,
+      split_metrics - test_metrics,
+      boot_metrics - test_metrics
+    )
+  )
+}
+```
+
+## Run the simulation loop
+
+```{r run-simulation}
+# NOTE: reduced from the paper's 500 repetitions to keep runtime
+# reasonable for a live presentation. State this explicitly when
+# presenting -- it's a deliberate, documented scope reduction, not
+# an error.
+n_reps <- 100
+
+set.seed(17)
+results_list <- vector("list", n_reps)
+
+for (i in seq_len(n_reps)) {
+  results_list[[i]] <- run_one_repetition(
+    data = gusto_df,
+    formula = model_formula,
+    sample_total = 1145,
+    target_events = 80,
+    B = 100
+  )
+}
+
+results <- do.call(rbind, results_list)
+```
+
+## Visualize: recreate Figure 2
+
+```{r plot-figure2}
+library(ggplot2)
+
+ggplot(results, aes(x = method, y = delta)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  facet_wrap(~ metric, scales = "free_y") +
+  labs(
+    title = "Bias of internal validation methods at EPV = 10",
+    subtitle = paste0(n_reps, " repetitions (paper used 500)"),
+    x = "Method",
+    y = "Delta (estimated - test performance)"
+  ) +
+  theme_minimal()
+```
+
+## Summarize bias and RMSE (reproduces Table 2's structure)
+
+```{r summarize-table2}
+# MATH NOTE:
+#   Bias = mean(delta)                -- average signed error
+#   RMSE = sqrt(mean(delta^2))        -- root mean SQUARED error,
+#                                          NOT centered around the bias.
+#          RMSE^2 = Bias^2 + Var(delta)
+library(dplyr)
+
+summary_table <- results %>%
+  group_by(method, metric) %>%
+  summarise(
+    bias = mean(delta),
+    rmse = sqrt(mean(delta^2)),
+    .groups = "drop"
+  )
+
+summary_table
+```
 
 ### Paper list
 
@@ -354,4 +563,13 @@ ggplot(df, aes(x = predicted, y = actual)) +
 
 ```
 
+-->
+
+<!--
+```{r benchmark-model}
+benchmark_fit <- glm(model_formula, data = gusto_df, family = binomial())
+
+benchmark_pred <- predict(benchmark_fit, type = "response")
+
+```
 -->
