@@ -161,7 +161,9 @@ $$Y\sim N(\mu({\mathbf X}),1)\qquad \mu({\mathbf X}) = \sqrt{5}\,\text{sigmoid}(
    - Complete the simulation study described below.
 
 > **Replicating the example from the paper**
->
+> 
+> The following sections replicating the simulation were assisted by Claude. I am still working to develop a full understanding of the code, formulas, and methods completed within. Formulas and comments will be added progressively.
+
 > **Dataset:** GUSTO-I; n=40,830; 2,851 deaths <br>
 > Available in full anonymized version via `predtools` package in R.
 
@@ -271,8 +273,29 @@ draw_test_set <- function(data, dev_sample) {
 
 ```
 
-> Building reusable function for computing desired metrics:
-> ** INSERT LATEX FORMULAS HERE **
+> Building reusable functions for computing desired metrics:
+> 
+> **Metric definitions**
+>
+> **C-statistic (discrimination)** — the probability that a randomly chosen patient who died is assigned a higher predicted risk than a randomly chosen patient who survived:
+> $$c = P(\hat{p}_i > \hat{p}_j \mid Y_i = 1,\ Y_j = 0)$$
+
+> Estimated empirically as the proportion of all (event, non-event) pairs correctly ordered by the model, with ties counted as half-correct:
+> $$\hat{c} = \frac{1}{n_1 n_0} \sum_{i:\, Y_i=1} \sum_{j:\, Y_j=0} \left[ \mathbb{1}(\hat{p}_i > \hat{p}_j) + 0.5 \cdot \mathbb{1}(\hat{p}_i = \hat{p}_j) \right]$$
+
+> where $n_1$ is the number of events and $n_0$ is the number of non-events.
+> In this case from the paper, since we have a binary outcome, c is identical to the area under the receiver operating characteristic (ROC) curve; c varies between 0.5 and 1.0 for sensible models (the higher the better).
+>
+> **Calibration slope** — the coefficient $\beta$ from an auxiliary logistic regression of the observed outcome on the linear predictor (logit of the model's predicted probability):
+> $$\text{logit}\big(P(Y=1)\big) = \alpha + \beta \cdot \text{linear predictor}$$
+
+> A well-calibrated model has $\beta = 1$. $\beta < 1$ indicates predictions that are too extreme (overfitting); $\beta > 1$ indicates predictions that are too conservative.
+>
+> **Brier score** — mean squared error between predicted probability and observed outcome:
+> $$\text{Brier} = \frac{1}{n} \sum_{i=1}^{n} (\hat{p}_i - Y_i)^2$$
+
+> Ranges from 0 (perfect) to 0.25 (worthless) for a well-behaved binary outcome model.
+> Exactly the same formula as MSE, but specifically used for binary prediction models.
 
 ```{r metrics}
 
@@ -310,8 +333,6 @@ get_apparent <- function(sample_data, formula) {
   list(fit = fit, metrics = compute_metrics(sample_data$day30, pred))
 }
 
-#app_pred <- get_apparent(dev_sample, model_formula)
-
 ```
 
 > Defining the function to evaluate a given model on new data for the test performance
@@ -320,8 +341,6 @@ eval_on_data <- function(fit, newdata) {
   pred <- predict(fit, newdata = newdata, type = "response")
   compute_metrics(newdata$day30, pred)
 }
-#fit <- glm(model_formula, data = dev_sample, family = binomial())
-#test_pred <- eval_on_data(fit, test_sample)
 ```
 
 > Function for the split-sample validation, essentially running a test-train split on the development sample and fitting the model.
@@ -338,11 +357,21 @@ split_sample_validate <- function(sample_data, formula, train_frac = 0.6667) {
   eval_on_data(fit, test_set)
 }
 
-# split_test <- split_sample_validate(dev_sample, model_formula, train_frac = .6667)
-
 ```
 
-> Function for the regular bootstrap method
+> Defining function for the regular bootstrap method. Setting B=100 as the authors did in the paper.
+> Sampling from the sample distribution with replacement, then training on that sample.
+> Computing performance in the following way:
+> *The performance in the bootstrap sample represents estimation of the apparent performance, and the performance in the original sample represents test performance. The difference between these performances is an estimate of the optimism in the apparent performance. This difference is averaged to obtain a stable estimate of the optimism. The optimism is subtracted from the apparent performance to estimate the internally validated performance [7]: estimated performance = apparent performance − average(bootstrap performance − test performance).*
+> In other words, we evaluate $\text{model}_b^*$ on the bootstrap sample itself (its own "apparent" performance), and on the original sample (its "test" performance).
+> $$\text{optimism}_b = \text{Perf}(\text{model}_b^*,\ \text{sample}_b^*) \;-\; \text{Perf}(\text{model}_b^*,\ \text{sample}_{\text{orig}})$$
+> Average the optimism across all $B$ replicates:
+
+> $$\overline{\text{optimism}} = \frac{1}{B}\sum_{b=1}^{B} \text{optimism}_b$$
+
+> Subtract this from the apparent performance of the model fitted on the original (development) sample to get the bias-corrected estimate:
+
+> $$\text{estimated performance} = \text{apparent performance} - \overline{\text{optimism}}$$
 
 ```{r bootstrap}
 
@@ -374,9 +403,8 @@ bootstrap_correct <- function(sample_data, formula, apparent_metrics, B = 100) {
 
 ```
 
-> **To be continued...**
-
-## Function 7: run one full repetition (ties everything together)
+> 
+> Function 7: run one full repetition (ties everything together)
 
 ```{r fn-one-repetition}
 # This is the "outer loop body" -- one full pass of the pipeline,
@@ -414,7 +442,7 @@ run_one_repetition <- function(data, formula, sample_total = 1145, target_events
 }
 ```
 
-## Run the simulation loop
+> Run the simulation loop
 
 ```{r run-simulation}
 # NOTE: reduced from the paper's 500 repetitions to keep runtime
@@ -439,7 +467,7 @@ for (i in seq_len(n_reps)) {
 results <- do.call(rbind, results_list)
 ```
 
-## Visualize: recreate Figure 2
+> Visualize: recreate Figure 2
 
 ```{r plot-figure2}
 library(ggplot2)
@@ -457,7 +485,7 @@ ggplot(results, aes(x = method, y = delta)) +
   theme_minimal()
 ```
 
-## Summarize bias and RMSE (reproduces Table 2's structure)
+> Summarize bias and RMSE (reproduces Table 2's structure)
 
 ```{r summarize-table2}
 # MATH NOTE:

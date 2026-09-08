@@ -205,14 +205,10 @@ window.Quarto = {
   <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="header-section-number">1.1.3</span> Exercise</a></li>
   <li><a href="#exercise-incomplete" id="toc-exercise-incomplete" class="nav-link" data-scroll-target="#exercise-incomplete"><span class="header-section-number">1.1.4</span> Exercise [incomplete]</a></li>
   </ul></li>
-  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link" data-scroll-target="#student-exploration"><span class="header-section-number">1.2</span> Student exploration</a></li>
-  <li><a href="#function-7-run-one-full-repetition-ties-everything-together" id="toc-function-7-run-one-full-repetition-ties-everything-together" class="nav-link" data-scroll-target="#function-7-run-one-full-repetition-ties-everything-together"><span class="header-section-number">1.3</span> Function 7: run one full repetition (ties everything together)</a></li>
-  <li><a href="#run-the-simulation-loop" id="toc-run-the-simulation-loop" class="nav-link" data-scroll-target="#run-the-simulation-loop"><span class="header-section-number">1.4</span> Run the simulation loop</a></li>
-  <li><a href="#visualize-recreate-figure-2" id="toc-visualize-recreate-figure-2" class="nav-link" data-scroll-target="#visualize-recreate-figure-2"><span class="header-section-number">1.5</span> Visualize: recreate Figure 2</a></li>
-  <li><a href="#summarize-bias-and-rmse-reproduces-table-2s-structure" id="toc-summarize-bias-and-rmse-reproduces-table-2s-structure" class="nav-link" data-scroll-target="#summarize-bias-and-rmse-reproduces-table-2s-structure"><span class="header-section-number">1.6</span> Summarize bias and RMSE (reproduces Table 2’s structure)</a>
+  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link" data-scroll-target="#student-exploration"><span class="header-section-number">1.2</span> Student exploration</a>
   <ul class="collapse">
-  <li><a href="#paper-list" id="toc-paper-list" class="nav-link" data-scroll-target="#paper-list"><span class="header-section-number">1.6.1</span> Paper list</a></li>
-  <li><a href="#simulation-study-efron-and-tibshirani-1997" id="toc-simulation-study-efron-and-tibshirani-1997" class="nav-link" data-scroll-target="#simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.6.2</span> Simulation study (Efron and Tibshirani 1997)</a></li>
+  <li><a href="#paper-list" id="toc-paper-list" class="nav-link" data-scroll-target="#paper-list"><span class="header-section-number">1.2.1</span> Paper list</a></li>
+  <li><a href="#simulation-study-efron-and-tibshirani-1997" id="toc-simulation-study-efron-and-tibshirani-1997" class="nav-link" data-scroll-target="#simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.2.2</span> Simulation study (Efron and Tibshirani 1997)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -407,6 +403,9 @@ window.Quarto = {
 </ol>
 <blockquote class="blockquote">
 <p><strong>Replicating the example from the paper</strong></p>
+<p>The following sections replicating the simulation were assisted by Claude. I am still working to develop a full understanding of the code, formulas, and methods completed within. Formulas and comments will be added progressively.</p>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Available in full anonymized version via <code>predtools</code> package in R.</p>
 </blockquote>
 <blockquote class="blockquote">
@@ -575,7 +574,23 @@ window.Quarto = {
 <span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
-<p>Building reusable function for computing desired metrics: ** INSERT LATEX FORMULAS HERE **</p>
+<p>Building reusable functions for computing desired metrics:</p>
+<p><strong>Metric definitions</strong></p>
+<p><strong>C-statistic (discrimination)</strong> — the probability that a randomly chosen patient who died is assigned a higher predicted risk than a randomly chosen patient who survived: <span class="math display">\[c = P(\hat{p}_i &gt; \hat{p}_j \mid Y_i = 1,\ Y_j = 0)\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Estimated empirically as the proportion of all (event, non-event) pairs correctly ordered by the model, with ties counted as half-correct: <span class="math display">\[\hat{c} = \frac{1}{n_1 n_0} \sum_{i:\, Y_i=1} \sum_{j:\, Y_j=0} \left[ \mathbb{1}(\hat{p}_i &gt; \hat{p}_j) + 0.5 \cdot \mathbb{1}(\hat{p}_i = \hat{p}_j) \right]\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>where <span class="math inline">\(n_1\)</span> is the number of events and <span class="math inline">\(n_0\)</span> is the number of non-events. In this case from the paper, since we have a binary outcome, c is identical to the area under the receiver operating characteristic (ROC) curve; c varies between 0.5 and 1.0 for sensible models (the higher the better).</p>
+<p><strong>Calibration slope</strong> — the coefficient <span class="math inline">\(\beta\)</span> from an auxiliary logistic regression of the observed outcome on the linear predictor (logit of the model’s predicted probability): <span class="math display">\[\text{logit}\big(P(Y=1)\big) = \alpha + \beta \cdot \text{linear predictor}\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>A well-calibrated model has <span class="math inline">\(\beta = 1\)</span>. <span class="math inline">\(\beta &lt; 1\)</span> indicates predictions that are too extreme (overfitting); <span class="math inline">\(\beta &gt; 1\)</span> indicates predictions that are too conservative.</p>
+<p><strong>Brier score</strong> — mean squared error between predicted probability and observed outcome: <span class="math display">\[\text{Brier} = \frac{1}{n} \sum_{i=1}^{n} (\hat{p}_i - Y_i)^2\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Ranges from 0 (perfect) to 0.25 (worthless) for a well-behaved binary outcome model. Exactly the same formula as MSE, but specifically used for binary prediction models.</p>
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -619,9 +634,7 @@ Attaching package: 'pROC'</code></pre>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> sample_data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">fit =</span> fit, <span class="at">metrics =</span> <span class="fu">compute_metrics</span>(sample_data<span class="sc">$</span>day30, pred))</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#app_pred &lt;- get_apparent(dev_sample, model_formula)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
 <p>Defining the function to evaluate a given model on new data for the test performance</p>
@@ -630,9 +643,7 @@ Attaching package: 'pROC'</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>eval_on_data <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, newdata) {</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> newdata, <span class="at">type =</span> <span class="st">"response"</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute_metrics</span>(newdata<span class="sc">$</span>day30, pred)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#fit &lt;- glm(model_formula, data = dev_sample, family = binomial())</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#test_pred &lt;- eval_on_data(fit, test_sample)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
 <p>Function for the split-sample validation, essentially running a test-train split on the development sample and fitting the model.</p>
@@ -647,12 +658,19 @@ Attaching package: 'pROC'</code></pre>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> train_set, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eval_on_data</span>(fit, test_set)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># split_test &lt;- split_sample_validate(dev_sample, model_formula, train_frac = .6667)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
-<p>Function for the regular bootstrap method</p>
+<p>Defining function for the regular bootstrap method. Setting B=100 as the authors did in the paper. Sampling from the sample distribution with replacement, then training on that sample. Computing performance in the following way: <em>The performance in the bootstrap sample represents estimation of the apparent performance, and the performance in the original sample represents test performance. The difference between these performances is an estimate of the optimism in the apparent performance. This difference is averaged to obtain a stable estimate of the optimism. The optimism is subtracted from the apparent performance to estimate the internally validated performance [7]: estimated performance = apparent performance − average(bootstrap performance − test performance).</em> In other words, we evaluate <span class="math inline">\(\text{model}_b^*\)</span> on the bootstrap sample itself (its own “apparent” performance), and on the original sample (its “test” performance). <span class="math display">\[\text{optimism}_b = \text{Perf}(\text{model}_b^*,\ \text{sample}_b^*) \;-\; \text{Perf}(\text{model}_b^*,\ \text{sample}_{\text{orig}})\]</span> Average the optimism across all <span class="math inline">\(B\)</span> replicates:</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><span class="math display">\[\overline{\text{optimism}} = \frac{1}{B}\sum_{b=1}^{B} \text{optimism}_b\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Subtract this from the apparent performance of the model fitted on the original (development) sample to get the bias-corrected estimate:</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><span class="math display">\[\text{estimated performance} = \text{apparent performance} - \overline{\text{optimism}}\]</span></p>
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bootstrap_correct <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula, apparent_metrics, <span class="at">B =</span> <span class="dv">100</span>) {</span>
@@ -682,11 +700,8 @@ Attaching package: 'pROC'</code></pre>
 <span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
-<p><strong>To be continued…</strong></p>
+<p>Function 7: run one full repetition (ties everything together)</p>
 </blockquote>
-</section>
-<section id="function-7-run-one-full-repetition-ties-everything-together" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="function-7-run-one-full-repetition-ties-everything-together"><span class="header-section-number">1.3</span> Function 7: run one full repetition (ties everything together)</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the "outer loop body" -- one full pass of the pipeline,</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># matching one box in each boxplot of Figures 1 and 2.</span></span>
@@ -722,9 +737,9 @@ Attaching package: 'pROC'</code></pre>
 <span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="run-the-simulation-loop" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="run-the-simulation-loop"><span class="header-section-number">1.4</span> Run the simulation loop</h2>
+<blockquote class="blockquote">
+<p>Run the simulation loop</p>
+</blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: reduced from the paper's 500 repetitions to keep runtime</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reasonable for a live presentation. State this explicitly when</span></span>
@@ -747,9 +762,9 @@ Attaching package: 'pROC'</code></pre>
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, results_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="visualize-recreate-figure-2" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="visualize-recreate-figure-2"><span class="header-section-number">1.5</span> Visualize: recreate Figure 2</h2>
+<blockquote class="blockquote">
+<p>Visualize: recreate Figure 2</p>
+</blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -772,9 +787,9 @@ Attaching package: 'pROC'</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="summarize-bias-and-rmse-reproduces-table-2s-structure" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="summarize-bias-and-rmse-reproduces-table-2s-structure"><span class="header-section-number">1.6</span> Summarize bias and RMSE (reproduces Table 2’s structure)</h2>
+<blockquote class="blockquote">
+<p>Summarize bias and RMSE (reproduces Table 2’s structure)</p>
+</blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MATH </span><span class="al">NOTE</span><span class="co">:</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   Bias = mean(delta)                -- average signed error</span></span>
@@ -820,8 +835,8 @@ Attaching package: 'dplyr'</code></pre>
 9 split_sample cal_slope -0.0385   0.257  </code></pre>
 </div>
 </div>
-<section id="paper-list" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="paper-list"><span class="header-section-number">1.6.1</span> Paper list</h3>
+<section id="paper-list" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="paper-list"><span class="header-section-number">1.2.1</span> Paper list</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -857,8 +872,8 @@ Attaching package: 'dplyr'</code></pre>
 </tbody>
 </table>
 </section>
-<section id="simulation-study-efron-and-tibshirani-1997" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.6.2</span> Simulation study (Efron and Tibshirani 1997)</h3>
+<section id="simulation-study-efron-and-tibshirani-1997" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">1.2.2</span> Simulation study (Efron and Tibshirani 1997)</h3>
 <p>The goal of Efron and Tibshirani 1997 was to persuade readers to use the 0.632+ bootstrap estimate of the error rate rather than alternatives. To demonstrate its superiority, the authors began with a simple simulation study involving a binary outcome <span class="math inline">\((Y_i)\)</span> and two predictors <span class="math inline">\((\mathbf{T}_i = (T_{i1}, T_{i2}))\)</span>. The simulation study was to demonstrate that the variance of the estimator (and consequently the mean squared error) of the estimator was lower.</p>
 <p>First, you will replicate the results presented in the paper.</p>
 <p><strong>Data generation model</strong></p>
