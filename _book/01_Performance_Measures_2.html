@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Stephen Olsen">
 
-<title>DS6400 Portfolio</title>
+<title>2&nbsp; Performance Measures Week 2 – DS6400 Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -37,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01_Performance_Measures.html" rel="next">
+<link href="./01_Performance_Measures.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -76,6 +75,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -88,7 +116,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preface</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Performance_Measures_2.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Performance Measures Week 2</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -115,7 +143,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
   </div>
 </li>
@@ -127,7 +155,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01_Performance_Measures_2.html" class="sidebar-item-text sidebar-link">
+  <a href="./01_Performance_Measures_2.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Performance Measures Week 2</span></span></a>
   </div>
 </li>
@@ -141,7 +169,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a></li>
+  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link active" data-scroll-target="#student-exploration"><span class="header-section-number">2.1</span> Student exploration</a></li>
   </ul>
 </nav>
     </div>
@@ -150,19 +178,13 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">DS6400 Portfolio</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Performance Measures Week 2</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Stephen Olsen </p>
-          </div>
-  </div>
     
   
     
@@ -173,12 +195,31 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="preface" class="level1 unnumbered">
-<h1 class="unnumbered">Preface</h1>
-<p>This is a Quarto book for capturing notes associated with DS6400 Advanced ML 1.</p>
-<p>Original class notes are copied from <a href="https://tgstewart.cloud/ml1/">https://tgstewart.cloud/ml1/</a> to retain formulas and original exercises.</p>
-<p>This is a book created from markdown and executable code. It contains topics on machine learning, estimation, and various mathematical concepts.</p>
-<p>It will be continually populated over the course of the semester.</p>
+<section id="student-exploration" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="student-exploration"><span class="header-section-number">2.1</span> Student exploration</h2>
+<p>Selected Paper: <a href="https://www.jstor.org/stable/2965703?seq=1">Efron 1997</a> - Improvements on Cross-Validation: The .632+ Bootstrap Method</p>
+<p><strong>Key Ideas</strong></p>
+<ul>
+<li>Stop doing cross-validation, because the estimate of prediction error can be highly variable, even though it has low bias.</li>
+<li>Instead, use the bootstrap method with the .632+ rule, which performs better. Bootstrap procedures are smoothed versions of cross validation, with adjustments made to correct for bias.</li>
+</ul>
+<p><strong>Equations</strong></p>
+<p>The equation for the .632 estimator from Efron (1983) is: <span class="math display">\[
+\widehat{\mathrm{Err}}^{(.632)} = 0.368 \cdot \overline{\mathrm{err}} + 0.632 \cdot \widehat{\mathrm{Err}}^{(1)}
+\]</span> This estimator is designed to correct upward bias in err 1 by averaging it with the downwardly biased estimate err .632.</p>
+<p>The new equation, puts greater weight on err 1 in situations where the amount of overfitting (err 1 - err bar) is large. <span class="math display">\[
+\widehat{\mathrm{Err}}^{(.632+)} = \widehat{\mathrm{Err}}^{(.632)} + \left(\widehat{\mathrm{Err}}^{(1)'} - \overline{\mathrm{err}}\right) \cdot \frac{0.368 \cdot 0.632 \cdot \hat{R}'}{1 - 0.368\,\hat{R}'}
+\]</span> R is the relative overfitting rate, a quantity that ranges from 0 to 1. This equation is used in the simulation experiments of section 4.</p>
+<p><strong>What they want us to do:</strong> Use the bootstrap method, specifically with the .632+ rule.</p>
+<p><strong>How they showed it:</strong></p>
+<ul>
+<li>Performed 24 sampling experiments (shown in table 2), to investigate the effects of different classifiers, training set sizes, signal-to-noise ration, number of classes, and number of observations.</li>
+<li>Only studied classification problems with 0-1 loss in detail. 21 of the experiments were dichotomous.</li>
+</ul>
+<p><strong>Some results:</strong></p>
+<ul>
+<li>The results vary considerably from experiment to experiment, but in terms of RMSE, the .632+ rule is an overall winner.</li>
+</ul>
 
 
 </section>
@@ -586,11 +627,11 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./01_Performance_Measures.html" class="pagination-link" aria-label="Performance Measures">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Performance Measures</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01_Performance_Measures.html" class="pagination-link" aria-label="Performance Measures">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Performance Measures</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

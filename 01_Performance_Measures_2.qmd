@@ -1,0 +1,37 @@
+# Performance Measures Week 2
+
+## Student exploration
+
+Selected Paper: [Efron 1997](https://www.jstor.org/stable/2965703?seq=1) - Improvements on Cross-Validation: The .632+ Bootstrap Method
+
+**Key Ideas**
+
+- Stop doing cross-validation, because the estimate of prediction error can be highly variable, even though it has low bias.
+- Instead, use the bootstrap method with the .632+ rule, which performs better. Bootstrap procedures are smoothed versions of cross validation, with adjustments made to correct for bias.
+
+**Equations** 
+
+The equation for the .632 estimator from Efron (1983) is:
+$$
+\widehat{\mathrm{Err}}^{(.632)} = 0.368 \cdot \overline{\mathrm{err}} + 0.632 \cdot \widehat{\mathrm{Err}}^{(1)}
+$$
+This estimator is designed to correct upward bias in err 1 by averaging it with the downwardly biased estimate err .632.
+
+The new equation, puts greater weight on err 1 in situations where the amount of overfitting (err 1 - err bar) is large.
+$$
+\widehat{\mathrm{Err}}^{(.632+)} = \widehat{\mathrm{Err}}^{(.632)} + \left(\widehat{\mathrm{Err}}^{(1)'} - \overline{\mathrm{err}}\right) \cdot \frac{0.368 \cdot 0.632 \cdot \hat{R}'}{1 - 0.368\,\hat{R}'}
+$$
+R is the relative overfitting rate, a quantity that ranges from 0 to 1.
+This equation is used in the simulation experiments of section 4.
+
+**What they want us to do:**
+Use the bootstrap method, specifically with the .632+ rule.
+ 
+**How they showed it:** 
+
+- Performed 24 sampling experiments (shown in table 2), to investigate the effects of different classifiers, training set sizes, signal-to-noise ration, number of classes, and number of observations.
+- Only studied classification problems with 0-1 loss in detail. 21 of the experiments were dichotomous.
+
+**Some results:**
+
+- The results vary considerably from experiment to experiment, but in terms of RMSE, the .632+ rule is an overall winner.

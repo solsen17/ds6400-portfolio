@@ -442,14 +442,14 @@ run_one_repetition <- function(data, formula, sample_total = 1145, target_events
 }
 ```
 
-> Run the simulation loop
+> Run the simulation loop [decreased to 10 for faster preview]
 
 ```{r run-simulation}
 # NOTE: reduced from the paper's 500 repetitions to keep runtime
 # reasonable for a live presentation. State this explicitly when
 # presenting -- it's a deliberate, documented scope reduction, not
 # an error.
-n_reps <- 100
+n_reps <- 10
 
 set.seed(17)
 results_list <- vector("list", n_reps)
