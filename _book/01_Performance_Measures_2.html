@@ -169,7 +169,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link active" data-scroll-target="#student-exploration"><span class="header-section-number">2.1</span> Student exploration</a></li>
+  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link active" data-scroll-target="#student-exploration"><span class="header-section-number">2.1</span> Student exploration</a>
+  <ul class="collapse">
+  <li><a href="#key-ideas" id="toc-key-ideas" class="nav-link" data-scroll-target="#key-ideas"><span class="header-section-number">2.1.1</span> Key Ideas</a></li>
+  <li><a href="#simulation-plan" id="toc-simulation-plan" class="nav-link" data-scroll-target="#simulation-plan"><span class="header-section-number">2.1.2</span> Simulation Plan</a></li>
+  <li><a href="#definitions" id="toc-definitions" class="nav-link" data-scroll-target="#definitions"><span class="header-section-number">2.1.3</span> Definitions</a></li>
+  <li><a href="#equations" id="toc-equations" class="nav-link" data-scroll-target="#equations"><span class="header-section-number">2.1.4</span> Equations</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -198,30 +204,219 @@ window.Quarto = {
 <section id="student-exploration" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="student-exploration"><span class="header-section-number">2.1</span> Student exploration</h2>
 <p>Selected Paper: <a href="https://www.jstor.org/stable/2965703?seq=1">Efron 1997</a> - Improvements on Cross-Validation: The .632+ Bootstrap Method</p>
-<p><strong>Key Ideas</strong></p>
+<section id="key-ideas" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="key-ideas"><span class="header-section-number">2.1.1</span> Key Ideas</h3>
+<section id="stop-doing-x-start-doing-y" class="level4" data-number="2.1.1.1">
+<h4 data-number="2.1.1.1" class="anchored" data-anchor-id="stop-doing-x-start-doing-y"><span class="header-section-number">2.1.1.1</span> Stop doing X, Start doing Y!</h4>
 <ul>
+<li>Cross-validation is the standard way to estimate prediction error, but it’s not good enough.</li>
 <li>Stop doing cross-validation, because the estimate of prediction error can be highly variable, even though it has low bias.</li>
 <li>Instead, use the bootstrap method with the .632+ rule, which performs better. Bootstrap procedures are smoothed versions of cross validation, with adjustments made to correct for bias.</li>
 </ul>
-<p><strong>Equations</strong></p>
-<p>The equation for the .632 estimator from Efron (1983) is: <span class="math display">\[
+</section>
+<section id="key-findings" class="level4" data-number="2.1.1.2">
+<h4 data-number="2.1.1.2" class="anchored" data-anchor-id="key-findings"><span class="header-section-number">2.1.1.2</span> Key Findings</h4>
+<ul>
+<li>Of the 24 simulations completed, the results vary from experiment to experiment, but in terms of RMSE, the .632+ rule is an overall winner.</li>
+<li>The improvement in reducing variability of error rate predictions in the set of simulations is roughly equivalent to a 60% increase in the size of the training set.</li>
+<li>Bootstrap replications that give an estimate of prediction error can also be used to assess the variability of that estimate, which would be useful for inference, model selection, or comparing two models. Only studied on the leave-one-out boostrap method.</li>
+</ul>
+</section>
+<section id="how-they-showed-it" class="level4" data-number="2.1.1.3">
+<h4 data-number="2.1.1.3" class="anchored" data-anchor-id="how-they-showed-it"><span class="header-section-number">2.1.1.3</span> How they showed it</h4>
+<ul>
+<li>Focused on the situation when the response is dichotomous (outcomes are 0, 1). Two of the explored prediction rules were Fisher’s linear discriminant function (LDF), and the nearest-neighbor (NN) rule. Examples of these are shown in figure 1.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="01_images/efron_fig_1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>Figure 1. Showing examples of LDF and NN.</figcaption>
+</figure>
+</div>
+<ul>
+<li>Showed cross-validation as a nearly unbiased estimator of true error rate for both LDF and NN, but bootstrap-based estimator has RMSE 80% as large. Table 1 shows these simulation results.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="01_images/efron_tab_1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>Table 1. Showing comparison of CV and Bootstrap estimators.</figcaption>
+</figure>
+</div>
+<ul>
+<li><p>While the authors only studied classification problems with 0-1 loss, they claim that the results are non parametric, so they can be applied to any prediction rule. However, regression problems may have different behavior and the statistical approach may differ.</p></li>
+<li><p>Derived the Leave-one-out bootstrap estimator, which is a smoothed version of the leave-one-out cross-validation estimator. This is used in conjunction with the apparent error rate to create the .632 estimator, and in turn, the .632+ rule. Further explanation in the Equations section below.</p></li>
+</ul>
+<p><span class="math display">\[
+\widehat{\mathrm{Err}}^{(.632+)} = \widehat{\mathrm{Err}}^{(.632)} + \left(\widehat{\mathrm{Err}}^{(1)'} - \overline{\mathrm{err}}\right) \cdot \frac{0.368 \cdot 0.632 \cdot \hat{R}'}{1 - 0.368\,\hat{R}'}
+\]</span></p>
+<ul>
+<li><p>Performed 24 sampling experiments, to investigate the effects of different classifiers, training set sizes, signal-to-noise ration, number of classes, and number of observations.</p></li>
+<li><p>The results vary considerably from experiment to experiment, but in terms of RMSE, the .632+ rule is an overall winner.</p></li>
+</ul>
+</section>
+</section>
+<section id="simulation-plan" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="simulation-plan"><span class="header-section-number">2.1.2</span> Simulation Plan</h3>
+<p>Complete the simulation study outlined on the class page posted.</p>
+<section id="simulation-study-efron-and-tibshirani-1997" class="level4" data-number="2.1.2.1">
+<h4 data-number="2.1.2.1" class="anchored" data-anchor-id="simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">2.1.2.1</span> Simulation study (Efron and Tibshirani 1997)</h4>
+<p>The goal of Efron and Tibshirani 1997 was to persuade readers to use the 0.632+ bootstrap estimate of the error rate rather than alternatives. To demonstrate its superiority, the authors began with a simple simulation study involving a binary outcome <span class="math inline">\((Y_i)\)</span> and two predictors <span class="math inline">\((\mathbf{T}_i = (T_{i1}, T_{i2}))\)</span>. The simulation study was to demonstrate that the variance of the estimator (and consequently the mean squared error) of the estimator was lower.</p>
+<p><strong>Data generation model</strong></p>
+<p><span class="math display">\[Y_i \sim \text{BIN}(1, 0.5)\]</span></p>
+<p><span class="math display">\[\mathbf{T}_i|Y_i=y_i \sim N_2\left(\left[\begin{array}{c} y_i-1/2 \\ 0\end{array}\right], I_2\right)\]</span></p>
+<p>where <span class="math inline">\(I\)</span> is the identity matrix and <span class="math inline">\(N_2\)</span> is the bivariate normal distribution.</p>
+<p><strong>Methods evaluated</strong></p>
+<ol type="1">
+<li>Leave-one-out cross-validation (LOO CV)</li>
+<li>0.632+ bootstrap</li>
+<li>Bootstrap</li>
+</ol>
+<p><strong>Models evaluated</strong></p>
+<ol type="1">
+<li>LDA</li>
+<li>1-NN</li>
+<li>Regression with polynomial surface (linear or logistic)</li>
+</ol>
+<p><strong>Simulation parameters</strong></p>
+<ol type="1">
+<li>N = 10, 20, 30, 40, 50, 75, 100</li>
+</ol>
+<p><strong>Plan</strong></p>
+<ol type="1">
+<li>Before beginning the simulation, consider how you will display the results. Devise a figure that will succinctly show the results and support the goal of the paper.</li>
+<li>Consider modular programming</li>
+<li>Start with a single simulation setting (method/model/N).</li>
+</ol>
+</section>
+</section>
+<section id="definitions" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="definitions"><span class="header-section-number">2.1.3</span> Definitions</h3>
+<ul>
+<li>Cross Validation
+<ul>
+<li>Repeated evaluation with partitions of a dataset used as test-train splits to calculate an average estimate of model performance and a sense of variance in performance across folds</li>
+</ul></li>
+<li>Variance
+<ul>
+<li>Model is too sensitive to training data, so it captures noise too. Poor prediction on unseen new data.</li>
+<li>High variance = model is overfit</li>
+<li>Low variance = model is more stable</li>
+<li><span class="math inline">\(\text{Variance} = \mathbb{E}\Big[ \big( \hat{f}(x) - \mathbb{E}[\hat{f}(x)] \big)^2 \Big]\)</span>
+<ul>
+<li>Where,</li>
+<li><span class="math inline">\(\hat{f}(x)\)</span> : predicted value by the model</li>
+<li><span class="math inline">\(\mathbb{E}[\hat{f}(x)]\)</span> : average prediction over multiple training sets</li>
+</ul></li>
+</ul></li>
+<li>Bias
+<ul>
+<li>Error that occurs when a model is too simple to capture the true patterns in the data.</li>
+<li>High bias = model is underfit</li>
+<li>Low bias = model is better fit to patterns</li>
+<li><span class="math inline">\(\text{Bias}^2 = \big( \mathbb{E}[\hat{f}(x)] - f(x) \big)^2\)</span>
+<ul>
+<li>Where,</li>
+<li><span class="math inline">\(\hat{f}(x)\)</span> : predicted value by the model</li>
+<li><span class="math inline">\(f(x)\)</span> : true value</li>
+<li><span class="math inline">\(\mathbb{E}[\hat{f}(x)]\)</span> : expected prediction over different training sets</li>
+</ul></li>
+</ul></li>
+<li>Error Rate
+<ul>
+<li>Apparent Error (rate): error rate calculated when evaluating the model on the data it was trained on, typically underestimates true error (optimistic)
+<ul>
+<li>also referred to as training error</li>
+</ul></li>
+<li>True Error (rate): error rate calculated when evaluating the model on new / unseen data
+<ul>
+<li>also referred to as generalization error</li>
+</ul></li>
+<li>Test Error (rate): error rate calculated on a held out test set, used to estimate true error</li>
+<li>No-Information Error (rate): error rate that would occurr if predictors had no relationship to the response
+<ul>
+<li>simulating what error looks like under pure guessing (section 3)</li>
+<li>used by .632+ estimator to determine how much to trust the apparent error and bootstrap error</li>
+</ul></li>
+</ul></li>
+<li>Relative Overfitting Rate (<span class="math inline">\(\hat{R}\)</span>)
+<ul>
+<li>a measure of how much a model is overfitting</li>
+<li>scaled between 0 (no overfitting) and 1 (overfitting equal to the no-information value)</li>
+</ul></li>
+<li>Mean Squared Error (MSE)
+<ul>
+<li>Average of the squared differences between predicted values and actual values</li>
+</ul></li>
+<li>Prediction error
+<ul>
+<li>difference between predicted value and actual value (residual)</li>
+<li>aggregated across many residuals using MSE, RMSE, or other statistics.</li>
+</ul></li>
+<li>Bootstrap
+<ul>
+<li>Replicates the process of sample generation from an underlying population by drawing samples with replacement from the original data set, of the same size as the original data set.</li>
+<li>used here for estimating variability / uncertainty of error rates</li>
+</ul></li>
+<li>Point Estimate
+<ul>
+<li>A single value calculated from sample data used as the best guess for an unknown population parameter</li>
+<li>Example: a computed error rate, such as apparent error, as a point estimate of the true error rate</li>
+</ul></li>
+<li>Parametric
+<ul>
+<li>Fixed number of parameters estimated form the training data and used to make predictions</li>
+<li>Examples: Linear regression, logistic regression</li>
+</ul></li>
+<li>Nonparametric
+<ul>
+<li>Make few assumptions about functional form and relationships between variables</li>
+<li>number of parameters grows with the size of the data and are flexible for modeling complex relationships</li>
+<li>Example: k-NN, Decision Trees</li>
+</ul></li>
+<li>0-1 loss
+<ul>
+<li>assignment of a 0 for a correct classification and a 1 for an incorrect classification</li>
+<li>also called “indicator loss”</li>
+</ul></li>
+<li>Fisher’s linear discriminant
+<ul>
+<li>classification method used as a prediction rule for separating data into classes or groups based on a linear boundary</li>
+<li>smooth, because there is a single line dividing groups</li>
+</ul></li>
+<li>Nearest neighbors
+<ul>
+<li>classification method used for separating data into classes or groups based on the closest points</li>
+<li>unsmooth, because the decision boundary is local to closest points</li>
+</ul></li>
+</ul>
+</section>
+<section id="equations" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="equations"><span class="header-section-number">2.1.4</span> Equations</h3>
+<p><strong>Equation 8:</strong> leave-one-out cross-validation estimate of prediction error <span class="math display">\[
+\widehat{\mathrm{Err}}^{(cv1)} = \frac{1}{n}\sum_{i=1}^n Q[y_i, r_{\mathbf{x}_{(i)}}(\mathbf{t}_i)] = \frac{1}{n}\sum_{i=1}^n Q(x_i, \mathbf{x}_{(i)})
+\]</span> where <span class="math inline">\(\mathbf{x}_{(i)}\)</span> is the training set with the <span class="math inline">\(i\)</span>th observation removed.</p>
+<p><span class="math inline">\(Q[y, r]\)</span> is the discrepancy between a predicted value <span class="math inline">\(r\)</span> and the actual response <span class="math inline">\(y\)</span>.</p>
+<p>Each observation is <span class="math inline">\(x_i = (\mathbf{t}_i, y_i)\)</span>, where <span class="math inline">\(\mathbf{t}_i\)</span> is the predictor/feature vector and <span class="math inline">\(y_i\)</span> is the response.</p>
+<p><span class="math inline">\(r_{\mathbf{x}}(\mathbf{t})\)</span> denotes the prediction rule, fit on training set <span class="math inline">\(\mathbf{x}\)</span>, evaluated at feature vector <span class="math inline">\(\mathbf{t}\)</span>.</p>
+<p><strong>Equation 14:</strong> leave-one-out bootstrap estimator (smoothed version of cross-validation) <span class="math display">\[
+\widehat{\mathrm{Err}}^{(1)} = \frac{1}{n}\sum_{i=1}^n E_{\hat{F}_{(i)}}\{Q(x_i, \mathbf{x}^{*})\}
+\]</span> where <span class="math inline">\(\mathbf{x}^{*}\)</span> is a bootstrap sample drawn from <span class="math inline">\(\hat{F}_{(i)}\)</span>, the empirical distribution on <span class="math inline">\(\mathbf{x}_{(i)}\)</span>.</p>
+<p><strong>Equation 24:</strong> The equation for the .632 estimator from Efron (1983): <span class="math display">\[
 \widehat{\mathrm{Err}}^{(.632)} = 0.368 \cdot \overline{\mathrm{err}} + 0.632 \cdot \widehat{\mathrm{Err}}^{(1)}
-\]</span> This estimator is designed to correct upward bias in err 1 by averaging it with the downwardly biased estimate err .632.</p>
-<p>The new equation, puts greater weight on err 1 in situations where the amount of overfitting (err 1 - err bar) is large. <span class="math display">\[
+\]</span> This estimator is designed to correct upward bias in <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)}\)</span> by averaging it with the downwardly biased estimate <span class="math inline">\(\widehat{\mathrm{Err}}^{(.632)}\)</span>.</p>
+<p>The new equation for the .632+ rule, introduced by this paper, puts greater weight on <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)}\)</span> in situations where the amount of overfitting <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)} - \overline{\mathrm{err}}\)</span> is large. <span class="math display">\[
 \widehat{\mathrm{Err}}^{(.632+)} = \widehat{\mathrm{Err}}^{(.632)} + \left(\widehat{\mathrm{Err}}^{(1)'} - \overline{\mathrm{err}}\right) \cdot \frac{0.368 \cdot 0.632 \cdot \hat{R}'}{1 - 0.368\,\hat{R}'}
 \]</span> R is the relative overfitting rate, a quantity that ranges from 0 to 1. This equation is used in the simulation experiments of section 4.</p>
-<p><strong>What they want us to do:</strong> Use the bootstrap method, specifically with the .632+ rule.</p>
-<p><strong>How they showed it:</strong></p>
+<p><strong>Sources:</strong></p>
 <ul>
-<li>Performed 24 sampling experiments (shown in table 2), to investigate the effects of different classifiers, training set sizes, signal-to-noise ration, number of classes, and number of observations.</li>
-<li>Only studied classification problems with 0-1 loss in detail. 21 of the experiments were dichotomous.</li>
-</ul>
-<p><strong>Some results:</strong></p>
-<ul>
-<li>The results vary considerably from experiment to experiment, but in terms of RMSE, the .632+ rule is an overall winner.</li>
+<li>https://www.geeksforgeeks.org/machine-learning/bias-vs-variance-in-machine-learning/</li>
+<li>https://www.geeksforgeeks.org/machine-learning/parametric-vs-non-parametric-models-in-machine-learning/</li>
+<li>https://www.statology.org/prediction-error-statistics/</li>
+<li>Claude Sonnet 5</li>
 </ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
