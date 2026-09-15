@@ -16,6 +16,22 @@ Selected Paper: [Efron 1997](https://www.jstor.org/stable/2965703?seq=1) - Impro
 - The improvement in reducing variability of error rate predictions in the set of simulations is roughly equivalent to a 60% increase in the size of the training set.
 - Bootstrap replications that give an estimate of prediction error can also be used to assess the variability of that estimate, which would be useful for inference, model selection, or comparing two models. Only studied on the leave-one-out boostrap method.
 
+#### Quick reminder
+- What is cross validation?
+    - Repeated evaluation with partitions of a dataset used as test-train splits to calculate an average estimate of model performance and a sense of variance in performance across folds
+- What is bootstrapping?
+    - Replicates the process of sample generation from an underlying population by drawing samples with replacement from the original data set, of the same size as the original data set.
+    - Used here for estimating variability / uncertainty of error rates
+- How are they different?
+    - Normal CV partitions the data into a fixed, small number of discrete splits (k-folds), where each data point is used for testing exactly once
+    - Leave-one-out CV trains on exactly n−1 points and tests on the 1 left-out point, repeated once per observation
+    - Bootstrapping resamples with replacement, generating a huge number of possible "pseudo-datasets" that vary continuously in composition, rather than a handful of fixed partitions
+    - Leave-one-out bootstrap draws many bootstrap samples with replacement and, for each observation i, averages its error only over the bootstrap samples that happened to exclude i. Each observation's error estimate is itself an average over many different training-set compositions
+    - How is bootstrapping a "smooth" version?
+        - Because the bootstrap is averaged over many compositions, while the CV methods are dependent on cutoffs or possible variability in individual point predictions
+- Why is this better?
+    - Smoother estimates tend to have lower variance, which is especially useful for small datasets where a handful of CV folds can each look very different from one another
+
 #### How they showed it
 - Focused on the situation when the response is dichotomous (outcomes are 0, 1). Two of the explored prediction rules were Fisher's linear discriminant function (LDF), and the nearest-neighbor (NN) rule. Examples of these are shown in figure 1. 
 
@@ -38,7 +54,7 @@ $$
 - The results vary considerably from experiment to experiment, but in terms of RMSE, the .632+ rule is an overall winner.
 
 ### Simulation Plan
-Complete the simulation study outlined on the class page posted.
+Complete the simulation study outlined on the class notes page.
 
 #### Simulation study (Efron and Tibshirani 1997)
 The goal of Efron and Tibshirani 1997 was to persuade readers to use the 0.632+ bootstrap estimate of the error rate rather than alternatives. To demonstrate its superiority, the authors began with a simple simulation study involving a binary outcome $(Y_i)$ and two predictors $(\mathbf{T}_i = (T_{i1}, T_{i2}))$. The simulation study was to demonstrate that the variance of the estimator (and consequently the mean squared error) of the estimator was lower.
@@ -160,12 +176,20 @@ $$
 $$
 This estimator is designed to correct upward bias in $\widehat{\mathrm{Err}}^{(1)}$ by averaging it with the downwardly biased estimate $\widehat{\mathrm{Err}}^{(.632)}$.
 
+The coefficients .368 = $e^{-1}$ and .632 were suggested by an argument based on the fact that bootstrap samples are supported on approcimately .632n of the original data points.
+
 The new equation for the .632+ rule, introduced by this paper, puts greater weight on $\widehat{\mathrm{Err}}^{(1)}$ in situations where the amount of overfitting $\widehat{\mathrm{Err}}^{(1)} - \overline{\mathrm{err}}$ is large.
+
+**Equation 32:** This equation is used in the simulation experiments of section 4.
 $$
 \widehat{\mathrm{Err}}^{(.632+)} = \widehat{\mathrm{Err}}^{(.632)} + \left(\widehat{\mathrm{Err}}^{(1)'} - \overline{\mathrm{err}}\right) \cdot \frac{0.368 \cdot 0.632 \cdot \hat{R}'}{1 - 0.368\,\hat{R}'}
 $$
-R is the relative overfitting rate, a quantity that ranges from 0 to 1.
-This equation is used in the simulation experiments of section 4.
+
+**Equation 28:** The relative overfitting rate
+$$
+\hat{R} = \frac{\widehat{\mathrm{Err}}^{(1)} - \overline{\mathrm{err}}}{\hat{\gamma} - \overline{\mathrm{err}}}
+$$
+$\hat{R}$ ranges from 0, with no overfitting ($\widehat{\mathrm{Err}}^{(1)} = \overline{\mathrm{err}}$), to 1, with overfitting equal to the no-information value $\hat{\gamma} - \overline{\mathrm{err}}$.
 
 
 **Sources:**

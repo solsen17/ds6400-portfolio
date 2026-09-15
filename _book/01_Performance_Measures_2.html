@@ -222,8 +222,37 @@ window.Quarto = {
 <li>Bootstrap replications that give an estimate of prediction error can also be used to assess the variability of that estimate, which would be useful for inference, model selection, or comparing two models. Only studied on the leave-one-out boostrap method.</li>
 </ul>
 </section>
-<section id="how-they-showed-it" class="level4" data-number="2.1.1.3">
-<h4 data-number="2.1.1.3" class="anchored" data-anchor-id="how-they-showed-it"><span class="header-section-number">2.1.1.3</span> How they showed it</h4>
+<section id="quick-reminder" class="level4" data-number="2.1.1.3">
+<h4 data-number="2.1.1.3" class="anchored" data-anchor-id="quick-reminder"><span class="header-section-number">2.1.1.3</span> Quick reminder</h4>
+<ul>
+<li>What is cross validation?
+<ul>
+<li>Repeated evaluation with partitions of a dataset used as test-train splits to calculate an average estimate of model performance and a sense of variance in performance across folds</li>
+</ul></li>
+<li>What is bootstrapping?
+<ul>
+<li>Replicates the process of sample generation from an underlying population by drawing samples with replacement from the original data set, of the same size as the original data set.</li>
+<li>Used here for estimating variability / uncertainty of error rates</li>
+</ul></li>
+<li>How are they different?
+<ul>
+<li>Normal CV partitions the data into a fixed, small number of discrete splits (k-folds), where each data point is used for testing exactly once</li>
+<li>Leave-one-out CV trains on exactly n−1 points and tests on the 1 left-out point, repeated once per observation</li>
+<li>Bootstrapping resamples with replacement, generating a huge number of possible “pseudo-datasets” that vary continuously in composition, rather than a handful of fixed partitions</li>
+<li>Leave-one-out bootstrap draws many bootstrap samples with replacement and, for each observation i, averages its error only over the bootstrap samples that happened to exclude i. Each observation’s error estimate is itself an average over many different training-set compositions</li>
+<li>How is bootstrapping a “smooth” version?
+<ul>
+<li>Because the bootstrap is averaged over many compositions, while the CV methods are dependent on cutoffs or possible variability in individual point predictions</li>
+</ul></li>
+</ul></li>
+<li>Why is this better?
+<ul>
+<li>Smoother estimates tend to have lower variance, which is especially useful for small datasets where a handful of CV folds can each look very different from one another</li>
+</ul></li>
+</ul>
+</section>
+<section id="how-they-showed-it" class="level4" data-number="2.1.1.4">
+<h4 data-number="2.1.1.4" class="anchored" data-anchor-id="how-they-showed-it"><span class="header-section-number">2.1.1.4</span> How they showed it</h4>
 <ul>
 <li>Focused on the situation when the response is dichotomous (outcomes are 0, 1). Two of the explored prediction rules were Fisher’s linear discriminant function (LDF), and the nearest-neighbor (NN) rule. Examples of these are shown in figure 1.</li>
 </ul>
@@ -257,7 +286,7 @@ window.Quarto = {
 </section>
 <section id="simulation-plan" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="simulation-plan"><span class="header-section-number">2.1.2</span> Simulation Plan</h3>
-<p>Complete the simulation study outlined on the class page posted.</p>
+<p>Complete the simulation study outlined on the class notes page.</p>
 <section id="simulation-study-efron-and-tibshirani-1997" class="level4" data-number="2.1.2.1">
 <h4 data-number="2.1.2.1" class="anchored" data-anchor-id="simulation-study-efron-and-tibshirani-1997"><span class="header-section-number">2.1.2.1</span> Simulation study (Efron and Tibshirani 1997)</h4>
 <p>The goal of Efron and Tibshirani 1997 was to persuade readers to use the 0.632+ bootstrap estimate of the error rate rather than alternatives. To demonstrate its superiority, the authors began with a simple simulation study involving a binary outcome <span class="math inline">\((Y_i)\)</span> and two predictors <span class="math inline">\((\mathbf{T}_i = (T_{i1}, T_{i2}))\)</span>. The simulation study was to demonstrate that the variance of the estimator (and consequently the mean squared error) of the estimator was lower.</p>
@@ -404,9 +433,14 @@ window.Quarto = {
 <p><strong>Equation 24:</strong> The equation for the .632 estimator from Efron (1983): <span class="math display">\[
 \widehat{\mathrm{Err}}^{(.632)} = 0.368 \cdot \overline{\mathrm{err}} + 0.632 \cdot \widehat{\mathrm{Err}}^{(1)}
 \]</span> This estimator is designed to correct upward bias in <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)}\)</span> by averaging it with the downwardly biased estimate <span class="math inline">\(\widehat{\mathrm{Err}}^{(.632)}\)</span>.</p>
-<p>The new equation for the .632+ rule, introduced by this paper, puts greater weight on <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)}\)</span> in situations where the amount of overfitting <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)} - \overline{\mathrm{err}}\)</span> is large. <span class="math display">\[
+<p>The coefficients .368 = <span class="math inline">\(e^{-1}\)</span> and .632 were suggested by an argument based on the fact that bootstrap samples are supported on approcimately .632n of the original data points.</p>
+<p>The new equation for the .632+ rule, introduced by this paper, puts greater weight on <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)}\)</span> in situations where the amount of overfitting <span class="math inline">\(\widehat{\mathrm{Err}}^{(1)} - \overline{\mathrm{err}}\)</span> is large.</p>
+<p><strong>Equation 32:</strong> This equation is used in the simulation experiments of section 4. <span class="math display">\[
 \widehat{\mathrm{Err}}^{(.632+)} = \widehat{\mathrm{Err}}^{(.632)} + \left(\widehat{\mathrm{Err}}^{(1)'} - \overline{\mathrm{err}}\right) \cdot \frac{0.368 \cdot 0.632 \cdot \hat{R}'}{1 - 0.368\,\hat{R}'}
-\]</span> R is the relative overfitting rate, a quantity that ranges from 0 to 1. This equation is used in the simulation experiments of section 4.</p>
+\]</span></p>
+<p><strong>Equation 28:</strong> The relative overfitting rate <span class="math display">\[
+\hat{R} = \frac{\widehat{\mathrm{Err}}^{(1)} - \overline{\mathrm{err}}}{\hat{\gamma} - \overline{\mathrm{err}}}
+\]</span> <span class="math inline">\(\hat{R}\)</span> ranges from 0, with no overfitting (<span class="math inline">\(\widehat{\mathrm{Err}}^{(1)} = \overline{\mathrm{err}}\)</span>), to 1, with overfitting equal to the no-information value <span class="math inline">\(\hat{\gamma} - \overline{\mathrm{err}}\)</span>.</p>
 <p><strong>Sources:</strong></p>
 <ul>
 <li>https://www.geeksforgeeks.org/machine-learning/bias-vs-variance-in-machine-learning/</li>
