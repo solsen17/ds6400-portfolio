@@ -77,7 +77,7 @@ where $I$ is the identity matrix and $N_2$ is the bivariate normal distribution.
 
 1. LDA
 2. 1-NN
-3. Regression with polynomial surface (linear or logistic)
+3. Regression with polynomial surface (logistic)
 
 **Simulation parameters**
 
@@ -191,6 +191,108 @@ $$
 $$
 $\hat{R}$ ranges from 0, with no overfitting ($\widehat{\mathrm{Err}}^{(1)} = \overline{\mathrm{err}}$), to 1, with overfitting equal to the no-information value $\hat{\gamma} - \overline{\mathrm{err}}$.
 
+
+### Simulation
+
+1. Data generation model
+$$Y_i \sim \text{BIN}(1, 0.5)$$
+
+$$\mathbf{T}_i|Y_i=y_i \sim N_2\left(\left[\begin{array}{c} y_i-1/2 \\ 0\end{array}\right], I_2\right)$$
+
+where $I$ is the identity matrix and $N_2$ is the bivariate normal distribution.
+
+```{r generate-data}
+#| code-fold: true
+#| code-summary: "Show data generating function"
+
+## Data generating function
+## n: number of observations to simulate
+## Returns a data frame with columns y, t1, t2 matching Equation (1)
+generate_data <- function(n) {
+  y  <- rbinom(n, size = 1, prob = 0.5)
+  t1 <- rnorm(n, mean = y - 0.5, sd = 1)
+  t2 <- rnorm(n, mean = 0, sd = 1)
+  data.frame(y = y, t1 = t1, t2 = t2)
+}
+
+## Quick sanity check
+set.seed(17)
+sample_data <- generate_data(20)
+#table(sample_data$y)
+#head(sample_data)
+plot(sample_data$t1, sample_data$t2)
+```
+
+2. Set up supporting functions
+    - Q Loss Function
+    - LDF Model
+    - NN Model
+    - 
+```{r loss-function}
+#| code-fold: true
+#| code-summary: "Show loss function"
+
+## Equation 2 Q[y, r]
+## y is the response, r is the predicted value
+## Vectorized: y and r can be vectors of the same length,
+## returning a vector of 0/1 losses (mean() of this gives an error rate)
+qloss_function <- function(y, r) {
+  ifelse(r == y, 0, 1)
+}
+
+```
+
+```{r ldf-model}
+#| code-fold: true
+#| code-summary: "Show LDF model setup and testing"
+
+# LDA function comes from MASS library
+library(MASS)
+
+## Fit LDF on a training set and predict on given data
+ldf_fit <- function(train_data) {
+  lda(y ~ t1 + t2, data = train_data)
+}
+
+## Returns numeric 0/1 predictions (not the raw factor from predict())
+ldf_predict <- function(fit, newdata) {
+  pred <- predict(fit, newdata = newdata)
+  as.numeric(as.character(pred$class))
+}
+
+## Sanity check: apparent error rate for one training sample (n = 20)
+set.seed(17)
+sample_data <- generate_data(20)
+ldf_model <- ldf_fit(sample_data)
+preds <- ldf_predict(ldf_model, sample_data)
+
+apparent_error <- mean(qloss_function(sample_data$y, preds))
+cat(sprintf("Apparent error for LDF model with n = %d observations: %.3f\n",
+            nrow(sample_data), apparent_error))
+
+```
+
+```{r true-error}
+#| code-fold: true
+#| code-summary: "Show true error rate function"
+
+## Equation 5: true error rate for a fitted model
+## fit:        a fitted model object (e.g., from ldf_fit())
+## predict_fn: the matching predict function (e.g., ldf_predict())
+## n_test:     size of the large independent test set used to
+##             approximate Err(x, F) -- the bigger n_test, the less
+##             noise in this estimate itself
+true_error <- function(fit, predict_fn, n_test = 20) {
+  test_data <- generate_data(n_test)
+  preds <- predict_fn(fit, test_data)
+  mean(qloss_function(test_data$y, preds))
+}
+
+## Sanity check: true error for the LDF model fit earlier (n = 20 training sample)
+true_err <- true_error(ldf_model, ldf_predict)
+cat(sprintf("True error for LDF model (n_test = %d): %.3f\n", 20, true_err))
+
+```
 
 **Sources:**
 
