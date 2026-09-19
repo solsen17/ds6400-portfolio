@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Week 1 – DS6400 Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./01_Performance_Measures_2.html" rel="next">
+<link href="./01_Performance_Measures_Notes.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Performance_Measures_Notes.html">01: Performance Measures</a></li><li class="breadcrumb-item"><a href="./01_Performance_Measures_1.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Week 1</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">DS6400 Portfolio</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">01: Performance Measures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_1.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Week 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Week 2</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link active" data-scroll-target="#student-exploration"><span class="header-section-number">2.1</span> Student exploration</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Performance_Measures_Notes.html">01: Performance Measures</a></li><li class="breadcrumb-item"><a href="./01_Performance_Measures_1.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Week 1</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Week 1</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="student-exploration" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="student-exploration"><span class="header-section-number">2.1</span> Student exploration</h2>
+<ol type="1">
+<li>Select one of the papers from the list below</li>
+</ol>
+<blockquote class="blockquote">
+<p>Selected Paper: <a href="https://www.sciencedirect.com/science/article/pii/S0895435601003419">Steyerberg et al.&nbsp;(2001)</a> - Internal validation of predictive models: efficiency of some procedures for logistic regression analysis</p>
+</blockquote>
+<ol start="2" type="1">
+<li>For the initial exploration, do the following:
+<ul>
+<li>Prepare a summary of the key ideas. Be prepared to describe/illustrate the concepts in a concrete example.</li>
+<li>Review the instructions for the student presentation and come with an idea/sketch of the simulation you’ll perform.</li>
+</ul></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Key Ideas</strong></p>
+<ol type="1">
+<li><p>From the opening line of the abstract: <em>“The performance of a predictive model is overestimated when simply determined on the sample of subjects that was used to construct the model.”</em> <br> The authors expand on this idea of optimism. When the model is trained and evaluated on only data within the sample, the estimated performance will be optimistic compared with the real performance on new data that is completely outside the sample. This difference is between apparent performance and test performance.</p></li>
+<li><p>From the closing paragraph of the introduction: <em>“In this study we compare the efficiency of internal validation procedures for predictive logistic regression models.”</em> (also basically the title lol) <br> The authors walked through a comparison of the split-sample approach (test-train splits), cross-validation, and bootstrapping. Each one is an internal validation procedure that is commonly used for evaluating models.</p></li>
+<li><p>From the opening line of section 2.4: “We evaluated several internal validation procedures that aim to test performance more accurately than is achieved by the apparent performance estimate.” <br> The authors set out to determine which validation procedure of those listed above is best for the logistic regression model in question. They used the GUSTO-I dataset, detailed below, and fit multiple regression models for prediction.</p></li>
+</ol>
+<p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Working with a dataset of 30-day mortality after an acute myocardial infarction. What does that mean? They’re looking at the % of patients who die from any cause within 30 days of a heart attack.</p>
+<p><strong>What they want us to do:</strong> Stop doing CV and split-sample (test-train splits), and start doing regular bootstraping instead for estimation of accuracy!</p>
+<p><strong>How they showed it:</strong> Logistic regression was fitted in each sample with a previously specified set of eight dichotomous predictors (including shock, age&gt;65, diabetes, etc). The apparent performance of the model fitted to the full GUSTO-I data was the reference point from which they compared the other performance measures. <em>“The large size of the total GUSTO-I data set makes sure that the optimism in this performance estimate is negligible.”</em> As mentioned above, they compared variants of split-sample, cross-validation, and bootstrap (including the .632 and .632+ methods) specifically at EPV=10 to analyze estimates of model performance.</p>
+<p><strong>Some results:</strong></p>
+<ul>
+<li>The optimism and the variability of the model performance estimates reduced as sample size increased.</li>
+<li><em>“The regular bootstrap resulted in the most accurate estimates of model performance: the bias was close to zero and the variability similar to that of the apparent performance.”</em></li>
+<li>Bootstrap resampling resulted in stable and nearly unbiased estimates of performance.</li>
+<li>Relation to some other papers: <em>“a puzzling observation was that the .632 and the .632+ bootstrap variants were not superior to the regular bootstrap.”</em></li>
+</ul>
+<p><strong>Definitions</strong> <br></p>
+<ul>
+<li><em>Events Per Variable (EPV)</em>: The number of outcome events (i.e.&nbsp;number of deaths) divided by the number of predictor variables in the model. Recommended to be at least 10 to provide an adequate predictive model. <br></li>
+<li><em>Internal Validation</em>: All methods of assessing performance using only the dataset you were provided. <br></li>
+<li><em>External Validation</em>: Assessing performance using a TRULY NEW dataset. Something from another clinic, a separate experiment, real world data, etc. <br></li>
+<li><em>Apparent Performance</em>: Predictive performance estimated on the training sample. Optimistically biased, because the same data is used to fit and evaluate the model. <br></li>
+<li><em>Test Performance</em>: Predictive performance estimated on the test data (held-out sample), an independent test set consisting of all patients from GUSTO-I except the patients in the random sample. <br></li>
+<li><em>Optimism</em>: The difference between apparent performance and a model’s true performance on new data. <br></li>
+<li><em>Split-sample approach</em>: Randomly split training data in two parts: one to develop the model and another to measure its performance. <br></li>
+<li><em>Cross-validation</em>: Model is developed on one part of the data and tested on the other part, while these samples are randomly taken repeatedly and the average is taken as an estimate of the performance. <br></li>
+<li><em>Bootstrap</em>: Replicates the process of sample generation from an underlying population by drawing samples with replacement from the original data set, of the same size as the original data set. <br></li>
+<li><em>Discrimination</em>: The ability to distinguish high-risk subjects from low-risk subjects. Commonly quantified by a measure of concordance, the <em>c</em> statistic. <br></li>
+<li><em>Calibration</em>: Whether the predicted probabilities agree with the observed probabilities. Well-calibrated models have a slope of 1, while models providing too extreme predictions have a slope less than 1. Well-calibrated models also have an intercept of 0, while models providing predictions that are too high or too low on average have an intercept different from 0.</li>
+</ul>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Sketch of the simulation</strong>: Replicate a simulation from the paper</p>
+<p>The goal is to demonstrate that the regular bootstrap returns the optimal estimates of internal validity.</p>
+<ul>
+<li>Start with the GUSTO-I dataset (from R or Python package)</li>
+<li>Generate sample and independent test sets for EPV = 10</li>
+<li>Complete split sample and regular boostrap on the sample dataset</li>
+<li>Compare Predictive performance (<em>c</em> statistic, calibration slope, Brier score, D(=scaled<span class="math inline">\(\chi^2\)</span>), <span class="math inline">\(R^2\)</span>)</li>
+</ul>
+</blockquote>
+<ol start="3" type="1">
+<li>For the student presentation, do one of the following and come prepared to present it to the class:
+<ul>
+<li><strong>Replicate a simulation or example from the paper</strong> [SELECTION]</li>
+<li>Develop your own simulation study which explores a concept discussed in the paper</li>
+<li>Complete the simulation study described below.</li>
+</ul></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Replicating the example from the paper</strong></p>
+<p>The following sections replicating the simulation were assisted by Claude. I am still working to develop a full understanding of the code, formulas, and methods completed within. Formulas and comments will be added progressively.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Dataset:</strong> GUSTO-I; n=40,830; 2,851 deaths <br> Available in full anonymized version via <code>predtools</code> package in R.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Figures:</strong> Replicating a version of Figure 2 from the paper</p>
+<p>In the paper, figure 2 shows bias and variability for a few of the procedures for estimating model performance in independent data for EPV = 10, including apparent performance, split-sample validation on 50% or 33% of the sample, cross-validation on 50% or 10% of the sample, and regular bootstrapping. In this simulation, I will show apparent performance, split-sample validation on 33% of the sample, and regular bootstrapping. I will also only show metrics for calibration and discrimination (<em>c</em> statistic, calibration slope, Brier score).</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Methods:</strong> Replicating the steps of the paper</p>
+</blockquote>
+<blockquote class="blockquote">
+<ol type="1">
+<li>Load in the dataset</li>
+<li>Define logistic regression model with 8 predictors from the paper</li>
+<li>Generate a sub-sample for EPV = 10 (set a seed to keep results steady)</li>
+<li>[Not needed for this simulation] Use model to compute the benchmark performance on the full dataset</li>
+<li>Use model to compute apparent performance on sub-sample dataset [simulated many times to get bias and variability]</li>
+<li>Use model to compute split-sample performance on sub-sample dataset [“”]</li>
+<li>Use model to compute bootstrap performance on sub-sample dataset [“”]</li>
+<li>Build figure 2 to compare performance!</li>
+</ol>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading in Gusto-I dataset from predtools</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("predtools")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(predtools)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gusto)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gusto)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   40830 obs. of  29 variables:
+ $ day30   : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ sho     : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ hig     : int  1 1 0 0 1 0 0 0 1 0 ...
+ $ dia     : 'labelled' int  0 0 0 0 0 0 0 0 0 0 ...
+  ..- attr(*, "label")= chr "Diabetes"
+ $ hyp     : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ hrt     : int  0 1 0 0 1 1 1 0 0 1 ...
+ $ ttr     : 'labelled' int  1 1 0 1 0 1 0 1 1 1 ...
+  ..- attr(*, "label")= chr "Time to Relief of Chest Pain &gt; 1h"
+ $ sex     : Factor w/ 2 levels "male","female": 1 1 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "Sex"
+ $ Killip  : Factor w/ 4 levels "I","II","III",..: 1 2 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "Killip Class"
+ $ age     : num  19 19 20.3 20.8 21 ...
+ $ ste     : 'labelled' int  4 6 5 8 5 1 0 4 8 6 ...
+  ..- attr(*, "label")= chr "Number of ECG Leads with ST Elevation"
+ $ pulse   : 'labelled' int  60 90 77 75 85 90 90 50 70 95 ...
+  ..- attr(*, "label")= chr "Heart Rate"
+  ..- attr(*, "units")= chr "beats/min"
+ $ sysbp   : 'labelled' int  130 150 106 124 135 129 130 120 157 130 ...
+  ..- attr(*, "label")= chr "Systolic Blood Pressure"
+  ..- attr(*, "units")= chr "mmHg"
+ $ ant     : int  1 1 0 0 1 0 0 0 1 0 ...
+ $ miloc   : Factor w/ 3 levels "Inferior","Other",..: 3 3 1 1 3 1 2 1 3 1 ...
+  ..- attr(*, "label")= chr "MI Location"
+ $ height  : 'labelled' num  170 161 171 180 188 ...
+  ..- attr(*, "label")= chr "Height"
+  ..- attr(*, "units")= chr "cm"
+ $ weight  : 'labelled' num  60 72 72.5 69 107 115 60 80 65 76 ...
+  ..- attr(*, "label")= chr "Weight"
+  ..- attr(*, "units")= chr "kg"
+ $ pmi     : Factor w/ 2 levels "no","yes": 1 2 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "Previous MI"
+ $ htn     : 'labelled' int  1 2 1 1 1 1 1 1 1 1 ...
+  ..- attr(*, "label")= chr "History of Hypertension"
+ $ smk     : Factor w/ 3 levels "never","quit",..: 1 1 3 1 2 1 1 2 1 1 ...
+  ..- attr(*, "label")= chr "Smoking"
+ $ pan     : int  1 2 1 2 1 1 2 1 2 1 ...
+ $ fam     : 'labelled' int  2 2 1 2 2 2 2 1 2 1 ...
+  ..- attr(*, "label")= chr "Family History of MI"
+ $ prevcvd : int  1 1 1 1 1 1 1 1 1 1 ...
+ $ prevcabg: int  1 1 1 1 1 1 1 1 1 1 ...
+ $ regl    : int  6 8 7 7 2 10 2 3 5 8 ...
+ $ grpl    : int  17 24 18 19 6 30 5 9 15 24 ...
+ $ grps    : int  98 53 40 42 95 67 13 19 32 54 ...
+ $ tpa     : int  0 NA NA 1 0 1 NA NA 0 NA ...
+ $ tx      : Factor w/ 3 levels "SK+tPA","SK",..: 2 1 1 3 2 3 1 1 2 1 ...
+  ..- attr(*, "label")= Named chr "Tx in 3 groups"
+  .. ..- attr(*, "names")= chr "TX"</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>From the paper: <em>“A logistic regression model was fitted in each sample consisting of a previously specified set of eight dichotomous predictors: shock, age&gt;65 years, high risk (anterior infarct location or previous MI), diabetes, hypotension (systolic blood pressure &lt;100 mmHg), tachycardia (pulse&gt;80), relief of chest pain&gt;1 hr, female gender”</em></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Variables we want are:</p>
+<ul>
+<li>Outcome: <code>day30</code></li>
+<li>Predictors:</li>
+<li>Shock: <code>sho</code></li>
+<li>Age &gt; 65 years: <code>age</code> (needs transform to binary)</li>
+<li>High Risk: <code>ant</code> or <code>pmi</code> (needs transform to binary)</li>
+<li>Diabetes: <code>dia</code></li>
+<li>Hypotension: <code>sysbp</code> (needs transform to binary)</li>
+<li>Tachycardia: <code>pulse</code> (needs transform to binary)</li>
+<li>Relief of chest pain &gt; 1hr: <code>ttr</code></li>
+<li>Female gender: <code>sex</code></li>
+</ul>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gusto_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">day30 =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>day30),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">shock =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>sho),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">age65 =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>age <span class="sc">&gt;</span> <span class="dv">65</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">highrisk =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>ant <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> gusto<span class="sc">$</span>pmi <span class="sc">==</span> <span class="st">"yes"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">diabetes =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>dia),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">hypotension =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>sysbp <span class="sc">&lt;</span> <span class="dv">100</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">tachycardia =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>pulse <span class="sc">&gt;</span> <span class="dv">80</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">ttr =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>ttr),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">female =</span> <span class="fu">as.integer</span>(gusto<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">"female"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gusto_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  day30 shock age65 highrisk diabetes hypotension tachycardia ttr female
+1     0     0     0        1        0           0           0   1      0
+2     0     0     0        1        0           0           1   1      0
+3     0     0     0        0        0           0           0   0      0
+4     0     0     0        0        0           0           0   1      0
+5     0     0     0        1        0           0           1   0      0
+6     0     0     0        0        0           0           1   1      0</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>All variables are now transformed to match the “eight dichotomous predictors” from the paper. Below, the logistic regression model is defined in R code for the upcoming simulations.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model_formula <span class="ot">&lt;-</span> day30 <span class="sc">~</span> shock <span class="sc">+</span> age65 <span class="sc">+</span> highrisk <span class="sc">+</span> diabetes <span class="sc">+</span> hypotension <span class="sc">+</span> tachycardia <span class="sc">+</span> ttr <span class="sc">+</span> female</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>From the paper: <em>“For example, for EPV=10 and 7.0% mortality, all training and test samples consisted of 1145 and 39,685 patients, with 80 and 2771 deaths, respectively.”</em></p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## set seed for reproducibility</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Creating ID column for tracking which patients are in what samples</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>gusto_df<span class="sc">$</span>row_id <span class="ot">&lt;-</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(gusto_df))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Function to draw the training sample for each time this needs to be run</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>draw_dev_sample <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">sample_total =</span> <span class="dv">1145</span>, <span class="at">target_events =</span> <span class="dv">80</span>){</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>   <span class="do">## EPV = 10 with 8 predictors requires 80 events (deaths)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>   target_events <span class="ot">&lt;-</span> target_events</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>   target_non_events <span class="ot">&lt;-</span> sample_total<span class="sc">-</span>target_events</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>   <span class="do">## Stratified sampling to ensure desired number of events</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Split into events and non-events</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>   events_pool     <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>   nonevents_pool  <span class="ot">&lt;-</span> gusto_df[gusto_df<span class="sc">$</span>day30 <span class="sc">==</span> <span class="dv">0</span>, ]</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Draw the stratified subsample</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>   dev_events    <span class="ot">&lt;-</span> events_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(events_pool), target_events), ]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>   dev_nonevents <span class="ot">&lt;-</span> nonevents_pool[<span class="fu">sample</span>(<span class="fu">nrow</span>(nonevents_pool), target_non_events), ]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>   dev_sample <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dev_events, dev_nonevents)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Shuffle row order so events aren't grouped together</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>   dev_sample <span class="ot">&lt;-</span> dev_sample[<span class="fu">sample</span>(<span class="fu">nrow</span>(dev_sample)), ]</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="do">## Function to draw the testing sample (all the rows that are not in the training sample)</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>draw_test_set <span class="ot">&lt;-</span> <span class="cf">function</span>(data, dev_sample) {</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  data[<span class="sc">!</span>(data<span class="sc">$</span>row_id <span class="sc">%in%</span> dev_sample<span class="sc">$</span>row_id), ]</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Building reusable functions for computing desired metrics:</p>
+<p><strong>Metric definitions</strong></p>
+<p><strong>C-statistic (discrimination)</strong> — the probability that a randomly chosen patient who died is assigned a higher predicted risk than a randomly chosen patient who survived: <span class="math display">\[c = P(\hat{p}_i &gt; \hat{p}_j \mid Y_i = 1,\ Y_j = 0)\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Estimated empirically as the proportion of all (event, non-event) pairs correctly ordered by the model, with ties counted as half-correct: <span class="math display">\[\hat{c} = \frac{1}{n_1 n_0} \sum_{i:\, Y_i=1} \sum_{j:\, Y_j=0} \left[ \mathbb{1}(\hat{p}_i &gt; \hat{p}_j) + 0.5 \cdot \mathbb{1}(\hat{p}_i = \hat{p}_j) \right]\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>where <span class="math inline">\(n_1\)</span> is the number of events and <span class="math inline">\(n_0\)</span> is the number of non-events. In this case from the paper, since we have a binary outcome, c is identical to the area under the receiver operating characteristic (ROC) curve; c varies between 0.5 and 1.0 for sensible models (the higher the better).</p>
+<p><strong>Calibration slope</strong> — the coefficient <span class="math inline">\(\beta\)</span> from an auxiliary logistic regression of the observed outcome on the linear predictor (logit of the model’s predicted probability): <span class="math display">\[\text{logit}\big(P(Y=1)\big) = \alpha + \beta \cdot \text{linear predictor}\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>A well-calibrated model has <span class="math inline">\(\beta = 1\)</span>. <span class="math inline">\(\beta &lt; 1\)</span> indicates predictions that are too extreme (overfitting); <span class="math inline">\(\beta &gt; 1\)</span> indicates predictions that are too conservative.</p>
+<p><strong>Brier score</strong> — mean squared error between predicted probability and observed outcome: <span class="math display">\[\text{Brier} = \frac{1}{n} \sum_{i=1}^{n} (\hat{p}_i - Y_i)^2\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Ranges from 0 (perfect) to 0.25 (worthless) for a well-behaved binary outcome model. Exactly the same formula as MSE, but specifically used for binary prediction models.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Type 'citation("pROC")' for a citation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'pROC'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    cov, smooth, var</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>compute_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(y, pred) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Guard against predicted probabilities of exactly 0 or 1,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># which would break the logit transform below</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  eps <span class="ot">&lt;-</span> <span class="fl">1e-10</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(pred, eps), <span class="dv">1</span> <span class="sc">-</span> eps)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Discrimination: c-statistic (AUC)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  c_stat <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(pROC<span class="sc">::</span><span class="fu">auc</span>(y, pred, <span class="at">quiet =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calibration slope: regress outcome on the linear predictor (logit of pred)</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  lp <span class="ot">&lt;-</span> <span class="fu">log</span>(pred <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pred))</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  cal_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> lp, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  cal_slope <span class="ot">&lt;-</span> <span class="fu">unname</span>(<span class="fu">coef</span>(cal_fit)[<span class="st">"lp"</span>])</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Brier score</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  brier <span class="ot">&lt;-</span> <span class="fu">mean</span>((y <span class="sc">-</span> pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">c_stat =</span> c_stat, <span class="at">cal_slope =</span> cal_slope, <span class="at">brier =</span> brier)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Computing apparent performance for the logistic regression model on the training sample dataset</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>get_apparent <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> sample_data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">fit =</span> fit, <span class="at">metrics =</span> <span class="fu">compute_metrics</span>(sample_data<span class="sc">$</span>day30, pred))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Defining the function to evaluate a given model on new data for the test performance</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>eval_on_data <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, newdata) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> newdata, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute_metrics</span>(newdata<span class="sc">$</span>day30, pred)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Function for the split-sample validation, essentially running a test-train split on the development sample and fitting the model.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>split_sample_validate <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula, <span class="at">train_frac =</span> <span class="fl">0.6667</span>) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  n_train <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">nrow</span>(sample_data) <span class="sc">*</span> train_frac)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  train_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(sample_data), n_train)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  train_set <span class="ot">&lt;-</span> sample_data[train_idx, ]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  test_set  <span class="ot">&lt;-</span> sample_data[<span class="sc">-</span>train_idx, ]</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> train_set, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eval_on_data</span>(fit, test_set)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Defining function for the regular bootstrap method. Setting B=100 as the authors did in the paper. Sampling from the sample distribution with replacement, then training on that sample. Computing performance in the following way: <em>The performance in the bootstrap sample represents estimation of the apparent performance, and the performance in the original sample represents test performance. The difference between these performances is an estimate of the optimism in the apparent performance. This difference is averaged to obtain a stable estimate of the optimism. The optimism is subtracted from the apparent performance to estimate the internally validated performance [7]: estimated performance = apparent performance − average(bootstrap performance − test performance).</em> In other words, we evaluate <span class="math inline">\(\text{model}_b^*\)</span> on the bootstrap sample itself (its own “apparent” performance), and on the original sample (its “test” performance). <span class="math display">\[\text{optimism}_b = \text{Perf}(\text{model}_b^*,\ \text{sample}_b^*) \;-\; \text{Perf}(\text{model}_b^*,\ \text{sample}_{\text{orig}})\]</span> Average the optimism across all <span class="math inline">\(B\)</span> replicates:</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><span class="math display">\[\overline{\text{optimism}} = \frac{1}{B}\sum_{b=1}^{B} \text{optimism}_b\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Subtract this from the apparent performance of the model fitted on the original (development) sample to get the bias-corrected estimate:</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><span class="math display">\[\text{estimated performance} = \text{apparent performance} - \overline{\text{optimism}}\]</span></p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bootstrap_correct <span class="ot">&lt;-</span> <span class="cf">function</span>(sample_data, formula, apparent_metrics, <span class="at">B =</span> <span class="dv">100</span>) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(sample_data)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  optimism_sum <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">c_stat =</span> <span class="dv">0</span>, <span class="at">cal_slope =</span> <span class="dv">0</span>, <span class="at">brier =</span> <span class="dv">0</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    boot_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(n, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    boot_sample <span class="ot">&lt;-</span> sample_data[boot_idx, ]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    boot_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> boot_sample, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    boot_apparent <span class="ot">&lt;-</span> <span class="fu">compute_metrics</span>(</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      boot_sample<span class="sc">$</span>day30,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(boot_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    boot_test <span class="ot">&lt;-</span> <span class="fu">compute_metrics</span>(</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>      sample_data<span class="sc">$</span>day30,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(boot_fit, <span class="at">newdata =</span> sample_data, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    optimism_sum <span class="ot">&lt;-</span> optimism_sum <span class="sc">+</span> (boot_apparent <span class="sc">-</span> boot_test)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  avg_optimism <span class="ot">&lt;-</span> optimism_sum <span class="sc">/</span> B</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  apparent_metrics <span class="sc">-</span> avg_optimism</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Function 7: run one full repetition (ties everything together)</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the "outer loop body" -- one full pass of the pipeline,</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># matching one box in each boxplot of Figures 1 and 2.</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>run_one_repetition <span class="ot">&lt;-</span> <span class="cf">function</span>(data, formula, <span class="at">sample_total =</span> <span class="dv">1145</span>, <span class="at">target_events =</span> <span class="dv">80</span>, <span class="at">B =</span> <span class="dv">100</span>) {</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  dev_sample <span class="ot">&lt;-</span> <span class="fu">draw_dev_sample</span>(data, sample_total, target_events)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  test_set   <span class="ot">&lt;-</span> <span class="fu">draw_test_set</span>(data, dev_sample)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Apparent performance + the fitted model (reused below)</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  app <span class="ot">&lt;-</span> <span class="fu">get_apparent</span>(dev_sample, formula)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  apparent_metrics <span class="ot">&lt;-</span> app<span class="sc">$</span>metrics</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Test performance: evaluate the dev_sample-fitted model on truly new patients</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  test_metrics <span class="ot">&lt;-</span> <span class="fu">eval_on_data</span>(app<span class="sc">$</span>fit, test_set)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Split-sample (50/50, matching your simplified scope)</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  split_metrics <span class="ot">&lt;-</span> <span class="fu">split_sample_validate</span>(dev_sample, formula, <span class="at">train_frac =</span> <span class="fl">0.6667</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Bootstrap-corrected</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  boot_metrics <span class="ot">&lt;-</span> <span class="fu">bootstrap_correct</span>(dev_sample, formula, apparent_metrics, <span class="at">B =</span> B)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># MATH </span><span class="al">NOTE</span><span class="co">: delta = method's estimate - test performance.</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># delta = 0 means the method perfectly recovered true generalization</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># performance for this repetition. This is exactly Figure 2's y-axis.</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"apparent"</span>, <span class="st">"split_sample"</span>, <span class="st">"bootstrap"</span>), <span class="at">each =</span> <span class="dv">3</span>),</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">metric =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"c_stat"</span>, <span class="st">"cal_slope"</span>, <span class="st">"brier"</span>), <span class="at">times =</span> <span class="dv">3</span>),</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">delta  =</span> <span class="fu">c</span>(</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>      apparent_metrics <span class="sc">-</span> test_metrics,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>      split_metrics <span class="sc">-</span> test_metrics,</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>      boot_metrics <span class="sc">-</span> test_metrics</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Run the simulation loop [decreased to 10 for faster preview]</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: reduced from the paper's 500 repetitions to keep runtime</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reasonable for a live presentation. State this explicitly when</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># presenting -- it's a deliberate, documented scope reduction, not</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># an error.</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>n_reps <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>results_list <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, n_reps)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n_reps)) {</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  results_list[[i]] <span class="ot">&lt;-</span> <span class="fu">run_one_repetition</span>(</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> gusto_df,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> model_formula,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_total =</span> <span class="dv">1145</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">target_events =</span> <span class="dv">80</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> <span class="dv">100</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, results_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>Visualize: recreate Figure 2</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> delta)) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> metric, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Bias of internal validation methods at EPV = 10"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste0</span>(n_reps, <span class="st">" repetitions (paper used 500)"</span>),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Method"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Delta (estimated - test performance)"</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Performance_Measures_1_files/figure-html/plot-figure2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Summarize bias and RMSE (reproduces Table 2’s structure)</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MATH </span><span class="al">NOTE</span><span class="co">:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   Bias = mean(delta)                -- average signed error</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   RMSE = sqrt(mean(delta^2))        -- root mean SQUARED error,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                          NOT centered around the bias.</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#          RMSE^2 = Bias^2 + Var(delta)</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(method, metric) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">bias =</span> <span class="fu">mean</span>(delta),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(delta<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>summary_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+  method       metric         bias    rmse
+  &lt;chr&gt;        &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+1 apparent     brier     -0.00173  0.00239
+2 apparent     c_stat     0.0246   0.0335 
+3 apparent     cal_slope  0.102    0.147  
+4 bootstrap    brier      0.000324 0.00154
+5 bootstrap    c_stat     0.00646  0.0260 
+6 bootstrap    cal_slope  0.0135   0.111  
+7 split_sample brier     -0.00130  0.00681
+8 split_sample c_stat     0.0169   0.0438 
+9 split_sample cal_slope  0.0630   0.245  </code></pre>
+</div>
+</div>
+<!--
+### Extra notes for later
+
+
+::: {.cell}
+
+```{.r .cell-code}
+library(ggplot2)
+
+y <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+yhat <- c(1, 2.5, 4, 3.4, 5, 6, 6.5, 10, 9, 11)
+
+df <- data.frame(predicted = yhat, actual = y)
+
+ggplot(df, aes(x = predicted, y = actual)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  labs(x = "Predicted Values (yhat)",
+       y = "Actual Values (y)") +
+  theme_minimal()
+```
+
+::: {.cell-output-display}
+![](01_Performance_Measures_1_files/figure-html/unnamed-chunk-1-1.png){width=672}
+:::
+:::
+
+-->
+<!--
+
+::: {.cell}
+
+```{.python .cell-code}
+2+2
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+4
+```
+
+
+:::
+:::
+
+
+-->
+<!--
+
+::: {.cell}
+
+```{.r .cell-code}
+benchmark_fit <- glm(model_formula, data = gusto_df, family = binomial())
+
+benchmark_pred <- predict(benchmark_fit, type = "response")
+```
+:::
+
+-->
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01_Performance_Measures_Notes.html" class="pagination-link" aria-label="In class exploration and discussion">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./01_Performance_Measures_2.html" class="pagination-link" aria-label="Week 2">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Week 2</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

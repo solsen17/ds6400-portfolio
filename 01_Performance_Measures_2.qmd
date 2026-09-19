@@ -1,4 +1,4 @@
-# Performance Measures Week 2
+# Week 2
 
 ## Student exploration
 
@@ -194,6 +194,11 @@ $\hat{R}$ ranges from 0, with no overfitting ($\widehat{\mathrm{Err}}^{(1)} = \o
 
 ### Simulation
 
+What actually took place:
+- Generated data according to them model
+- Implemented functions for running simulation with LDF Classifier
+- Replicated resultts from Table 3, Experiment 3 for the LDF Classifier
+
 1. Data generation model
 $$Y_i \sim \text{BIN}(1, 0.5)$$
 
@@ -226,8 +231,8 @@ plot(sample_data$t1, sample_data$t2)
 2. Set up supporting functions
     - Q Loss Function
     - LDF Model
-    - NN Model
-    - 
+    - True Error Function
+    - LOO-CV Function
 ```{r loss-function}
 #| code-fold: true
 #| code-summary: "Show loss function"
@@ -282,7 +287,7 @@ cat(sprintf("Apparent error for LDF model with n = %d observations: %.3f\n",
 ## n_test:     size of the large independent test set used to
 ##             approximate Err(x, F) -- the bigger n_test, the less
 ##             noise in this estimate itself
-true_error <- function(fit, predict_fn, n_test = 20) {
+true_error <- function(fit, predict_fn, n_test = 10000) {
   test_data <- generate_data(n_test)
   preds <- predict_fn(fit, test_data)
   mean(qloss_function(test_data$y, preds))
@@ -290,9 +295,270 @@ true_error <- function(fit, predict_fn, n_test = 20) {
 
 ## Sanity check: true error for the LDF model fit earlier (n = 20 training sample)
 true_err <- true_error(ldf_model, ldf_predict)
-cat(sprintf("True error for LDF model (n_test = %d): %.3f\n", 20, true_err))
+cat(sprintf("True error for LDF model (n_test = %d): %.3f\n", 10000, true_err))
 
 ```
+
+```{r loo-cv}
+#| code-fold: true
+#| code-summary: "Show leave-one-out cross-validation function"
+
+## Equation 8: leave-one-out cross-validation estimate of prediction error
+## data:       the full training sample (data frame with columns y, t1, t2)
+## fit_fn:     model fitting function (e.g., ldf_fit())
+## predict_fn: matching predict function (e.g., ldf_predict())
+##
+## For each observation i: fit on all OTHER n-1 points (x_(i)),
+## predict on the held-out point i, and score that one prediction.
+## Averaging these n held-out losses gives Err^(cv1).
+loo_cv_error <- function(data, fit_fn, predict_fn) {
+  n <- nrow(data)
+  losses <- numeric(n)
+
+  for (i in seq_len(n)) {
+    train_data <- data[-i, ]
+    test_point <- data[i, , drop = FALSE]
+
+    fit  <- fit_fn(train_data)
+    pred <- predict_fn(fit, test_point)
+
+    losses[i] <- qloss_function(test_point$y, pred)
+  }
+
+  mean(losses)
+}
+
+## Sanity check: LOO-CV estimate for the same n = 20 sample used above
+loo_cv_err <- loo_cv_error(sample_data, ldf_fit, ldf_predict)
+cat(sprintf("LOO-CV error for LDF model (n = %d): %.3f\n",
+            nrow(sample_data), loo_cv_err))
+
+```
+
+```{r bootstrap}
+#| code-fold: true
+#| code-summary: "Show bootstrap function"
+
+## First define bootstrap function
+## Includes note to save the index of the sample data, so that the
+## leave-one-out bootstrap can utilize that information
+##
+## NOTE: redraws if the resample happens to contain only one class --
+## rare, but possible for small/imbalanced n, and LDA cannot fit
+## without both classes present. This is a small, standard guard
+## against a degenerate resample, not a change to the bootstrap logic.
+draw_bootstrap_sample <- function(data) {
+  repeat {
+    idx <- sample(nrow(data), nrow(data), replace = TRUE)
+    if (length(unique(data$y[idx])) > 1) break
+  }
+  list(sample_data = data[idx, ], included_idx = idx)
+}
+
+```
+
+```{r loo-bootstrap}
+#| code-fold: true
+#| code-summary: "Show leave-one-out bootstrap function"
+
+## Equations 14-17: leave-one-out bootstrap estimate Err^(1)
+## data:       the full training sample
+## fit_fn:     model fitting function (e.g., ldf_fit())
+## predict_fn: matching predict function (e.g., ldf_predict())
+## B:          number of bootstrap replications (paper uses B = 50)
+##
+## For each of the B bootstrap resamples: fit on the resample, then
+## predict on ALL n original points at once. For each original point i,
+## keep that prediction's loss ONLY if i happened to be excluded from
+## this particular resample (Equation 15's I_i^b). Averaging point i's
+## kept losses over just those "excluded" replicates gives E_i
+## (Equation 17); averaging E_i over all i gives Err^(1) (Equation 14).
+loo_bootstrap_error <- function(data, fit_fn, predict_fn, B = 50) {
+  n <- nrow(data)
+
+  ## Running totals per original observation i:
+  ##   loss_sum[i]  = sum of Q_i^b over replicates b where i was excluded
+  ##   exclude_n[i] = number of replicates where i was excluded
+  loss_sum  <- numeric(n)
+  exclude_n <- numeric(n)
+
+  for (b in seq_len(B)) {
+    boot <- draw_bootstrap_sample(data)
+    fit  <- fit_fn(boot$sample_data)
+
+    ## Predict on every original point at once -- we need Q_i^b for
+    ## all i, then we'll discard the ones where i WASN'T excluded.
+    preds  <- predict_fn(fit, data)
+    losses <- qloss_function(data$y, preds)
+
+    ## TRUE for observations NOT drawn into this bootstrap resample
+    excluded <- !(seq_len(n) %in% boot$included_idx)
+
+    loss_sum[excluded]  <- loss_sum[excluded] + losses[excluded]
+    exclude_n[excluded] <- exclude_n[excluded] + 1
+  }
+
+  E_i <- loss_sum / exclude_n
+  mean(E_i)
+}
+
+## Sanity check: leave-one-out bootstrap error for the same n = 20 sample
+set.seed(17)
+loo_boot_err <- loo_bootstrap_error(sample_data, ldf_fit, ldf_predict, B = 50)
+cat(sprintf("Leave-one-out bootstrap error for LDF model (n = %d, B = %d): %.3f\n",
+            nrow(sample_data), 50, loo_boot_err))
+
+```
+
+```{r .632-estimator}
+#| code-fold: true
+#| code-summary: "Show .632 estimator function"
+
+## Equation 24: the .632 estimator
+## apparent_error: err-bar, the resubstitution/training error
+## err1:           Err^(1), the leave-one-out bootstrap error
+estimator_632 <- function(apparent_error, err1){
+    (.368*apparent_error) + (.632*err1)
+}
+
+## Sanity check: .632 estimate for the same n = 20 sample, using the
+## apparent_error and loo_boot_err already computed above
+err_632 <- estimator_632(apparent_error, loo_boot_err)
+cat(sprintf(".632 error for LDF model (n = %d): %.3f\n",
+            nrow(sample_data), err_632))
+
+```
+
+```{r .632pluss-estimator}
+#| code-fold: true
+#| code-summary: "Show .632+ estimator function, with supports"
+
+## Equations 27-32: the .632+ estimator
+
+## Equation 27: No information error rate (gamma-hat)
+## ps: observed proportion of y == 1 (p-hat-1)
+## qs: observed proportion of predictions == 1 (q-hat-1)
+gamma_hat <- function(ps, qs){
+    (ps*(1-qs)) + ((1-ps)*qs)
+}
+
+## Equation 31: Relative overfitting rate
+## NOTE: uses the raw err1 (not the truncated err1'), per the paper's definition
+## NOTE: the paper describes R-hat as ranging from 0 to 1, but the raw
+## formula has no upper cap -- if gamma_hat lands only slightly above
+## apparent_error, the ratio can explode (confirmed via simulation: some
+## replicates produced R_hat_prime in the thousands/billions). Capping
+## at 1 enforces the paper's stated range and avoids a near-zero or
+## negative denominator later in the .632+ formula.
+R_hat_prime <- function(err1, apparent_error, gamma_hat_val){
+
+    cond <- (err1>apparent_error) && (gamma_hat_val>apparent_error)
+    raw <- ifelse(cond, (err1-apparent_error)/(gamma_hat_val-apparent_error), 0)
+    #pmin(raw, 1)
+
+}
+
+## Equation 32: .632+ Rule used for simulations
+estimator_632_plus <- function(err_632, err1, gamma_hat_val, apparent_error, r_hat_prime_val){
+
+    ## Equation 31's truncated leave-one-out bootstrap error, Err^(1)'
+    err1prime <- pmin(err1, gamma_hat_val)
+
+    ## Calculate estimator
+    numerator <- (.368*.632*r_hat_prime_val)
+    denominator <- (1-(.368*r_hat_prime_val))
+
+
+    err_632+((err1prime - apparent_error)*(numerator/denominator))
+}
+
+
+## Sanity check: .632+ estimate for the same n = 20 sample
+set.seed(17)
+sample_data <- generate_data(20)
+ldf_model <- ldf_fit(sample_data)
+preds <- ldf_predict(ldf_model, sample_data)
+apparent_error <- mean(qloss_function(sample_data$y, preds))
+loo_boot_err <- loo_bootstrap_error(sample_data, ldf_fit, ldf_predict, B = 50)
+err_632 <- estimator_632(apparent_error, loo_boot_err)
+gamhat <- gamma_hat(mean(sample_data$y), mean(preds))
+rhatprime <- R_hat_prime(loo_boot_err, apparent_error, gamhat)
+err_632_plus <- estimator_632_plus(err_632, loo_boot_err, gamhat, apparent_error, rhatprime)
+cat(sprintf(".632+ error for LDF model (n = %d): %.3f\n",
+            nrow(sample_data), err_632_plus))
+
+```
+
+```{r monecarlo}
+#| code-fold: true
+#| code-summary: "Show Monte Carlo Loop, for building Table 3"
+
+## Run every estimator once, on one freshly generated training sample.
+## Returns a single ONE-ROW data frame -- one named column per estimator.
+## Stacking many of these rows (one per replicate) is how "one experiment"
+## becomes Table 3's Exp/SD/RMS summaries.
+one_rep <- function(n, fit_fn, predict_fn, B=50, n_test=10000){
+
+    ## All of the functions we just defined
+    sample_data <- generate_data(n)
+    model <- fit_fn(sample_data)
+    preds <- predict_fn(model, sample_data)
+
+    apparent_error <- mean(qloss_function(sample_data$y, preds))
+    true_err <- true_error(model, predict_fn, n_test = n_test)
+    cv1 <- loo_cv_error(sample_data, fit_fn, predict_fn)
+    loo_boot_err <- loo_bootstrap_error(sample_data, fit_fn, predict_fn, B = B)
+    err_632 <- estimator_632(apparent_error, loo_boot_err)
+    gamhat <- gamma_hat(mean(sample_data$y), mean(preds))
+    rhatprime <- R_hat_prime(loo_boot_err, apparent_error, gamhat)
+    err_632_plus <- estimator_632_plus(err_632, loo_boot_err, gamhat, apparent_error, rhatprime)
+
+    ## Put the results together! One row, one column per quantity.
+    data.frame(
+      true_err = true_err,
+      apparent = apparent_error,
+      cv1 = cv1,
+      err1 = loo_boot_err,
+      err_632 = err_632,
+      err_632_plus = err_632_plus
+    )
+}
+
+## Repeat one_rep() n_reps times and stack the one-row results into a
+## single data frame: one row per replicate, one column per estimator.
+montecarlo <- function(n_reps, n, fit_fn, predict_fn, B = 50, n_test = 10000){
+  results_list <- vector("list", n_reps)
+
+  for (r in seq_len(n_reps)) {
+    results_list[[r]] <- one_rep(n, fit_fn, predict_fn, B = B, n_test = n_test)
+  }
+
+  do.call(rbind, results_list)
+}
+
+## Run the simulation for LDF, n = 20 (experiment #3), matching the
+## paper's 200 Monte Carlo replications for this experiment
+set.seed(17)
+sim_results <- montecarlo(n_reps = 200, n = 20, fit_fn = ldf_fit, predict_fn = ldf_predict)
+
+## Summarize: Exp (mean) and SD for each estimator column, and RMS
+## measured against EACH replicate's own true_err (not the overall
+## average true error) -- matching how Table 3 defines RMS
+summary_table <- data.frame(
+  estimator = names(sim_results),
+  Exp = sapply(sim_results, mean),
+  SD  = sapply(sim_results, sd),
+  RMS = sapply(sim_results, function(col) sqrt(mean((col - sim_results$true_err)^2)))
+)
+rownames(summary_table) <- NULL
+summary_table
+
+```
+
+The table above replicates experiment 3 from Table 3 in the paper.
+
+This demonstrates that the .362 estimator has the best overall performance for the LDF Classifier for n = 20, p = 2.
+
 
 **Sources:**
 

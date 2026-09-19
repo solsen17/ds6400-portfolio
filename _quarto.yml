@@ -7,8 +7,11 @@ book:
   date: ""
   chapters:
     - index.qmd
-    - 01_Performance_Measures.qmd
-    - 01_Performance_Measures_2.qmd
+    - part: "01: Performance Measures"
+      chapters:
+        - 01_Performance_Measures_Notes.qmd
+        - 01_Performance_Measures_1.qmd
+        - 01_Performance_Measures_2.qmd
 
 bibliography: references.bib
 
