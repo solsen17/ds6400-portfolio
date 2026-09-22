@@ -1,0 +1,33 @@
+# Week 1
+
+## Student exploration: Partial Dependence Plots (PDP)
+
+Elements of Statistical Learning (ESL) - Section 10.13.2
+https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf
+
+
+
+Molnar 2022 - Section 19 
+https://christophm.github.io/interpretable-ml-book/pdp.html
+
+- Shows marginal effect one or two features have on the predicted outcome of an ML model
+    - can show whether relationship between target and feature is linear, monotonic, or more complex
+
+- Partial function $\hat{f_S}$ is estimated by calculating averages in the training data (aka. Monte Carlo): $$\hat{f_S}(\bold{x}_S) = (1/n) \sum^n_{i=1} \hat{f}(\bold{x}_S, \bold{x}^{(i)}_C)$$
+
+- Equivalent to averaging all ICE curves of a dataset
+
+- You can get PDP plots for categorical features, too.
+    - need further understanding for how this works
+
+**Problems:**
+- Correlated features are an issue
+
+
+**Definitions**
+- Monotonic:
+    - as one variable changes, the other variable always moves in a single direction (increases or decreases) without ever reversing that direction
+    - does not necessarily mean a constant rate of increase or decrease
+    - preserves relative order of data points (higher input always maps to higher output)
+- Monte Carlo method:
+    - a computational technique that uses repeated random sampling to estimate numerical results and model the probability of different outcomes in complex systems

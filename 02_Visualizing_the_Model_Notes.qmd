@@ -1,0 +1,24 @@
+# In class exploration and discussion
+
+Review of Master's Content:
+https://tgstewart.cloud/ipm/visualizing-the-model.html
+
+**Partial Effects Plot**
+
+- Hold all but one of the features constant, and plot the relationship between the variable feature and the outcome variable (ex. x1, x3 are held constant, x2 varies, y is the outcome. plot y vs x2)
+
+**Individual Conditional Expectation (ICE) plot**
+
+- Use some information about the distribution of the features to investigate the relationship between a separate feature and the outcome variable
+- vary x1 and x3 based on their distributions. vary x2 in the same way it was before for the PE plot. For each iteration of the variation in x1 and x3, plot y vs x2, and investigate the relationship.
+
+**Partial Dependence Plot (PDP)**
+
+- the average of each line on the ICE plot
+- a marginal estimate of the PE plot
+
+**Accumulated Local Effect (ALE) plots**
+
+- needed when features are NOT independent (ex. BMI and weight are not independent, but could both be predictors in a model)
+- uses partial derivatives to figure out the direction of the slope at different locations
+- main take home message is that correlated predictors require special visualization techniques to tease apart the relationship that exists between the predictors and outcome

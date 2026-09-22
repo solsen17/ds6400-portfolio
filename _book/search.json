@@ -147,5 +147,38 @@
       "01: Performance Measures",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Week 1</span>"
     ]
+  },
+  {
+    "objectID": "02_Visualizing_the_Model_1.html",
+    "href": "02_Visualizing_the_Model_1.html",
+    "title": "5  Week 1",
+    "section": "",
+    "text": "5.1 Student exploration: Partial Dependence Plots (PDP)\nElements of Statistical Learning (ESL) - Section 10.13.2 https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf\nMolnar 2022 - Section 19 https://christophm.github.io/interpretable-ml-book/pdp.html\nProblems: - Correlated features are an issue\nDefinitions - Monotonic: - as one variable changes, the other variable always moves in a single direction (increases or decreases) without ever reversing that direction - does not necessarily mean a constant rate of increase or decrease - preserves relative order of data points (higher input always maps to higher output) - Monte Carlo method: - a computational technique that uses repeated random sampling to estimate numerical results and model the probability of different outcomes in complex systems",
+    "crumbs": [
+      "02: Visualizing the Model",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Week 1</span>"
+    ]
+  },
+  {
+    "objectID": "02_Visualizing_the_Model_Notes.html",
+    "href": "02_Visualizing_the_Model_Notes.html",
+    "title": "4  In class exploration and discussion",
+    "section": "",
+    "text": "Review of Master’s Content: https://tgstewart.cloud/ipm/visualizing-the-model.html\nPartial Effects Plot\n\nHold all but one of the features constant, and plot the relationship between the variable feature and the outcome variable (ex. x1, x3 are held constant, x2 varies, y is the outcome. plot y vs x2)\n\nIndividual Conditional Expectation (ICE) plot\n\nUse some information about the distribution of the features to investigate the relationship between a separate feature and the outcome variable\nvary x1 and x3 based on their distributions. vary x2 in the same way it was before for the PE plot. For each iteration of the variation in x1 and x3, plot y vs x2, and investigate the relationship.\n\nPartial Dependence Plot (PDP)\n\nthe average of each line on the ICE plot\na marginal estimate of the PE plot\n\nAccumulated Local Effect (ALE) plots\n\nneeded when features are NOT independent (ex. BMI and weight are not independent, but could both be predictors in a model)\nuses partial derivatives to figure out the direction of the slope at different locations\nmain take home message is that correlated predictors require special visualization techniques to tease apart the relationship that exists between the predictors and outcome",
+    "crumbs": [
+      "02: Visualizing the Model",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>In class exploration and discussion</span>"
+    ]
+  },
+  {
+    "objectID": "02_Visualizing_the_Model_1.html#student-exploration-partial-dependence-plots-pdp",
+    "href": "02_Visualizing_the_Model_1.html#student-exploration-partial-dependence-plots-pdp",
+    "title": "5  Week 1",
+    "section": "",
+    "text": "Shows marginal effect one or two features have on the predicted outcome of an ML model\n\ncan show whether relationship between target and feature is linear, monotonic, or more complex\n\nPartial function \\(\\hat{f_S}\\) is estimated by calculating averages in the training data (aka. Monte Carlo): \\[\\hat{f_S}(\\bold{x}_S) = (1/n) \\sum^n_{i=1} \\hat{f}(\\bold{x}_S, \\bold{x}^{(i)}_C)\\]\nEquivalent to averaging all ICE curves of a dataset\nYou can get PDP plots for categorical features, too.\n\nneed further understanding for how this works",
+    "crumbs": [
+      "02: Visualizing the Model",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Week 1</span>"
+    ]
   }
 ]

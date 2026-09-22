@@ -12,6 +12,10 @@ book:
         - 01_Performance_Measures_Notes.qmd
         - 01_Performance_Measures_1.qmd
         - 01_Performance_Measures_2.qmd
+    - part: "02: Visualizing the Model"
+      chapters:
+        - "02_Visualizing_the_Model_Notes.qmd"
+        - "02_Visualizing_the_Model_1.qmd"
 
 bibliography: references.bib
 
