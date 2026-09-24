@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; Week 1 – DS6400 Portfolio</title>
+<title>5&nbsp; Partial Dependence Plots (PDP) – DS6400 Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -116,7 +151,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_Notes.html">02: Visualizing the Model</a></li><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_1.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Week 1</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_Notes.html">02: Visualizing the Model</a></li><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_1.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Partial Dependence Plots (PDP)</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -194,7 +229,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_Visualizing_the_Model_1.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Week 1</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Partial Dependence Plots (PDP)</span></span></a>
   </div>
 </li>
       </ul>
@@ -209,16 +244,18 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#student-exploration-partial-dependence-plots-pdp" id="toc-student-exploration-partial-dependence-plots-pdp" class="nav-link active" data-scroll-target="#student-exploration-partial-dependence-plots-pdp"><span class="header-section-number">5.1</span> Student exploration: Partial Dependence Plots (PDP)</a></li>
+  <li><a href="#student-exploration" id="toc-student-exploration" class="nav-link active" data-scroll-target="#student-exploration"><span class="header-section-number">5.1</span> Student Exploration</a></li>
+  <li><a href="#motivating-idea-for-the-pdp" id="toc-motivating-idea-for-the-pdp" class="nav-link" data-scroll-target="#motivating-idea-for-the-pdp"><span class="header-section-number">5.2</span> Motivating Idea for the PDP</a></li>
+  <li><a href="#exploration" id="toc-exploration" class="nav-link" data-scroll-target="#exploration"><span class="header-section-number">5.3</span> Exploration</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_Notes.html">02: Visualizing the Model</a></li><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_1.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Week 1</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_Notes.html">02: Visualizing the Model</a></li><li class="breadcrumb-item"><a href="./02_Visualizing_the_Model_1.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Partial Dependence Plots (PDP)</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Week 1</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Partial Dependence Plots (PDP)</span></h1>
 </div>
 
 
@@ -235,24 +272,309 @@ window.Quarto = {
 </header>
 
 
-<section id="student-exploration-partial-dependence-plots-pdp" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="student-exploration-partial-dependence-plots-pdp"><span class="header-section-number">5.1</span> Student exploration: Partial Dependence Plots (PDP)</h2>
-<p>Elements of Statistical Learning (ESL) - Section 10.13.2 https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf</p>
-<p>Molnar 2022 - Section 19 https://christophm.github.io/interpretable-ml-book/pdp.html</p>
+<section id="student-exploration" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="student-exploration"><span class="header-section-number">5.1</span> Student Exploration</h2>
+<p><strong>Resources</strong></p>
+<ol type="1">
+<li><a href="https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf">Elements of Statistical Learning (ESL) - Section 10.13.2</a></li>
+<li><a href="https://christophm.github.io/interpretable-ml-book/pdp.html">Molnar 2022 - Section 19</a></li>
+</ol>
+</section>
+<section id="motivating-idea-for-the-pdp" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="motivating-idea-for-the-pdp"><span class="header-section-number">5.2</span> Motivating Idea for the PDP</h2>
+<p>The Partial Effects plot and Independent Conditional Expectation (ICE) plot help with visualizing a model when we don’t know the inner workings, specifically the relationships between features and outcomes. Partial Effects plots are used to investigate a single feature while holding all other features constant. ICE plots investigate a single feature while allowing the other features to vary across every individual value in the dataset. You can see how ICE plots may provide more information than the Partial Effects plot, but also provide too many lines on a given plot to be useful.</p>
+<p>Enter the Partial Dependence Plot (PDP). We’ll take the average line across all of the ICE plot lines, to investigate the average relationship of a feature to the predicted outcome.</p>
+<p><strong>Partial Dependence Plot (PDP)</strong></p>
+<p>A partial dependence plot shows the marginal effect one or two features have on the predicted outcome of an ML model. It can show whether the relationship between target and feature is linear, monotonic, or more complex.</p>
+<p>The partial dependence function is defined as</p>
+<p><span class="math display">\[\hat{f_S}(\mathbf{x}_S) = \mathbb{E_{\mathbf{X}_C}}[\hat{f_S}(\mathbf{x}_S, X_C)]\]</span></p>
 <ul>
-<li><p>Shows marginal effect one or two features have on the predicted outcome of an ML model</p>
+<li><p><span class="math inline">\(\mathbf{x_s}\)</span> are the features which are plotted on the x axis of the PDP. Typically only one feature is in the set <span class="math inline">\(S\)</span>. This is the feature we are investigating the effect of on the prediction.</p></li>
+<li><p><span class="math inline">\(X_C\)</span> are the other features used in the machine learning model <span class="math inline">\(\hat{f}\)</span></p></li>
+<li><p>If the feature vectors <span class="math inline">\(\mathbf{x_s}\)</span> and <span class="math inline">\(\mathbf{x_C}\)</span> are combined, they make up the total data <span class="math inline">\(\mathbf{X}\)</span></p></li>
+<li><p>The partial function <span class="math inline">\(\hat{f_S}\)</span> is estimated by calculating averages in the training data (aka. Monte Carlo): <span class="math display">\[\hat{f_S}(\mathbf{x}_S) = (1/n) \sum^n_{i=1} \hat{f}(\mathbf{x}_S, \mathbf{x}^{(i)}_C)\]</span></p></li>
+<li><p>This step is equivalent to averaging all of the ICE curves of the dataset. For each of the points along the x axis for <span class="math inline">\(\mathbf{x_s}\)</span>, you take the mean across the vertical direction (<span class="math inline">\(\mathbf{x}^{(i)}_C\)</span>).</p></li>
+<li><p>So in this equation,</p>
 <ul>
-<li>can show whether relationship between target and feature is linear, monotonic, or more complex</li>
-</ul></li>
-<li><p>Partial function <span class="math inline">\(\hat{f_S}\)</span> is estimated by calculating averages in the training data (aka. Monte Carlo): <span class="math display">\[\hat{f_S}(\bold{x}_S) = (1/n) \sum^n_{i=1} \hat{f}(\bold{x}_S, \bold{x}^{(i)}_C)\]</span></p></li>
-<li><p>Equivalent to averaging all ICE curves of a dataset</p></li>
-<li><p>You can get PDP plots for categorical features, too.</p>
-<ul>
-<li>need further understanding for how this works</li>
+<li><span class="math inline">\(n\)</span> is the number of instances in the dataset.</li>
+<li><span class="math inline">\(\mathbf{x}^{(i)}_C\)</span> are actual feature values from the dataset for features we are not interested in</li>
 </ul></li>
 </ul>
-<p><strong>Problems:</strong> - Correlated features are an issue</p>
-<p><strong>Definitions</strong> - Monotonic: - as one variable changes, the other variable always moves in a single direction (increases or decreases) without ever reversing that direction - does not necessarily mean a constant rate of increase or decrease - preserves relative order of data points (higher input always maps to higher output) - Monte Carlo method: - a computational technique that uses repeated random sampling to estimate numerical results and model the probability of different outcomes in complex systems</p>
+</section>
+<section id="exploration" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="exploration"><span class="header-section-number">5.3</span> Exploration</h2>
+<p>Let’s explore how to create and interpret the PDP.</p>
+<p>First, we’ll generate some data from the following distribution. <span class="math display">\[
+\begin{aligned}
+E[Y \mid X] &amp;= \sqrt{5}\,\operatorname{sigmoid}(X_1 + X_3) + \sqrt{5}\,\operatorname{sigmoid}(X_2)\, X_3 \\
+V[Y \mid X] &amp;= 1 \\
+\text{where} \quad &amp; X_1, X_2 \sim N(0, 1) \\
+&amp; X_3 \sim \text{Bernoulli}(p = 0.4) \\
+&amp; \operatorname{sigmoid}(x) = \frac{1}{1 + e^{-x}}
+\end{aligned}
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show data generation function</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sigmoid <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>x))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>generate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  X1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  X2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  X3 <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.4</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">5</span>) <span class="sc">*</span> <span class="fu">sigmoid</span>(X1 <span class="sc">+</span> X3) <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">5</span>) <span class="sc">*</span> <span class="fu">sigmoid</span>(X2) <span class="sc">*</span> X3</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  Y  <span class="ot">&lt;-</span> mu <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(Y, X1, X2, X3)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">17</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">generate_data</span>(<span class="dv">1000</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#head(df)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Now we’ll fit some models on the data. First, a random forest.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show random forest code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(randomForest)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">generate_data</span>(<span class="dv">1000</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">generate_data</span>(<span class="dv">1000</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>model_formula <span class="ot">&lt;-</span> Y <span class="sc">~</span> X1 <span class="sc">+</span> X2 <span class="sc">+</span> X3</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(model_formula, <span class="at">data =</span> train_data, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf, <span class="at">newdata =</span> test_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>We have a fitted model that can generate predictions (now our <span class="math inline">\(Y\)</span> values or outcomes), and we want to investigate the effect of say <span class="math inline">\(X_2\)</span> on <span class="math inline">\(Y\)</span>.</p>
+<p>Let’s walk through building the PDP to see this.</p>
+<p>First, here’s what our data looks like</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">generate_data</span>(<span class="dv">1000</span>) <span class="co"># generate some data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf, <span class="at">newdata =</span> df) <span class="co"># use the RF model to create predicted outcomes</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>preds <span class="ot">&lt;-</span> preds <span class="co"># save predicted values to df</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Y          X1         X2 X3     preds
+1  2.1390719  0.05183928 -0.8736403  1 2.6070967
+2  5.5903463  1.21341246  1.2258274  1 3.3018672
+3  1.4677137 -0.98338726 -0.1526766  0 0.7781615
+4 -0.7025197 -0.39636582 -0.8310759  0 1.1085454
+5  2.1489275 -0.04981333  0.7814832  1 2.9208151
+6 -1.1496933 -1.44647693 -1.2100006  0 0.7678897</code></pre>
+</div>
+</div>
+<p>Then, we’ll want to visualize the PDP plot. Recall that we’ll have our Predictions on the y-axis, <span class="math inline">\(X_2\)</span> on the x-axis. <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> vary across all of their real values in the dataset, and we get the average line to put on the plot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a partial effect plot for each draw, store it in O</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>O <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df)){</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    R <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">X1 =</span> df[i,<span class="st">"X1"</span>], <span class="at">X2 =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>,<span class="at">by=</span><span class="fl">0.01</span>), <span class="at">X3 =</span> df[i,<span class="st">"X3"</span>])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    O[[i]] <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf, <span class="at">newdata =</span> R)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">"cbind"</span>, O) <span class="sc">|&gt;</span> <span class="fu">rowMeans</span>() </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(R[,<span class="dv">2</span>], P, <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">4</span>), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Visualizing_the_Model_1_files/figure-html/pdp-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To contextualize this, it can be helpful to see the ICE plots with the PDP plot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Partial effect plot for the first random x</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">X1 =</span> df[<span class="dv">1</span>,<span class="st">"X1"</span>], <span class="at">X2 =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>,<span class="at">by=</span><span class="fl">0.01</span>), <span class="at">X3 =</span> df[<span class="dv">1</span>,<span class="st">"X3"</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(R[,<span class="dv">2</span>], <span class="fu">predict</span>(rf, <span class="at">newdata =</span> R), <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">4</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay the plot for all the xs</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">nrow</span>(df)){</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    R <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">X1 =</span> df[i,<span class="st">"X1"</span>], <span class="at">X2 =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>,<span class="at">by=</span><span class="fl">0.01</span>), <span class="at">X3 =</span> df[i,<span class="st">"X3"</span>])</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(R[,<span class="dv">2</span>], <span class="fu">predict</span>(rf, <span class="at">newdata =</span> R), <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"#6b656550"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(R[,<span class="dv">2</span>], P, <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">4</span>), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Visualizing_the_Model_1_files/figure-html/ice-pdp-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Next, let’s repeat for the linear regression with splines.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(splines)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>lm_spline <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> <span class="fu">ns</span>(X1, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">+</span> <span class="fu">ns</span>(X2, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">*</span> X3, <span class="at">data =</span> df)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>O <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df)){</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    R <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">X1 =</span> df[i,<span class="st">"X1"</span>], <span class="at">X2 =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>,<span class="at">by=</span><span class="fl">0.01</span>), <span class="at">X3 =</span> df[i,<span class="st">"X3"</span>])</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    O[[i]] <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_spline, <span class="at">newdata =</span> R)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">"cbind"</span>, O) <span class="sc">|&gt;</span> <span class="fu">rowMeans</span>() </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(R[,<span class="dv">2</span>], P, <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">4</span>), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Visualizing_the_Model_1_files/figure-html/lrspline-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Partial effect plot for the first random x</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">X1 =</span> df[<span class="dv">1</span>,<span class="st">"X1"</span>], <span class="at">X2 =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>,<span class="at">by=</span><span class="fl">0.01</span>), <span class="at">X3 =</span> df[<span class="dv">1</span>,<span class="st">"X3"</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(R[,<span class="dv">2</span>], <span class="fu">predict</span>(lm_spline, <span class="at">newdata =</span> R), <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">4</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay the plot for all the xs</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">nrow</span>(df)){</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    R <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">X1 =</span> df[i,<span class="st">"X1"</span>], <span class="at">X2 =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">3</span>,<span class="at">by=</span><span class="fl">0.01</span>), <span class="at">X3 =</span> df[i,<span class="st">"X3"</span>])</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(R[,<span class="dv">2</span>], <span class="fu">predict</span>(lm_spline, <span class="at">newdata =</span> R), <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"#6b656550"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(R[,<span class="dv">2</span>], P, <span class="at">xlab =</span> <span class="st">"X2"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">4</span>), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Visualizing_the_Model_1_files/figure-html/ice-pdp-spline-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<!--
+
+
+::: {.cell}
+
+```{.r .cell-code}
+# ---- Step 0: the ingredients --------------------------------------------
+# dat : the simulated data frame (only its X1, X2, X3 columns are used here)
+# rf  : the random forest already fit on dat
+
+# ---- Step 1: one PDP point by hand (X1 = 0.5) ----------------------------
+x_value <- 0.5
+
+dat_modified <- df                 # copy the original data frame
+dat_modified$X1 <- x_value          # set X1 = 0.5 for EVERY row; X2 and X3 stay as observed
+head(dat_modified)                  # check: X1 column is all 0.5, X2 and X3 unchanged
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+           Y  X1         X2 X3     preds
+1  2.1390719 0.5 -0.8736403  1 2.6070967
+2  5.5903463 0.5  1.2258274  1 3.3018672
+3  1.4677137 0.5 -0.1526766  0 0.7781615
+4 -0.7025197 0.5 -0.8310759  0 1.1085454
+5  2.1489275 0.5  0.7814832  1 2.9208151
+6 -1.1496933 0.5 -1.2100006  0 0.7678897
+```
+
+
+:::
+
+```{.r .cell-code}
+preds <- predict(rf, newdata = dat_modified)   # one RF prediction per row (1000 values)
+head(preds)                                    # predictions differ because X2, X3 differ
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+       1        2        3        4        5        6 
+2.641163 3.118263 1.447412 1.347913 3.053233 1.454602 
+```
+
+
+:::
+
+```{.r .cell-code}
+pd_point <- mean(preds)             # average the predictions -> one point on the PDP
+pd_point
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] 2.003998
+```
+
+
+:::
+
+```{.r .cell-code}
+# ---- Step 2: choose the grid of X1 values to evaluate --------------------
+grid <- seq(-3, 3, length.out = 50) # 50 evenly spaced X1 values
+pd_rf <- numeric(length(grid))      # empty vector to store the 50 PDP values
+
+# ---- Step 3: repeat Step 1 for every grid value --------------------------
+for (k in seq_along(grid)) {
+  dat_modified <- df               # fresh copy of the data each time
+  dat_modified$X1 <- grid[k]        # set X1 to the k-th grid value for all rows
+  preds <- predict(rf, newdata = dat_modified)   # predict for all rows
+  pd_rf[k] <- mean(preds)           # store the average prediction
+}
+
+pdp_table <- data.frame(X1 = grid, partial_dependence = pd_rf)
+head(pdp_table)                     # each row is one point on the PDP curve
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+         X1 partial_dependence
+1 -3.000000           1.286258
+2 -2.877551           1.312560
+3 -2.755102           1.320368
+4 -2.632653           1.324605
+5 -2.510204           1.293062
+6 -2.387755           1.307635
+```
+
+
+:::
+
+```{.r .cell-code}
+# ---- Step 4: plot the PDP ------------------------------------------------
+plot(pdp_table$X1, pdp_table$partial_dependence,
+     type = "l", lwd = 2, col = "steelblue",
+     xlab = "X1", ylab = "Average predicted Y",
+     main = "Partial dependence of X1 (random forest)")
+rug(df$X1)                         # tick marks show where the observed X1 data lie
+```
+
+::: {.cell-output .cell-output-stderr}
+
+```
+Warning in rug(df$X1): some values will be clipped
+```
+
+
+:::
+
+::: {.cell-output-display}
+![](02_Visualizing_the_Model_1_files/figure-html/claude-plot-1.png){width=672}
+:::
+:::
+
+
+
+**Definitions**
+
+- Monotonic:
+    - as one variable changes, the other variable always moves in a single direction (increases or decreases) without ever reversing that direction
+    - does not necessarily mean a constant rate of increase or decrease
+    - preserves relative order of data points (higher input always maps to higher output)
+- Monte Carlo method:
+    - a computational technique that uses repeated random sampling to estimate numerical results and model the probability of different outcomes in complex systems
+
+
+-->
 
 
 </section>

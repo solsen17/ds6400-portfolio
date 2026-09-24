@@ -1,33 +1,229 @@
-# Week 1
+# Partial Dependence Plots (PDP)
 
-## Student exploration: Partial Dependence Plots (PDP)
+## Student Exploration
 
-Elements of Statistical Learning (ESL) - Section 10.13.2
-https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf
+**Resources**
+
+1. [Elements of Statistical Learning (ESL) - Section 10.13.2](https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf)
+2. [Molnar 2022 - Section 19 ](https://christophm.github.io/interpretable-ml-book/pdp.html)
+
+## Motivating Idea for the PDP
+
+The Partial Effects plot and Independent Conditional Expectation (ICE) plot help with visualizing a model when we don't know the inner workings, specifically the relationships between features and outcomes. Partial Effects plots are used to investigate a single feature while holding all other features constant. ICE plots investigate a single feature while allowing the other features to vary across every individual value in the dataset. You can see how ICE plots may provide more information than the Partial Effects plot, but also provide too many lines on a given plot to be useful.
+
+Enter the Partial Dependence Plot (PDP). We'll take the average line across all of the ICE plot lines, to investigate the average relationship of a feature to the predicted outcome.
+
+**Partial Dependence Plot (PDP)**
+
+A partial dependence plot shows the marginal effect one or two features have on the predicted outcome of an ML model. It can show whether the relationship between target and feature is linear, monotonic, or more complex.
+
+The partial dependence function is defined as
+
+$$\hat{f_S}(\mathbf{x}_S) = \mathbb{E_{\mathbf{X}_C}}[\hat{f_S}(\mathbf{x}_S, X_C)]$$
+
+- $\mathbf{x_s}$ are the features which are plotted on the x axis of the PDP. Typically only one feature is in the set $S$. This is the feature we are investigating the effect of on the prediction.
+- $X_C$ are the other features used in the machine learning model $\hat{f}$
+- If the feature vectors $\mathbf{x_s}$ and $\mathbf{x_C}$ are combined, they make up the total data $\mathbf{X}$
 
 
+- The partial function $\hat{f_S}$ is estimated by calculating averages in the training data (aka. Monte Carlo):
+ $$\hat{f_S}(\mathbf{x}_S) = (1/n) \sum^n_{i=1} \hat{f}(\mathbf{x}_S, \mathbf{x}^{(i)}_C)$$
 
-Molnar 2022 - Section 19 
-https://christophm.github.io/interpretable-ml-book/pdp.html
+- This step is equivalent to averaging all of the ICE curves of the dataset. For each of the points along the x axis for $\mathbf{x_s}$, you take the mean across the vertical direction ($\mathbf{x}^{(i)}_C$).
+- So in this equation, 
+    - $n$ is the number of instances in the dataset.
+    - $\mathbf{x}^{(i)}_C$ are actual feature values from the dataset for features we are not interested in
 
-- Shows marginal effect one or two features have on the predicted outcome of an ML model
-    - can show whether relationship between target and feature is linear, monotonic, or more complex
 
-- Partial function $\hat{f_S}$ is estimated by calculating averages in the training data (aka. Monte Carlo): $$\hat{f_S}(\bold{x}_S) = (1/n) \sum^n_{i=1} \hat{f}(\bold{x}_S, \bold{x}^{(i)}_C)$$
+## Exploration
 
-- Equivalent to averaging all ICE curves of a dataset
+Let's explore how to create and interpret the PDP.
 
-- You can get PDP plots for categorical features, too.
-    - need further understanding for how this works
+First, we'll generate some data from the following distribution.
+$$
+\begin{aligned}
+E[Y \mid X] &= \sqrt{5}\,\operatorname{sigmoid}(X_1 + X_3) + \sqrt{5}\,\operatorname{sigmoid}(X_2)\, X_3 \\
+V[Y \mid X] &= 1 \\
+\text{where} \quad & X_1, X_2 \sim N(0, 1) \\
+& X_3 \sim \text{Bernoulli}(p = 0.4) \\
+& \operatorname{sigmoid}(x) = \frac{1}{1 + e^{-x}}
+\end{aligned}
+$$
+```{r generate-data}
+#| code-fold: true
+#| code-summary: "Show data generation function"
 
-**Problems:**
-- Correlated features are an issue
+sigmoid <- function(x) 1 / (1 + exp(-x))
+
+generate_data <- function(n) {
+  X1 <- rnorm(n, mean = 0, sd = 1)
+  X2 <- rnorm(n, mean = 0, sd = 1)
+  X3 <- rbinom(n, size = 1, prob = 0.4)
+  mu <- sqrt(5) * sigmoid(X1 + X3) + sqrt(5) * sigmoid(X2) * X3
+  Y  <- mu + rnorm(n, mean = 0, sd = 1)
+  data.frame(Y, X1, X2, X3)
+}
+
+set.seed(17)
+df <- generate_data(1000)
+#head(df)
+```
+
+Now we'll fit some models on the data. First, a random forest.
+
+```{r random-forest}
+#| code-fold: true
+#| code-summary: "Show random forest code"
+#| message: false
+library(randomForest)
+
+train_data <- generate_data(1000)
+test_data <- generate_data(1000)
+
+model_formula <- Y ~ X1 + X2 + X3
+rf <- randomForest(model_formula, data = train_data, ntree = 500)
+
+preds <- predict(rf, newdata = test_data)
+
+```
+
+We have a fitted model that can generate predictions (now our $Y$ values or outcomes), and we want to investigate the effect of say $X_2$ on $Y$.
+
+Let's walk through building the PDP to see this.
+
+First, here's what our data looks like
+
+```{r pdp-data}
+
+df <- generate_data(1000) # generate some data
+preds <- predict(rf, newdata = df) # use the RF model to create predicted outcomes
+df$preds <- preds # save predicted values to df
+head(df)
+
+```
+
+Then, we'll want to visualize the PDP plot. Recall that we'll have our Predictions on the y-axis, $X_2$ on the x-axis. $X_1$ and $X_3$ vary across all of their real values in the dataset, and we get the average line to put on the plot.
+
+```{r pdp-plot}
+
+# Create a partial effect plot for each draw, store it in O
+O <- list()
+for(i in 1:nrow(df)){
+    R <- expand.grid(X1 = df[i,"X1"], X2 = seq(-3,3,by=0.01), X3 = df[i,"X3"])
+    O[[i]] <- predict(rf, newdata = R)
+}
+
+P <- do.call("cbind", O) |> rowMeans() 
+plot(R[,2], P, xlab = "X2", ylab = "y", type = "l", ylim = c(-1,4), lwd = 3, col = "red")
+
+```
+
+To contextualize this, it can be helpful to see the ICE plots with the PDP plot.
+
+```{r ice-pdp}
+
+# Partial effect plot for the first random x
+R <- expand.grid(X1 = df[1,"X1"], X2 = seq(-3,3,by=0.01), X3 = df[1,"X3"])
+plot(R[,2], predict(rf, newdata = R), xlab = "X2", ylab = "y", type = "l", ylim = c(-1,4))
+
+# Overlay the plot for all the xs
+for(i in 2:nrow(df)){
+    R <- expand.grid(X1 = df[i,"X1"], X2 = seq(-3,3,by=0.01), X3 = df[i,"X3"])
+    lines(R[,2], predict(rf, newdata = R), xlab = "X2", ylab = "y", type = "l", col = "#6b656550")
+}
+lines(R[,2], P, xlab = "X2", ylab = "y", type = "l", ylim = c(-1,4), lwd = 3, col = "red")
+
+```
+
+Next, let's repeat for the linear regression with splines.
+
+```{r lrspline}
+
+library(splines)
+
+lm_spline <- lm(Y ~ ns(X1, df = 4) + ns(X2, df = 4) * X3, data = df)
+
+O <- list()
+for(i in 1:nrow(df)){
+    R <- expand.grid(X1 = df[i,"X1"], X2 = seq(-3,3,by=0.01), X3 = df[i,"X3"])
+    O[[i]] <- predict(lm_spline, newdata = R)
+}
+
+P <- do.call("cbind", O) |> rowMeans() 
+plot(R[,2], P, xlab = "X2", ylab = "y", type = "l", ylim = c(-1,4), lwd = 3, col = "red")
+
+```
+
+```{r ice-pdp-spline}
+
+# Partial effect plot for the first random x
+R <- expand.grid(X1 = df[1,"X1"], X2 = seq(-3,3,by=0.01), X3 = df[1,"X3"])
+plot(R[,2], predict(lm_spline, newdata = R), xlab = "X2", ylab = "y", type = "l", ylim = c(-1,4))
+
+# Overlay the plot for all the xs
+for(i in 2:nrow(df)){
+    R <- expand.grid(X1 = df[i,"X1"], X2 = seq(-3,3,by=0.01), X3 = df[i,"X3"])
+    lines(R[,2], predict(lm_spline, newdata = R), xlab = "X2", ylab = "y", type = "l", col = "#6b656550")
+}
+lines(R[,2], P, xlab = "X2", ylab = "y", type = "l", ylim = c(-1,4), lwd = 3, col = "red")
+
+```
+
+
+<!--
+
+```{r claude-plot}
+
+# ---- Step 0: the ingredients --------------------------------------------
+# dat : the simulated data frame (only its X1, X2, X3 columns are used here)
+# rf  : the random forest already fit on dat
+
+# ---- Step 1: one PDP point by hand (X1 = 0.5) ----------------------------
+x_value <- 0.5
+
+dat_modified <- df                 # copy the original data frame
+dat_modified$X1 <- x_value          # set X1 = 0.5 for EVERY row; X2 and X3 stay as observed
+head(dat_modified)                  # check: X1 column is all 0.5, X2 and X3 unchanged
+
+preds <- predict(rf, newdata = dat_modified)   # one RF prediction per row (1000 values)
+head(preds)                                    # predictions differ because X2, X3 differ
+
+pd_point <- mean(preds)             # average the predictions -> one point on the PDP
+pd_point
+
+# ---- Step 2: choose the grid of X1 values to evaluate --------------------
+grid <- seq(-3, 3, length.out = 50) # 50 evenly spaced X1 values
+pd_rf <- numeric(length(grid))      # empty vector to store the 50 PDP values
+
+# ---- Step 3: repeat Step 1 for every grid value --------------------------
+for (k in seq_along(grid)) {
+  dat_modified <- df               # fresh copy of the data each time
+  dat_modified$X1 <- grid[k]        # set X1 to the k-th grid value for all rows
+  preds <- predict(rf, newdata = dat_modified)   # predict for all rows
+  pd_rf[k] <- mean(preds)           # store the average prediction
+}
+
+pdp_table <- data.frame(X1 = grid, partial_dependence = pd_rf)
+head(pdp_table)                     # each row is one point on the PDP curve
+
+# ---- Step 4: plot the PDP ------------------------------------------------
+plot(pdp_table$X1, pdp_table$partial_dependence,
+     type = "l", lwd = 2, col = "steelblue",
+     xlab = "X1", ylab = "Average predicted Y",
+     main = "Partial dependence of X1 (random forest)")
+rug(df$X1)                         # tick marks show where the observed X1 data lie
+
+```
 
 
 **Definitions**
+
 - Monotonic:
     - as one variable changes, the other variable always moves in a single direction (increases or decreases) without ever reversing that direction
     - does not necessarily mean a constant rate of increase or decrease
     - preserves relative order of data points (higher input always maps to higher output)
 - Monte Carlo method:
     - a computational technique that uses repeated random sampling to estimate numerical results and model the probability of different outcomes in complex systems
+
+
+-->
