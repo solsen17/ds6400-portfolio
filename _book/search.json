@@ -118,5 +118,38 @@
       "02: Visualizing the Model",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Partial Dependence Plots (PDP)</span>"
     ]
+  },
+  {
+    "objectID": "03_Model_Notes.html",
+    "href": "03_Model_Notes.html",
+    "title": "6  In class exploration and discussion",
+    "section": "",
+    "text": "6.0.1 Neural Networks\nReview of Master’s Content: https://tgstewart.cloud/ml1/03-four-models.html\nFrom Tom’s content: “it constructs a prediction surface from the predictors using a particular functional form, which is often called a network.”\nWhat does that mean? It is a continuous prediction surface that is smooth, not rectangular or stair-step like you would see in K-Nearest Neighbors or Random Forests. All points in the training set contribute to all weights in the network, so information sharing is global.\nIn the diagram 5.21, x1 and x2 are the individual neurons receiving predictors, the first layer. It passes through no hidden layers, so the predictors are directly related to the prediction \\(\\hat{y}\\). There are weights on the lines connecting the neurons, which we can consider the betas in a linear regression. Therefore, this representaiton is equivalent to a linear regression.\nWe need nonlinear activation functions in the hidden layers, because otherwise we’d just be modeling linear relationships, since our network is just doing multiplication and addition throughout the layers. - From Tom: “Without nonlinear activation, the forward pass simplifies to … linear regression. Every additional hidden layer without activation collapses in the same way. The nonlinear activation is the essential ingredient.”",
+    "crumbs": [
+      "03: 4 models",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>In class exploration and discussion</span>"
+    ]
+  },
+  {
+    "objectID": "03_Model_Notes.html#todo",
+    "href": "03_Model_Notes.html#todo",
+    "title": "6  In class exploration and discussion",
+    "section": "6.1 TODO",
+    "text": "6.1 TODO\nDraw up the simplest network we can put on the white board and walk through it. - A network with no hidden layers is equivalent to linear regression.",
+    "crumbs": [
+      "03: 4 models",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>In class exploration and discussion</span>"
+    ]
+  },
+  {
+    "objectID": "03_Model_Notes.html#to-do",
+    "href": "03_Model_Notes.html#to-do",
+    "title": "6  In class exploration and discussion",
+    "section": "6.2 TO DO",
+    "text": "6.2 TO DO\nWrite out the math behind a neural network for reference on the board.",
+    "crumbs": [
+      "03: 4 models",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>In class exploration and discussion</span>"
+    ]
   }
 ]

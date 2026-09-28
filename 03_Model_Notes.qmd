@@ -1,0 +1,26 @@
+# In class exploration and discussion
+
+Review of Master's Content:
+https://tgstewart.cloud/ml1/03-four-models.html
+
+### Neural Networks
+
+From Tom's content:
+"it constructs a prediction surface from the predictors using a particular functional form, which is often called a network."
+
+What does that mean?
+It is a continuous prediction surface that is smooth, not rectangular or stair-step like you would see in K-Nearest Neighbors or Random Forests.
+All points in the training set contribute to all weights in the network, so information sharing is **global.**
+
+
+In the diagram 5.21, x1 and x2 are the individual neurons receiving predictors, the first layer. It passes through no hidden layers, so the predictors are directly related to the prediction $\hat{y}$. There are weights on the lines connecting the neurons, which we can consider the betas in a linear regression. Therefore, this representaiton is equivalent to a linear regression.
+
+We need nonlinear activation functions in the hidden layers, because otherwise we'd just be modeling linear relationships, since our network is just doing multiplication and addition throughout the layers.
+- From Tom: "Without nonlinear activation, the forward pass simplifies to ... linear regression. Every additional hidden layer without activation collapses in the same way. The nonlinear activation is the essential ingredient."
+
+## TODO
+Draw up the simplest network we can put on the white board and walk through it.
+- A network with no hidden layers is equivalent to linear regression.
+
+## TO DO
+Write out the math behind a neural network for reference on the board.

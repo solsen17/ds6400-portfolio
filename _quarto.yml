@@ -16,6 +16,14 @@ book:
       chapters:
         - "02_Visualizing_the_Model_Notes.qmd"
         - "02_Visualizing_the_Model_1.qmd"
+    - part: "03: 4 models"
+      chapters:
+        - "03_Model_Notes.qmd"
+        - "03_Generalized_Linear_Model.qmd"
+        - "03_Neural_Net.qmd"
+        - "03_Random_Forest.qmd"
+        - "03_Ordinal_Regression.qmd"
+        - "03_Comparison.qmd"
 
 bibliography: references.bib
 
