@@ -76,6 +76,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -223,8 +252,17 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#motivating-ideas-and-chronology" id="toc-motivating-ideas-and-chronology" class="nav-link active" data-scroll-target="#motivating-ideas-and-chronology"><span class="header-section-number">8.0.1</span> Motivating ideas and chronology</a></li>
+  <li><a href="#math-behind-the-model" id="toc-math-behind-the-model" class="nav-link" data-scroll-target="#math-behind-the-model"><span class="header-section-number">8.0.2</span> Math behind the model</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"><span class="header-section-number">8.0.3</span> Sources:</a></li>
+  <li><a href="#future-reference" id="toc-future-reference" class="nav-link" data-scroll-target="#future-reference"><span class="header-section-number">8.0.4</span> Future Reference:</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -248,8 +286,724 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="motivating-ideas-and-chronology" class="level3" data-number="8.0.1">
+<h3 data-number="8.0.1" class="anchored" data-anchor-id="motivating-ideas-and-chronology"><span class="header-section-number">8.0.1</span> Motivating ideas and chronology</h3>
+<p>Our brains are incredible recognition and prediction machines. How do they work? Can we replicate the behavior artificially in a computer?</p>
+<p>The provided papers give an chronology of the ideas in published literature.</p>
+<ol type="1">
+<li>McColloch &amp; Pitts (1943): A Logical Calculus of the Ideas Immanent in Nervous Activity
+<ul>
+<li>Turning neuroscience into calculus.</li>
+<li>The first mathematical model of a neural network using binary neurons for computation.</li>
+</ul></li>
+<li>Rosenblatt (1958): The Perceptron: A probabilistic Model for Information Storage and Organization in the Brain
+<ul>
+<li>Tackles the questions of information storage and memory for how we regognize things.</li>
+<li>Introducing the perceptron: the theory for a hpyothetical nervous system, or machine.</li>
+</ul></li>
+<li>Rumelhart, Hinton &amp; Williams (1986): Learning representations by back-propagating errors
+<ul>
+<li>Introducing back-propagation for “networks of neurone-like units”.</li>
+<li>New way to train networks with gradient descent on the errors, so that features can be discovered in hidden layers.</li>
+</ul></li>
+</ol>
+</section>
+<section id="math-behind-the-model" class="level3" data-number="8.0.2">
+<h3 data-number="8.0.2" class="anchored" data-anchor-id="math-behind-the-model"><span class="header-section-number">8.0.2</span> Math behind the model</h3>
+<p>Let’s jump into the notation and formulas with some visuals along the way to help out.</p>
+<section id="some-definitions" class="level4" data-number="8.0.2.1">
+<h4 data-number="8.0.2.1" class="anchored" data-anchor-id="some-definitions"><span class="header-section-number">8.0.2.1</span> Some definitions</h4>
+<p><strong>Neuron</strong>: The building block of a neural network.</p>
+<ul>
+<li>A function that takes inputs and produces a single number output (between 0 and 1)</li>
+<li>Inputs in the first set of neurons (first layer) are the predictors.</li>
+<li>Inputs in future sets of neurons (hidden layers) are weighted sums of outputs from the prior layer.</li>
+</ul>
+<p><strong>Layers</strong>: Arrangements of neurons.</p>
+<ul>
+<li>Input layer: the first layer of neurons that receives the predictors.</li>
+<li>Output layer: the final layer of neurons that produces the predictions <span class="math inline">\(\hat{y}\)</span></li>
+<li>Hidden layer: layers inbetween the input and output. Can be any number of layers we choose.
+<ul>
+<li>transforms output of the previous layer</li>
+<li>able to distingush features and their relationships to the predictions</li>
+</ul></li>
+</ul>
+<p>Simplest example: No hidden layers.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-nn-zero-layers" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-zero-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 174.00 131.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 127)">
+<title>nn0</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-127 170,-127 170,4 -4,4"></polygon>
+<!-- x1 -->
+<g id="node1" class="node">
+<title>x1</title>
+<ellipse fill="#aed6f1" stroke="black" cx="20" cy="-103" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="20" y="-99.1" font-family="Times,serif" font-size="13.00">x₁</text>
+</g>
+<!-- out -->
+<g id="node3" class="node">
+<title>out</title>
+<ellipse fill="#a9dfbf" stroke="black" cx="146" cy="-61" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="146" y="-57.1" font-family="Times,serif" font-size="13.00">ŷ</text>
+</g>
+<!-- x1&#45;&gt;out -->
+<g id="edge1" class="edge">
+<title>x1-&gt;out</title>
+<path fill="none" stroke="black" d="M39.3,-96.8C59.81,-89.85 93.31,-78.51 117.1,-70.45"></path>
+<polygon fill="black" stroke="black" points="118.28,-73.75 126.63,-67.22 116.03,-67.12 118.28,-73.75"></polygon>
+</g>
+<!-- x2 -->
+<g id="node2" class="node">
+<title>x2</title>
+<ellipse fill="#aed6f1" stroke="black" cx="20" cy="-20" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="20" y="-16.1" font-family="Times,serif" font-size="13.00">x₂</text>
+</g>
+<!-- x2&#45;&gt;out -->
+<g id="edge2" class="edge">
+<title>x2-&gt;out</title>
+<path fill="none" stroke="black" d="M39.3,-26.05C59.81,-32.83 93.31,-43.91 117.1,-51.77"></path>
+<polygon fill="black" stroke="black" points="116.04,-55.11 126.63,-54.93 118.23,-48.46 116.04,-55.11"></polygon>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-zero-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.1: A network with no hidden layers is equivalent to linear regression: the output is a linear combination of the inputs.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Next example: One hidden layer.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-nn-one-layer" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-one-layer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 300.00 276.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 272)">
+<title>nn1</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-272 296,-272 296,4 -4,4"></polygon>
+<!-- x1 -->
+<g id="node1" class="node">
+<title>x1</title>
+<ellipse fill="#aed6f1" stroke="black" cx="20" cy="-172" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="20" y="-168.1" font-family="Times,serif" font-size="13.00">x₁</text>
+</g>
+<!-- h1 -->
+<g id="node3" class="node">
+<title>h1</title>
+<ellipse fill="#f9e79f" stroke="black" cx="146" cy="-96" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="146" y="-92.1" font-family="Times,serif" font-size="13.00">h₁</text>
+</g>
+<!-- x1&#45;&gt;h1 -->
+<g id="edge1" class="edge">
+<title>x1-&gt;h1</title>
+<path fill="none" stroke="black" d="M37.47,-161.91C58.5,-149.02 95.1,-126.58 119.69,-111.51"></path>
+<polygon fill="black" stroke="black" points="121.77,-114.34 128.47,-106.13 118.11,-108.38 121.77,-114.34"></polygon>
+</g>
+<!-- h2 -->
+<g id="node4" class="node">
+<title>h2</title>
+<ellipse fill="#f9e79f" stroke="black" cx="146" cy="-20" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="146" y="-16.1" font-family="Times,serif" font-size="13.00">h₂</text>
+</g>
+<!-- x1&#45;&gt;h2 -->
+<g id="edge2" class="edge">
+<title>x1-&gt;h2</title>
+<path fill="none" stroke="black" d="M33.34,-156.87C55.16,-130.12 100.66,-74.35 126.33,-42.89"></path>
+<polygon fill="black" stroke="black" points="129.1,-45.03 132.71,-35.07 123.67,-40.61 129.1,-45.03"></polygon>
+</g>
+<!-- h3 -->
+<g id="node5" class="node">
+<title>h3</title>
+<ellipse fill="#f9e79f" stroke="black" cx="146" cy="-248" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="146" y="-244.1" font-family="Times,serif" font-size="13.00">h₃</text>
+</g>
+<!-- x1&#45;&gt;h3 -->
+<g id="edge3" class="edge">
+<title>x1-&gt;h3</title>
+<path fill="none" stroke="black" d="M37.47,-182.09C58.5,-194.98 95.1,-217.42 119.69,-232.49"></path>
+<polygon fill="black" stroke="black" points="118.11,-235.62 128.47,-237.87 121.77,-229.66 118.11,-235.62"></polygon>
+</g>
+<!-- h4 -->
+<g id="node6" class="node">
+<title>h4</title>
+<ellipse fill="#f9e79f" stroke="black" cx="146" cy="-172" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="146" y="-168.1" font-family="Times,serif" font-size="13.00">h₄</text>
+</g>
+<!-- x1&#45;&gt;h4 -->
+<g id="edge4" class="edge">
+<title>x1-&gt;h4</title>
+<path fill="none" stroke="black" d="M40.1,-172C60.25,-172 92.25,-172 115.62,-172"></path>
+<polygon fill="black" stroke="black" points="115.67,-175.5 125.67,-172 115.67,-168.5 115.67,-175.5"></polygon>
+</g>
+<!-- x2 -->
+<g id="node2" class="node">
+<title>x2</title>
+<ellipse fill="#aed6f1" stroke="black" cx="20" cy="-96" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="20" y="-92.1" font-family="Times,serif" font-size="13.00">x₂</text>
+</g>
+<!-- x2&#45;&gt;h1 -->
+<g id="edge5" class="edge">
+<title>x2-&gt;h1</title>
+<path fill="none" stroke="black" d="M40.1,-96C60.25,-96 92.25,-96 115.62,-96"></path>
+<polygon fill="black" stroke="black" points="115.67,-99.5 125.67,-96 115.67,-92.5 115.67,-99.5"></polygon>
+</g>
+<!-- x2&#45;&gt;h2 -->
+<g id="edge6" class="edge">
+<title>x2-&gt;h2</title>
+<path fill="none" stroke="black" d="M37.47,-85.91C58.5,-73.02 95.1,-50.58 119.69,-35.51"></path>
+<polygon fill="black" stroke="black" points="121.77,-38.34 128.47,-30.13 118.11,-32.38 121.77,-38.34"></polygon>
+</g>
+<!-- x2&#45;&gt;h3 -->
+<g id="edge7" class="edge">
+<title>x2-&gt;h3</title>
+<path fill="none" stroke="black" d="M33.34,-111.13C55.16,-137.88 100.66,-193.65 126.33,-225.11"></path>
+<polygon fill="black" stroke="black" points="123.67,-227.39 132.71,-232.93 129.1,-222.97 123.67,-227.39"></polygon>
+</g>
+<!-- x2&#45;&gt;h4 -->
+<g id="edge8" class="edge">
+<title>x2-&gt;h4</title>
+<path fill="none" stroke="black" d="M37.47,-106.09C58.5,-118.98 95.1,-141.42 119.69,-156.49"></path>
+<polygon fill="black" stroke="black" points="118.11,-159.62 128.47,-161.87 121.77,-153.66 118.11,-159.62"></polygon>
+</g>
+<!-- out -->
+<g id="node7" class="node">
+<title>out</title>
+<ellipse fill="#a9dfbf" stroke="black" cx="272" cy="-134" rx="20" ry="20"></ellipse>
+<text text-anchor="middle" x="272" y="-130.1" font-family="Times,serif" font-size="13.00">ŷ</text>
+</g>
+<!-- h1&#45;&gt;out -->
+<g id="edge9" class="edge">
+<title>h1-&gt;out</title>
+<path fill="none" stroke="black" d="M165.3,-101.61C185.72,-107.87 219.01,-118.07 242.78,-125.35"></path>
+<polygon fill="black" stroke="black" points="242.04,-128.79 252.63,-128.37 244.09,-122.09 242.04,-128.79"></polygon>
+</g>
+<!-- h2&#45;&gt;out -->
+<g id="edge10" class="edge">
+<title>h2-&gt;out</title>
+<path fill="none" stroke="black" d="M161.22,-33.08C182.69,-52.81 223.55,-90.38 248.91,-113.7"></path>
+<polygon fill="black" stroke="black" points="246.83,-116.53 256.56,-120.72 251.57,-111.38 246.83,-116.53"></polygon>
+</g>
+<!-- h3&#45;&gt;out -->
+<g id="edge11" class="edge">
+<title>h3-&gt;out</title>
+<path fill="none" stroke="black" d="M161.22,-234.92C182.69,-215.19 223.55,-177.62 248.91,-154.3"></path>
+<polygon fill="black" stroke="black" points="251.57,-156.62 256.56,-147.28 246.83,-151.47 251.57,-156.62"></polygon>
+</g>
+<!-- h4&#45;&gt;out -->
+<g id="edge12" class="edge">
+<title>h4-&gt;out</title>
+<path fill="none" stroke="black" d="M165.3,-166.39C185.72,-160.13 219.01,-149.93 242.78,-142.65"></path>
+<polygon fill="black" stroke="black" points="244.09,-145.91 252.63,-139.63 242.04,-139.21 244.09,-145.91"></polygon>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-one-layer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.2: A network with one hidden layer. Each hidden neuron applies a nonlinear activation function to a weighted sum of the inputs.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="some-equations" class="level4" data-number="8.0.2.2">
+<h4 data-number="8.0.2.2" class="anchored" data-anchor-id="some-equations"><span class="header-section-number">8.0.2.2</span> Some equations</h4>
+<p>Let’s start with the example for the single hidden layer. The full equation for going from input <span class="math inline">\(\mathbf{x}\)</span> to predicted <span class="math inline">\(\hat{y}\)</span> is</p>
+<p><span class="math display">\[
+\hat{y}(\mathbf{x}) = \mathbf{w}_{\text{out}}^t \,
+  \sigma\!\left( W_1 \mathbf{x} + \mathbf{b}_1 \right) + b_{\text{out}}
+\]</span></p>
+<p>This is also called the “forward pass”, to go from input <span class="math inline">\(\mathbf{x}\)</span> to a prediction <span class="math inline">\(\hat{y}\)</span>.</p>
+<ul>
+<li><span class="math inline">\(W_1\)</span> is the <span class="math inline">\(m \times p\)</span> <strong>weight</strong> matrix for the hidden layer, given a network with <span class="math inline">\(p\)</span> predictors and <span class="math inline">\(m\)</span> hidden neurons.</li>
+<li><span class="math inline">\(\mathbf{b}_1 \in \mathbb{R}^m\)</span> is the hidden layer’s <strong>bias</strong> vector</li>
+<li><span class="math inline">\(\sigma(\cdot)\)</span> is a nonlinear activation function applied element-wise</li>
+<li>The hidden layer’s outputs are then combined linearly using the output-layer weights <span class="math inline">\(\mathbf{w}_{\text{out}} \in \mathbb{R}^m\)</span> and bias <span class="math inline">\(b_{\text{out}} \in \mathbb{R}\)</span>.</li>
+<li>In <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>8.2</span></a> there are <span class="math inline">\(p = 2\)</span> inputs and <span class="math inline">\(m = 4\)</span> hidden neurons, so <span class="math inline">\(W_1\)</span> is a <span class="math inline">\(4 \times 2\)</span> matrix, <span class="math inline">\(\mathbf{b}_1\)</span> and <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> each have 4 entries, and each arrow in the figure is one weight.</li>
+</ul>
+<p>Then we can consider the generalization of this function for multiple layers.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-nn-two-layers" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-two-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 411.84 292.02" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 288.02)">
+<title>nn2</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-288.02 407.84,-288.02 407.84,4 -4,4"></polygon>
+<!-- x1 -->
+<g id="node1" class="node">
+<title>x1</title>
+<ellipse fill="#aed6f1" stroke="black" cx="18.4" cy="-178.51" rx="18.31" ry="18.31"></ellipse>
+<text text-anchor="middle" x="18.4" y="-175.21" font-family="Times,serif" font-size="11.00">x₁</text>
+</g>
+<!-- h11 -->
+<g id="node3" class="node">
+<title>h11</title>
+<ellipse fill="#f9e79f" stroke="black" cx="139.32" cy="-102.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="139.32" y="-99.21" font-family="Times,serif" font-size="11.00">h₁₁</text>
+</g>
+<!-- x1&#45;&gt;h11 -->
+<g id="edge1" class="edge">
+<title>x1-&gt;h11</title>
+<path fill="none" stroke="black" d="M34.47,-168.88C53.53,-156.7 86.74,-135.47 110.47,-120.31"></path>
+<polygon fill="black" stroke="black" points="112.51,-123.15 119.06,-114.82 108.74,-117.26 112.51,-123.15"></polygon>
+</g>
+<!-- h12 -->
+<g id="node4" class="node">
+<title>h12</title>
+<ellipse fill="#f9e79f" stroke="black" cx="139.32" cy="-23.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="139.32" y="-20.21" font-family="Times,serif" font-size="11.00">h₁₂</text>
+</g>
+<!-- x1&#45;&gt;h12 -->
+<g id="edge2" class="edge">
+<title>x1-&gt;h12</title>
+<path fill="none" stroke="black" d="M30.38,-164.2C50.22,-138.34 92.37,-83.41 117.72,-50.35"></path>
+<polygon fill="black" stroke="black" points="120.78,-52.12 124.09,-42.05 115.23,-47.85 120.78,-52.12"></polygon>
+</g>
+<!-- h13 -->
+<g id="node5" class="node">
+<title>h13</title>
+<ellipse fill="#f9e79f" stroke="black" cx="139.32" cy="-260.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="139.32" y="-257.21" font-family="Times,serif" font-size="11.00">h₁₃</text>
+</g>
+<!-- x1&#45;&gt;h13 -->
+<g id="edge3" class="edge">
+<title>x1-&gt;h13</title>
+<path fill="none" stroke="black" d="M33.99,-188.56C53.1,-201.74 87,-225.12 110.96,-241.64"></path>
+<polygon fill="black" stroke="black" points="109.08,-244.6 119.3,-247.39 113.05,-238.83 109.08,-244.6"></polygon>
+</g>
+<!-- h14 -->
+<g id="node6" class="node">
+<title>h14</title>
+<ellipse fill="#f9e79f" stroke="black" cx="139.32" cy="-181.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="139.32" y="-178.21" font-family="Times,serif" font-size="11.00">h₁₄</text>
+</g>
+<!-- x1&#45;&gt;h14 -->
+<g id="edge4" class="edge">
+<title>x1-&gt;h14</title>
+<path fill="none" stroke="black" d="M36.95,-178.95C54.83,-179.4 82.99,-180.11 105.1,-180.67"></path>
+<polygon fill="black" stroke="black" points="105.31,-184.18 115.39,-180.93 105.49,-177.18 105.31,-184.18"></polygon>
+</g>
+<!-- x2 -->
+<g id="node2" class="node">
+<title>x2</title>
+<ellipse fill="#aed6f1" stroke="black" cx="18.4" cy="-107.51" rx="18.31" ry="18.31"></ellipse>
+<text text-anchor="middle" x="18.4" y="-104.21" font-family="Times,serif" font-size="11.00">x₂</text>
+</g>
+<!-- x2&#45;&gt;h11 -->
+<g id="edge5" class="edge">
+<title>x2-&gt;h11</title>
+<path fill="none" stroke="black" d="M36.95,-106.77C55.02,-106.01 83.6,-104.81 105.81,-103.88"></path>
+<polygon fill="black" stroke="black" points="105.98,-107.37 115.82,-103.45 105.68,-100.38 105.98,-107.37"></polygon>
+</g>
+<!-- x2&#45;&gt;h12 -->
+<g id="edge6" class="edge">
+<title>x2-&gt;h12</title>
+<path fill="none" stroke="black" d="M33.99,-97.21C53.21,-83.63 87.39,-59.48 111.38,-42.54"></path>
+<polygon fill="black" stroke="black" points="113.56,-45.29 119.71,-36.66 109.52,-39.57 113.56,-45.29"></polygon>
+</g>
+<!-- x2&#45;&gt;h13 -->
+<g id="edge7" class="edge">
+<title>x2-&gt;h13</title>
+<path fill="none" stroke="black" d="M30.38,-121.63C50.22,-147.16 92.37,-201.38 117.72,-234.01"></path>
+<polygon fill="black" stroke="black" points="115.19,-236.46 124.09,-242.21 120.72,-232.16 115.19,-236.46"></polygon>
+</g>
+<!-- x2&#45;&gt;h14 -->
+<g id="edge8" class="edge">
+<title>x2-&gt;h14</title>
+<path fill="none" stroke="black" d="M34.47,-116.88C53.53,-128.74 86.74,-149.41 110.47,-164.18"></path>
+<polygon fill="black" stroke="black" points="108.72,-167.21 119.06,-169.52 112.41,-161.27 108.72,-167.21"></polygon>
+</g>
+<!-- h21 -->
+<g id="node7" class="node">
+<title>h21</title>
+<ellipse fill="#fadbd8" stroke="black" cx="265.34" cy="-220.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="265.34" y="-217.21" font-family="Times,serif" font-size="11.00">h₂₁</text>
+</g>
+<!-- h11&#45;&gt;h21 -->
+<g id="edge9" class="edge">
+<title>h11-&gt;h21</title>
+<path fill="none" stroke="black" d="M157.04,-118.42C178.4,-138.74 215.52,-174.06 240.01,-197.36"></path>
+<polygon fill="black" stroke="black" points="237.82,-200.11 247.48,-204.47 242.65,-195.04 237.82,-200.11"></polygon>
+</g>
+<!-- h22 -->
+<g id="node8" class="node">
+<title>h22</title>
+<ellipse fill="#fadbd8" stroke="black" cx="265.34" cy="-141.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="265.34" y="-138.21" font-family="Times,serif" font-size="11.00">h₂₂</text>
+</g>
+<!-- h11&#45;&gt;h22 -->
+<g id="edge10" class="edge">
+<title>h11-&gt;h22</title>
+<path fill="none" stroke="black" d="M161.92,-109.3C181.54,-115.47 210.72,-124.65 232.92,-131.63"></path>
+<polygon fill="black" stroke="black" points="231.98,-135 242.56,-134.66 234.08,-128.32 231.98,-135"></polygon>
+</g>
+<!-- h23 -->
+<g id="node9" class="node">
+<title>h23</title>
+<ellipse fill="#fadbd8" stroke="black" cx="265.34" cy="-62.51" rx="23.52" ry="23.52"></ellipse>
+<text text-anchor="middle" x="265.34" y="-59.21" font-family="Times,serif" font-size="11.00">h₂₃</text>
+</g>
+<!-- h11&#45;&gt;h23 -->
+<g id="edge11" class="edge">
+<title>h11-&gt;h23</title>
+<path fill="none" stroke="black" d="M161.92,-95.54C181.54,-89.21 210.72,-79.8 232.92,-72.64"></path>
+<polygon fill="black" stroke="black" points="234.12,-75.93 242.56,-69.53 231.97,-69.27 234.12,-75.93"></polygon>
+</g>
+<!-- h12&#45;&gt;h21 -->
+<g id="edge12" class="edge">
+<title>h12-&gt;h21</title>
+<path fill="none" stroke="black" d="M152.66,-43.12C174.76,-78.22 221.15,-151.91 246.64,-192.39"></path>
+<polygon fill="black" stroke="black" points="243.75,-194.38 252.04,-200.98 249.68,-190.65 243.75,-194.38"></polygon>
+</g>
+<!-- h12&#45;&gt;h22 -->
+<g id="edge13" class="edge">
+<title>h12-&gt;h22</title>
+<path fill="none" stroke="black" d="M157.04,-39.42C178.4,-59.74 215.52,-95.06 240.01,-118.36"></path>
+<polygon fill="black" stroke="black" points="237.82,-121.11 247.48,-125.47 242.65,-116.04 237.82,-121.11"></polygon>
+</g>
+<!-- h12&#45;&gt;h23 -->
+<g id="edge14" class="edge">
+<title>h12-&gt;h23</title>
+<path fill="none" stroke="black" d="M161.92,-30.3C181.54,-36.47 210.72,-45.65 232.92,-52.63"></path>
+<polygon fill="black" stroke="black" points="231.98,-56 242.56,-55.66 234.08,-49.32 231.98,-56"></polygon>
+</g>
+<!-- h13&#45;&gt;h21 -->
+<g id="edge15" class="edge">
+<title>h13-&gt;h21</title>
+<path fill="none" stroke="black" d="M161.92,-253.54C181.54,-247.21 210.72,-237.8 232.92,-230.64"></path>
+<polygon fill="black" stroke="black" points="234.12,-233.93 242.56,-227.53 231.97,-227.27 234.12,-233.93"></polygon>
+</g>
+<!-- h13&#45;&gt;h22 -->
+<g id="edge16" class="edge">
+<title>h13-&gt;h22</title>
+<path fill="none" stroke="black" d="M156.79,-244.71C178.19,-224.17 215.73,-188.15 240.31,-164.56"></path>
+<polygon fill="black" stroke="black" points="243.01,-166.83 247.8,-157.38 238.16,-161.77 243.01,-166.83"></polygon>
+</g>
+<!-- h13&#45;&gt;h23 -->
+<g id="edge17" class="edge">
+<title>h13-&gt;h23</title>
+<path fill="none" stroke="black" d="M152.66,-240.8C174.76,-205.52 221.15,-131.45 246.64,-90.77"></path>
+<polygon fill="black" stroke="black" points="249.7,-92.47 252.04,-82.14 243.77,-88.75 249.7,-92.47"></polygon>
+</g>
+<!-- h14&#45;&gt;h21 -->
+<g id="edge18" class="edge">
+<title>h14-&gt;h21</title>
+<path fill="none" stroke="black" d="M161.92,-188.3C181.54,-194.47 210.72,-203.65 232.92,-210.63"></path>
+<polygon fill="black" stroke="black" points="231.98,-214 242.56,-213.66 234.08,-207.32 231.98,-214"></polygon>
+</g>
+<!-- h14&#45;&gt;h22 -->
+<g id="edge19" class="edge">
+<title>h14-&gt;h22</title>
+<path fill="none" stroke="black" d="M161.92,-174.54C181.54,-168.21 210.72,-158.8 232.92,-151.64"></path>
+<polygon fill="black" stroke="black" points="234.12,-154.93 242.56,-148.53 231.97,-148.27 234.12,-154.93"></polygon>
+</g>
+<!-- h14&#45;&gt;h23 -->
+<g id="edge20" class="edge">
+<title>h14-&gt;h23</title>
+<path fill="none" stroke="black" d="M156.79,-165.71C178.19,-145.17 215.73,-109.15 240.31,-85.56"></path>
+<polygon fill="black" stroke="black" points="243.01,-87.83 247.8,-78.38 238.16,-82.77 243.01,-87.83"></polygon>
+</g>
+<!-- out -->
+<g id="node10" class="node">
+<title>out</title>
+<ellipse fill="#a9dfbf" stroke="black" cx="385.84" cy="-141.51" rx="18" ry="18"></ellipse>
+<text text-anchor="middle" x="385.84" y="-138.21" font-family="Times,serif" font-size="11.00">ŷ</text>
+</g>
+<!-- h21&#45;&gt;out -->
+<g id="edge21" class="edge">
+<title>h21-&gt;out</title>
+<path fill="none" stroke="black" d="M285.38,-207.82C306.19,-193.94 339.55,-171.7 361.82,-156.86"></path>
+<polygon fill="black" stroke="black" points="363.95,-159.64 370.33,-151.18 360.07,-153.82 363.95,-159.64"></polygon>
+</g>
+<!-- h22&#45;&gt;out -->
+<g id="edge22" class="edge">
+<title>h22-&gt;out</title>
+<path fill="none" stroke="black" d="M288.9,-141.51C308.46,-141.51 336.81,-141.51 357.62,-141.51"></path>
+<polygon fill="black" stroke="black" points="357.73,-145.01 367.73,-141.51 357.73,-138.01 357.73,-145.01"></polygon>
+</g>
+<!-- h23&#45;&gt;out -->
+<g id="edge23" class="edge">
+<title>h23-&gt;out</title>
+<path fill="none" stroke="black" d="M285.38,-75.2C306.19,-89.08 339.55,-111.31 361.82,-126.16"></path>
+<polygon fill="black" stroke="black" points="360.07,-129.2 370.33,-131.84 363.95,-123.38 360.07,-129.2"></polygon>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-two-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.3: A network with two hidden layers. Each layer refines the representation of the previous layer, enabling hierarchical feature construction.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For this network, the output of each layer becomes the input to the next:</p>
+<p><span class="math display">\[
+\mathbf{h}^{(1)} = \sigma(W_1 \mathbf{x} + \mathbf{b}_1), \quad
+\mathbf{h}^{(2)} = \sigma(W_2 \mathbf{h}^{(1)} + \mathbf{b}_2), \quad \ldots, \quad
+\hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{h}^{(L)} + b_{\text{out}}
+\]</span></p>
+<p>where <span class="math inline">\(L\)</span> is the number of hidden layers. <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> has <span class="math inline">\(L = 2\)</span>: <span class="math inline">\(W_1\)</span> is <span class="math inline">\(4 \times 2\)</span> and <span class="math inline">\(W_2\)</span> is <span class="math inline">\(3 \times 4\)</span>.</p>
+<p>Those sigmas represent activation functions. These make the network nonlinear, so that it isn’t just linear regression.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sigmoid</strong></td>
+<td><span class="math inline">\(\sigma(z) = \frac{1}{1+e^{-z}}\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>ReLU</strong></td>
+<td><span class="math inline">\(\sigma(z) = \max(0, z)\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>tanh</strong></td>
+<td><span class="math inline">\(\sigma(z) = \tanh(z)\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="a-larger-visualization-of-the-matrix" class="level4" data-number="8.0.2.3">
+<h4 data-number="8.0.2.3" class="anchored" data-anchor-id="a-larger-visualization-of-the-matrix"><span class="header-section-number">8.0.2.3</span> A larger visualization of the matrix</h4>
+<div id="fig-3b1b-full" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3b1b-full-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03_images/3b1b_function_NN.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3b1b-full-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.4: One layer of the forward pass written out in full: the weighted sum for a single neuron (top) and for every neuron in the next layer at once (bottom). Source: 3Blue1Brown.
+</figcaption>
+</figure>
+</div>
+<div id="fig-3b1b-compact" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3b1b-compact-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03_images/3b1b_NN_func_small.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3b1b-compact-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.5: The same calculation in compact matrix form. Source: 3Blue1Brown.
+</figcaption>
+</figure>
+</div>
+<p><strong>Note</strong>: <span class="math inline">\(\mathbf{a}\)</span> is used in place of <span class="math inline">\(\mathbf{h}\)</span> here.</p>
+<!---
+**Note on matrix sizes.** 3Blue1Brown uses slightly different notation for the same step: $\mathbf{a}^{(0)}$ is the input layer (our $\mathbf{x}$) and $\mathbf{a}^{(1)}$ is the first hidden layer (our $\mathbf{h}^{(1)}$). Its neurons are counted from 0, so layer 0 has $n+1$ neurons and layer 1 has $k+1$:
+
+$$
+\underbrace{\mathbf{a}^{(1)}}_{(k+1) \times 1}
+= \sigma\Big(
+  \underbrace{\mathbf{W}}_{(k+1) \times (n+1)} \,
+  \underbrace{\mathbf{a}^{(0)}}_{(n+1) \times 1}
+  + \underbrace{\mathbf{b}}_{(k+1) \times 1}
+\Big)
+$$
+
+- $\mathbf{W}$ has one **row per neuron in the next layer** and one **column per neuron in the current layer**. Row $j$ holds every weight going into neuron $j$, and $w_{j,i}$ connects neuron $i$ to neuron $j$.
+- The top equation in @fig-3b1b-full is just row 0 of this matrix product: $a_0^{(1)} = \sigma(w_{0,0} a_0^{(0)} + \cdots + w_{0,n} a_n^{(0)} + b_0)$.
+- The inner dimensions ($n+1$) must match, and the result is a $(k+1) \times 1$ vector. $\sigma$ is then applied to each entry separately.
+- In the course notation, $W_1$ is $m \times p$: $m = k+1$ hidden neurons and $p = n+1$ predictors. For @fig-nn-one-layer, $\underbrace{W_1}_{4 \times 2} \underbrace{\mathbf{x}}_{2 \times 1} + \underbrace{\mathbf{b}_1}_{4 \times 1}$ gives a $4 \times 1$ vector $\mathbf{h}^{(1)}$.
+- Each layer's output size is the next layer's input size. In @fig-nn-two-layers, $W_2$ is $3 \times 4$ (4 neurons in, 3 out), and $\mathbf{w}_{\text{out}}^t$ is $1 \times 3$, which produces the single number $\hat{y}$.
+
+--->
+</section>
+<section id="training-the-model" class="level4" data-number="8.0.2.4">
+<h4 data-number="8.0.2.4" class="anchored" data-anchor-id="training-the-model"><span class="header-section-number">8.0.2.4</span> Training the model</h4>
+<p>The network is trained by minimizing a loss function over the training data. For a continuous outcome, the loss is mean squared error:</p>
+<p><span class="math display">\[
+\mathcal{L}(\mathbf{w}) = \frac{1}{n} \sum_{i=1}^n \bigl(y_i - \hat{y}(\mathbf{x}_i)\bigr)^2
+\]</span></p>
+<p>We minimize the loss function through <strong>gradient descent</strong>, where the weights are updated iteratively in the direction that reduces the loss most steeply. At each step,</p>
+<p><span class="math display">\[
+\mathbf{w} \leftarrow \mathbf{w} - \eta \, \nabla_{\mathbf{w}} \mathcal{L}
+\]</span></p>
+<p><span class="math inline">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong>, which controls the size of each step. If it is too large, the optimizer diverges; if it is too small, convergence is slow. Other key training hyperparameters are the number of <strong>epochs</strong> (passes over the training data) and the <strong>batch size</strong> (how many observations are used to estimate each gradient update).</p>
+<p>The gradients <span class="math inline">\(\nabla_{\mathbf{w}} \mathcal{L}\)</span> are computed efficiently by applying the chain rule backwards through the network, from the output layer to the first hidden layer. This procedure is called <strong>backpropagation</strong>.</p>
+</section>
+<section id="really-helpful-resource-for-explaining-this" class="level4" data-number="8.0.2.5">
+<h4 data-number="8.0.2.5" class="anchored" data-anchor-id="really-helpful-resource-for-explaining-this"><span class="header-section-number">8.0.2.5</span> Really helpful resource for explaining this</h4>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/videoseries?si=pqP_7xKfXb1cQp1j&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<!---
+***
+
+### 3b1b video 1 content
+
+Neuron: A thing that holds a number [0, 1]
+Input layer - every value comes from the feature / predictor set after normalization between 0 and 1
+The number inside a neuron can be called its "activation"
+
+Output layer - activation represents how much the system predicts the outcome
+
+Activations of one layer determine activations of the next layer
+
+Why layers?
+- able to isolate / distinguish features and their relationships to the predictions
+- divide and combine features within the input to produce the output
+
+Weighted sum for each neuron
+sum of all weights * activations = input for a given neuron in the next layer
+
+we pump the weighted sum into an activation function so that values are between 0 and 1
+- ex. Sigmoid function
+
+activation for a neuron is basically a measure of "how positive is this weighted sum?"
+
+if we want some bias for it to be inactive, then we add in a bias bector inside the activation function
+- bias tells you how high the weighted sum needs to be before the neuron starts getting meaningfully active
+
+Learning: Finding the right weights and biases
+
+More accurate definition
+Neuron: a function that takes in the outputs of all the numbers in the previous layer and spits out a number between 0 and 1
+
+end notes:
+ReLU is more common / easier to use now
+- simplification of sigmoid
+- faster to train, works well for deep neural networks
+
+***
+
+### 3b1b video 2 content
+
+Introducing gradient decent and how networks learn
+
+Start by initializing all the weights and biases randomly
+then define a "cost" funciton to define the difference
+
+"add up the squares of differences between bad outputs and what you wanted"
+- the cost here is the MSE!
+
+the average cost over all the training data is the Loss
+- our measure for how bad the network is
+
+Gradient descent:
+- find the slope of the function at your given location
+- then step in the direction that reduces the slope most steeply (right if slope is negative, left if slope is positive)
+- this slope is computed at individual values of the loss function
+- eventually you will get to a local minimum of the function
+
+take negative gradient of entire weights vector inside the cost/loss function
+
+Algorithm for computing the gradient efficiently is called "backpropogation"
+
+When we talk about a network learning, we're simply talking about minimizing a cost function
+- one consequence is that the cost function needs to have a nice smooth output
+- that's why neurons are not binary, but able to vary [0,1]
+
+every component of the negative gradient of the weights tells you how to change the weight and what matters more
+
+Loss / cost function take in all weights and biases and outpus 1 number (the cost / loss)
+- function from Tom's 5.4.4 section "training"
+
+$$
+\mathcal{L}(\mathbf{w}) = \frac{1}{n} \sum_{i=1}^n \bigl(y_i - \hat{y}(\mathbf{x}_i)\bigr)^2
+$$
+
+***
+
+### 3b1b video 3 content
+
+Backpropogation: an algorithm for computing the crazy complicated gradient
+
+we can't change the activations, we can only change the weights and biases
+
+adding together all of the desired effects gives us a list of "nudges" that we want to happen to the second to last layer, then the layer prior, etc. until we get back to the first layer and have "nudged" all the weights and biases
+- "recursively apply" the process moving backwards through the network
+
+This is all just a single training example, so you have to do back propogation for every training sample and average the backpropogaiton nudges over the whole training set
+- this is loosely speaking the negative gradient of the cost/loss function
+
+typically we split our training data into mini batches
+get computational speed up by doing steps on each one of these instead of doing everything on the full dataset
+"Stochastic gradient descent"
+
+* backpropogation is the algorithm for determining how a single training example would like to nudge the weights and biases
+* a true gradient descent step requires doing this for all training samples
+* so instead we divide into mini batches and make the adjustements of back propogation for each mini batch
+--->
+</section>
+</section>
+<section id="sources" class="level3" data-number="8.0.3">
+<h3 data-number="8.0.3" class="anchored" data-anchor-id="sources"><span class="header-section-number">8.0.3</span> Sources:</h3>
+<ol type="1">
+<li>Tom Stewart, Intro to Prediction Modeling: https://tgstewart.cloud/ipm/models-overview.html#sec-nnet</li>
+<li>3Blue1Brown, Neural Networks: https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&amp;si=eTLONIqIN-zzii3t</li>
+<li>McCulloch, W. S. &amp; Pitts, W. (1943), A Logical Calculus of the Ideas Immanent in Nervous Activity, <em>Bulletin of Mathematical Biophysics</em> 5: 115-133</li>
+<li>Rosenblatt, F. (1958), The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain, <em>Psychological Review</em> 65(6): 386-408</li>
+<li>Rumelhart, D. E., Hinton, G. E. &amp; Williams, R. J. (1986), Learning Representations by Back-Propagating Errors, <em>Nature</em> 323: 533-536</li>
+</ol>
+</section>
+<section id="future-reference" class="level3" data-number="8.0.4">
+<h3 data-number="8.0.4" class="anchored" data-anchor-id="future-reference"><span class="header-section-number">8.0.4</span> Future Reference:</h3>
+<ol type="1">
+<li>http://neuralnetworksanddeeplearning.com/</li>
+</ol>
+<!---
+PAPER SUMMARIES (draft for review; move what you want into the chapter)
+
+McCulloch & Pitts (1943): A Logical Calculus of the Ideas Immanent in Nervous Activity
+- The first mathematical model of a neuron. Because a neuron either fires or doesn't ("all-or-none"), its activity can be treated as a true/false proposition, and a network of neurons as a logical expression.
+- Model neuron: adds up its excitatory inputs and fires if the sum exceeds a fixed threshold; any active inhibitory input blocks firing. This is the ancestor of "weighted sum + step activation."
+- Showed that small nets realize AND, OR, and AND NOT, so any logical expression can be built out of these neurons. Nets with loops ("circles") can hold memory, and with a tape they can compute exactly what a Turing machine can.
+- Key limitation: the connections and thresholds are fixed by hand and the net does not change over time, so there is no learning. (They argue learning can be *represented* by an equivalent fixed net, not that the net learns.)
+
+Rosenblatt (1958): The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain
+- Asks how information is stored and how it affects recognition. Takes the "connectionist" position: memory lives in the strength of connections, not in stored copies of images.
+- Architecture: sensory units (S-points, the "retina") feed association units (A-units) through random connections, which feed response units (R-units). An A-unit fires when excitatory minus inhibitory input reaches a threshold $\theta$.
+- Learning: each A-unit carries a "value" $V$ (essentially a weight) that grows when the unit is active and the response is reinforced. "Bivalent" versions let values go up or down (reward / punishment), which gives trial-and-error learning.
+- Uses probability instead of symbolic logic: derives the probability of a correct response to a trained stimulus ($P_r$) and of correct generalization to a new stimulus ($P_g$). Generalization beats chance only when the classes really differ (a "differentiated environment"); with purely random stimuli there is nothing to generalize.
+- Only the A-to-R connections learn; the S-to-A wiring is random and fixed.
+- Limitation Rosenblatt names himself: the perceptron handles concrete patterns but not relationships ("Name the object left of the square"). "Some system, more advanced in principle than the perceptron, seems to be required."
+
+Rumelhart, Hinton & Williams (1986): Learning Representations by Back-Propagating Errors
+- Introduces back-propagation: a way to train networks with hidden units by gradient descent on the error.
+- Why it matters: the perceptron's middle "feature analysers" are fixed by hand, so they never learn representations. Back-prop trains the hidden-layer weights too, so hidden units discover useful features on their own.
+
+- Setup (matches our class notation):
+    - total input to unit $j$: $x_j = \sum_i y_i w_{ji}$ (a bias is a weight on an extra input that is always 1)
+    - output: $y_j = \frac{1}{1 + e^{-x_j}}$ (sigmoid; any function with a bounded derivative works)
+    - error: $E = \frac{1}{2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2$, summed over cases $c$ and output units $j$
+
+- Two passes: the forward pass computes outputs layer by layer from input to output; the backward pass uses the chain rule from output back to input:
+    - $\partial E / \partial y_j = y_j - d_j$
+    - $\partial E / \partial x_j = \partial E / \partial y_j \cdot y_j (1 - y_j)$
+    - $\partial E / \partial w_{ji} = \partial E / \partial x_j \cdot y_i$
+    - $\partial E / \partial y_i = \sum_j \partial E / \partial x_j \cdot w_{ji}$ (sends the error back to the previous layer)
+- Weight update: $\Delta w = -\varepsilon \, \partial E / \partial w$ (gradient descent, $\varepsilon$ = learning rate), with an optional momentum term: $\Delta w(t) = -\varepsilon \, \partial E / \partial w(t) + \alpha \Delta w(t-1)$. Start from small random weights to "break symmetry."
+- Examples: detecting mirror symmetry in a binary input (impossible without a hidden layer; solved with 2 hidden units), and a family-tree task where hidden units learned nationality, generation, and family branch without those being in the input, then answered 4 held-out questions correctly.
+- Limitations the authors note: gradient descent can get stuck in local minima (rare in practice; adding connections helps), and back-prop is not a plausible model of how brains learn.
+- Also uses weight decay (shrinking every weight by 0.2% after each update), an early form of regularization.
+
+How the three connect (possible thread for the chapter)
+
+- 1943: neuron = weighted sum + threshold; networks can compute logic, but the weights are set by hand.
+- 1958: the perceptron learns its output weights from experience; framed probabilistically; can't handle relational problems.
+- 1986: back-propagation learns the hidden-layer weights, which lets networks build their own features. This ties to our note that "the nonlinear activation is the essential ingredient": the sigmoid provides the nonlinearity and a derivative for the chain rule.
+
+--->
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

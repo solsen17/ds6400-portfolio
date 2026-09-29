@@ -257,7 +257,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link active" data-scroll-target="#neural-networks"><span class="header-section-number">6.0.1</span> Neural Networks</a></li>
+  <li><a href="#background-notes" id="toc-background-notes" class="nav-link active" data-scroll-target="#background-notes"><span class="header-section-number">6.0.1</span> Background notes</a></li>
+  <li><a href="#k-nearest-neighbors-knn" id="toc-k-nearest-neighbors-knn" class="nav-link" data-scroll-target="#k-nearest-neighbors-knn"><span class="header-section-number">6.0.2</span> K-Nearest Neighbors (KNN)</a></li>
+  <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="header-section-number">6.0.3</span> Random Forests</a></li>
+  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">6.0.4</span> Neural Networks</a></li>
   <li><a href="#todo" id="toc-todo" class="nav-link" data-scroll-target="#todo"><span class="header-section-number">6.1</span> TODO</a></li>
   <li><a href="#to-do" id="toc-to-do" class="nav-link" data-scroll-target="#to-do"><span class="header-section-number">6.2</span> TO DO</a></li>
   </ul>
@@ -286,10 +289,88 @@ window.Quarto = {
 
 
 <p>Review of Master’s Content: https://tgstewart.cloud/ml1/03-four-models.html</p>
-<section id="neural-networks" class="level3" data-number="6.0.1">
-<h3 data-number="6.0.1" class="anchored" data-anchor-id="neural-networks"><span class="header-section-number">6.0.1</span> Neural Networks</h3>
+<section id="background-notes" class="level3" data-number="6.0.1">
+<h3 data-number="6.0.1" class="anchored" data-anchor-id="background-notes"><span class="header-section-number">6.0.1</span> Background notes</h3>
+<ul>
+<li><strong>non-parametric</strong>: no coefficients are estimated, no functional form is assumed
+<ul>
+<li>example: KNN</li>
+</ul></li>
+<li><strong>hyperparameter</strong>: a tuning parameter that is set before training the model. It is NOT dependent upon the training data, and does not change during the training process. It may be tuned or adjusted outside of the training loops through grid search processes, but that requires training many individual models according to the hyperparameter selections
+<ul>
+<li>example: <span class="math inline">\(k\)</span> in KNN</li>
+</ul></li>
+<li>*<strong>parameter</strong>: a parameter that is learned during the model training, based on the training data
+<ul>
+<li>example: <span class="math inline">\(\beta\)</span> in regression</li>
+</ul></li>
+<li><strong>standardization</strong>: (also called feature scaling, and also helpfully also called Z-score normalization) rescales data so that every feature has a mean of 0 and a standard deviation of 1. This is especially helpful for KNN, because magnitude of features has a significant effect on the model.</li>
+<li><strong>curse of dimensionality</strong>: as the dimension increases, meaning the number of features used for prediction grows, the nearness of training data to a new points decreases, because things are just further away in high dimensional space. Therefore, KNN works well in low dimensions, but not so well in high dimensions.</li>
+</ul>
+</section>
+<section id="k-nearest-neighbors-knn" class="level3" data-number="6.0.2">
+<h3 data-number="6.0.2" class="anchored" data-anchor-id="k-nearest-neighbors-knn"><span class="header-section-number">6.0.2</span> K-Nearest Neighbors (KNN)</h3>
+<ul>
+<li>Given a new observation, return the average outcome value based on the <span class="math inline">\(k\)</span> nearest values in the training set.
+<ul>
+<li>“Nearest” or <strong>closeness</strong> is determined by a distance function, most commonly the Euclidean distance.</li>
+</ul></li>
+<li>This model is non-parametric, because no coefficients are estimated and no functional form is assumed</li>
+<li><span class="math inline">\(k\)</span> is the hyperparameter determining how many points should be included in the predicted outcome for a new point provided to the model
+<ul>
+<li>if <span class="math inline">\(k\)</span> is small, there are few local points used to make the prediction</li>
+<li>as <span class="math inline">\(k\)</span> grows, more local to global points are used in the prediction average</li>
+<li>increasing <span class="math inline">\(k\)</span> makes the model more smooth and trades variance for bias (lower variance, higher bias)</li>
+</ul></li>
+<li>Standard KNN workflow:
+<ol type="1">
+<li>standardize the predictors</li>
+<li>fit on the training data</li>
+<li>generate predictions on a grid</li>
+<li>plot a partial effect plot for one predictor</li>
+</ol></li>
+</ul>
+<p><strong>Key Callout</strong> - “The bias-variance tradeoff. At <span class="math inline">\(k=1\)</span>, KNN memorizes the training data — zero bias on training observations, high variance across different training sets. At <span class="math inline">\(k=n\)</span>, it ignores everything except the mean — high bias, low variance. The optimal <span class="math inline">\(k\)</span> sits somewhere in between, and finding it requires the cross-validation tools from Module 3. This tradeoff — and the challenge of navigating it — is the central tension in all of predictive modeling.”</p>
+</section>
+<section id="random-forests" class="level3" data-number="6.0.3">
+<h3 data-number="6.0.3" class="anchored" data-anchor-id="random-forests"><span class="header-section-number">6.0.3</span> Random Forests</h3>
+<ul>
+<li>Built on the decision tree
+<ul>
+<li>continually splitting the predictor space into partitions through binary splits</li>
+<li>at each step, determine the splita cross the space that reduces within-node MSE</li>
+<li>REPEAT until a termination condition is met</li>
+<li>also called <em>“recursive binary partitioning”</em></li>
+</ul></li>
+<li><strong>dendrogram</strong>: the branching diagram that gives decision trees their name, and also the way to visualize the splits made in the decision tree</li>
+<li>“The random forest averages many trees, each trained on a different bootstrap sample of the training data. Averaging over many unstable but roughly unbiased models reduces variance without increasing bias — the central maneuver behind ensemble methods.”
+<ul>
+<li>Because each tree is different when different bootstrap samples are used, we want to average over them to get the “best” model.</li>
+</ul></li>
+<li>The “random” in random forests is from the feature randomization that happens at each split. For every split, you only get to choose from a subset of the overall features, so that not every tree ends up being dominated by the same feature splits. Typically you use <span class="math inline">\(p/3\)</span> at each step to determine the number of features available.
+<ul>
+<li>This reduces correlation among the trees so we have a model with lower variance.</li>
+</ul></li>
+<li>Key hyperparameters:
+<ul>
+<li><span class="math inline">\(B\)</span>: the number of trees
+<ul>
+<li>more stable predictions, more reliable error estimate</li>
+<li>more computation required</li>
+</ul></li>
+<li><span class="math inline">\(mtry\)</span>: the number of predictors considered at each split
+<ul>
+<li>smaller mtry leads to less correlation between trees</li>
+<li>larger mtry leads to less feature randomization</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="neural-networks" class="level3" data-number="6.0.4">
+<h3 data-number="6.0.4" class="anchored" data-anchor-id="neural-networks"><span class="header-section-number">6.0.4</span> Neural Networks</h3>
 <p>From Tom’s content: “it constructs a prediction surface from the predictors using a particular functional form, which is often called a network.”</p>
 <p>What does that mean? It is a continuous prediction surface that is smooth, not rectangular or stair-step like you would see in K-Nearest Neighbors or Random Forests. All points in the training set contribute to all weights in the network, so information sharing is <strong>global.</strong></p>
+<p>Neuron: basic building block of a neural network - receives linear combination of inputs, passes result through a non-linear function, produces a single number Layers: arrangement of neurons - first layer receives predictors <span class="math inline">\((x_1, x_2, ..., x_p)\)</span> - hidden layers transform the output of a previous layer into a new representation - final layer produces the prediction <span class="math inline">\(\hat{y}\)</span></p>
 <p>In the diagram 5.21, x1 and x2 are the individual neurons receiving predictors, the first layer. It passes through no hidden layers, so the predictors are directly related to the prediction <span class="math inline">\(\hat{y}\)</span>. There are weights on the lines connecting the neurons, which we can consider the betas in a linear regression. Therefore, this representaiton is equivalent to a linear regression.</p>
 <p>We need nonlinear activation functions in the hidden layers, because otherwise we’d just be modeling linear relationships, since our network is just doing multiplication and addition throughout the layers. - From Tom: “Without nonlinear activation, the forward pass simplifies to … linear regression. Every additional hidden layer without activation collapses in the same way. The nonlinear activation is the essential ingredient.”</p>
 </section>
@@ -299,7 +380,42 @@ window.Quarto = {
 </section>
 <section id="to-do" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="to-do"><span class="header-section-number">6.2</span> TO DO</h2>
-<p>Write out the math behind a neural network for reference on the board.</p>
+<p>Write out the math behind a neural network for reference on the board. expand upon 5.4.2 with Tom’s equations, a matrix, and a sample network. include sections 5.4.3 and 5.4.4 with definitions / examples (backpropogation, activation functions, hyper parameters)</p>
+<!---
+Bias-variance trade off explained:
+https://www.youtube.com/watch?v=1ejOXl6jYTs
+
+Error(x) = Bias^2 + Variance + Irreducible Error
+- Error(x): expected prediction error
+- Bias: error from wrong assuptions
+- Variance: error from sensitivity to data fluctuations
+- Irreducible Error: Noise in data we cannot eliminate
+
+Bias: Error from overly simplistic assumptions
+* High bias -> underfitting
+* too simple to capture underlying patterns
+* ex. not enough predictors
+
+Variance: error from excessive sensitivity to training data
+* High variance -> overfitting
+* learns the noise along with the signal
+* Model memorizes the training data but fails to generalize
+* ex. decision trees perfect on training data but bad on test data
+
+Trade-off: bias and variance move in opposite directions
+* Low complexity: high bias, low variance -> underfit
+* High complexity: low bias, high variance -> overfit
+
+Examples:
+Linear regression: low variance, high bias - not very complex
+Deep decision trees: low bias, high variance - over fit to training data easily
+Random forest / regularized models: balance bias and variance
+Neural Networks: can go both ways depending on size, data, regularization
+
+High bias: poor accuracy on training and test data
+High variance: excellent accuracy on training data, poor on test data
+
+--->
 
 
 </section>

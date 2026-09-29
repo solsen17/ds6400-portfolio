@@ -1,5 +1,195 @@
 # Neural Net
 
+### Motivating ideas and chronology
+
+Our brains are incredible recognition and prediction machines. How do they work? Can we replicate the behavior artificially in a computer?
+
+The provided papers give an chronology of the ideas in published literature.
+
+1. McColloch & Pitts (1943): A Logical Calculus of the Ideas Immanent in Nervous Activity
+    - Turning neuroscience into calculus.
+    - The first mathematical model of a neural network using binary neurons for computation.
+2. Rosenblatt (1958): The Perceptron: A probabilistic Model for Information Storage and Organization in the Brain
+    - Tackles the questions of information storage and memory for how we regognize things.
+    - Introducing the perceptron: the theory for a hpyothetical nervous system, or machine.
+3. Rumelhart, Hinton & Williams (1986): Learning representations by back-propagating errors
+    - Introducing back-propagation for "networks of neurone-like units".
+    - New way to train networks with gradient descent on the errors, so that features can be discovered in hidden layers.
+
+### Math behind the model
+
+Let's jump into the notation and formulas with some visuals along the way to help out.
+
+#### Some definitions
+
+**Neuron**: The building block of a neural network.
+
+- A function that takes inputs and produces a single number output (between 0 and 1)
+- Inputs in the first set of neurons (first layer) are the predictors.
+- Inputs in future sets of neurons (hidden layers) are weighted sums of outputs from the prior layer.
+
+**Layers**: Arrangements of neurons.
+
+- Input layer: the first layer of neurons that receives the predictors.
+- Output layer: the final layer of neurons that produces the predictions $\hat{y}$
+- Hidden layer: layers inbetween the input and output. Can be any number of layers we choose.
+    - transforms output of the previous layer
+    - able to distingush features and their relationships to the predictions
+
+Simplest example: No hidden layers.
+
+```{dot}
+//| label: fig-nn-zero-layers
+//| fig-cap: "A network with no hidden layers is equivalent to linear regression: the output is a linear combination of the inputs."
+digraph nn0 {
+  graph [rankdir=LR, splines=line, nodesep=0.6, ranksep=1.2]
+  node [shape=circle, style=filled, fillcolor="#AED6F1", fontsize=13, width=0.55]
+  x1 [label="x₁"]
+  x2 [label="x₂"]
+  node [fillcolor="#A9DFBF"]
+  out [label="ŷ"]
+  x1 -> out
+  x2 -> out
+}
+```
+
+Next example: One hidden layer.
+
+```{dot}
+//| label: fig-nn-one-layer
+//| fig-cap: "A network with one hidden layer. Each hidden neuron applies a nonlinear activation function to a weighted sum of the inputs."
+digraph nn1 {
+  graph [rankdir=LR, splines=line, nodesep=0.5, ranksep=1.2]
+  node [shape=circle, style=filled, fillcolor="#AED6F1", fontsize=13, width=0.55]
+  x1 [label="x₁"]
+  x2 [label="x₂"]
+  node [fillcolor="#F9E79F"]
+  h1 [label="h₁"]
+  h2 [label="h₂"]
+  h3 [label="h₃"]
+  h4 [label="h₄"]
+  node [fillcolor="#A9DFBF"]
+  out [label="ŷ"]
+  x1 -> h1; x1 -> h2; x1 -> h3; x1 -> h4
+  x2 -> h1; x2 -> h2; x2 -> h3; x2 -> h4
+  h1 -> out; h2 -> out; h3 -> out; h4 -> out
+}
+```
+
+#### Some equations
+Let's start with the example for the single hidden layer.
+The full equation for going from input $\mathbf{x}$ to predicted $\hat{y}$ is
+
+$$
+\hat{y}(\mathbf{x}) = \mathbf{w}_{\text{out}}^t \,
+  \sigma\!\left( W_1 \mathbf{x} + \mathbf{b}_1 \right) + b_{\text{out}}
+$$
+
+This is also called the "forward pass", to go from input $\mathbf{x}$ to a prediction $\hat{y}$.
+
+- $W_1$ is the $m \times p$ **weight** matrix for the hidden layer, given a network with $p$ predictors and $m$ hidden neurons.
+- $\mathbf{b}_1 \in \mathbb{R}^m$ is the hidden layer's **bias** vector
+- $\sigma(\cdot)$ is a nonlinear activation function applied element-wise
+- The hidden layer's outputs are then combined linearly using the output-layer weights $\mathbf{w}_{\text{out}} \in \mathbb{R}^m$ and bias $b_{\text{out}} \in \mathbb{R}$. 
+- In @fig-nn-one-layer there are $p = 2$ inputs and $m = 4$ hidden neurons, so $W_1$ is a $4 \times 2$ matrix, $\mathbf{b}_1$ and $\mathbf{w}_{\text{out}}$ each have 4 entries, and each arrow in the figure is one weight.
+
+Then we can consider the generalization of this function for multiple layers.
+
+```{dot}
+//| label: fig-nn-two-layers
+//| fig-cap: "A network with two hidden layers. Each layer refines the representation of the previous layer, enabling hierarchical feature construction."
+digraph nn2 {
+  graph [rankdir=LR, splines=line, nodesep=0.45, ranksep=1.1]
+  node [shape=circle, style=filled, fillcolor="#AED6F1", fontsize=11, width=0.5]
+  x1 [label="x₁"]
+  x2 [label="x₂"]
+  node [fillcolor="#F9E79F"]
+  h11 [label="h₁₁"]; h12 [label="h₁₂"]
+  h13 [label="h₁₃"]; h14 [label="h₁₄"]
+  node [fillcolor="#FADBD8"]
+  h21 [label="h₂₁"]; h22 [label="h₂₂"]; h23 [label="h₂₃"]
+  node [fillcolor="#A9DFBF"]
+  out [label="ŷ"]
+  x1 -> h11; x1 -> h12; x1 -> h13; x1 -> h14
+  x2 -> h11; x2 -> h12; x2 -> h13; x2 -> h14
+  h11 -> h21; h11 -> h22; h11 -> h23
+  h12 -> h21; h12 -> h22; h12 -> h23
+  h13 -> h21; h13 -> h22; h13 -> h23
+  h14 -> h21; h14 -> h22; h14 -> h23
+  h21 -> out; h22 -> out; h23 -> out
+}
+```
+
+For this network, the output of each layer becomes the input to the next:
+
+$$
+\mathbf{h}^{(1)} = \sigma(W_1 \mathbf{x} + \mathbf{b}_1), \quad
+\mathbf{h}^{(2)} = \sigma(W_2 \mathbf{h}^{(1)} + \mathbf{b}_2), \quad \ldots, \quad
+\hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{h}^{(L)} + b_{\text{out}}
+$$
+
+where $L$ is the number of hidden layers. @fig-nn-two-layers has $L = 2$: $W_1$ is $4 \times 2$ and $W_2$ is $3 \times 4$.
+
+Those sigmas represent activation functions. These make the network nonlinear, so that it isn't just linear regression.
+
+| Function    | Formula                           |
+|-------------|-----------------------------------|
+| **Sigmoid** | $\sigma(z) = \frac{1}{1+e^{-z}}$  |
+| **ReLU**    | $\sigma(z) = \max(0, z)$          |
+| **tanh**    | $\sigma(z) = \tanh(z)$            |
+
+#### A larger visualization of the matrix
+
+![One layer of the forward pass written out in full: the weighted sum for a single neuron (top) and for every neuron in the next layer at once (bottom). Source: 3Blue1Brown.](03_images/3b1b_function_NN.png){#fig-3b1b-full width="90%" fig-align="center"}
+
+![The same calculation in compact matrix form. Source: 3Blue1Brown.](03_images/3b1b_NN_func_small.png){#fig-3b1b-compact width="50%" fig-align="center"}
+
+**Note**: $\mathbf{a}$ is used in place of $\mathbf{h}$ here.
+
+<!---
+**Note on matrix sizes.** 3Blue1Brown uses slightly different notation for the same step: $\mathbf{a}^{(0)}$ is the input layer (our $\mathbf{x}$) and $\mathbf{a}^{(1)}$ is the first hidden layer (our $\mathbf{h}^{(1)}$). Its neurons are counted from 0, so layer 0 has $n+1$ neurons and layer 1 has $k+1$:
+
+$$
+\underbrace{\mathbf{a}^{(1)}}_{(k+1) \times 1}
+= \sigma\Big(
+  \underbrace{\mathbf{W}}_{(k+1) \times (n+1)} \,
+  \underbrace{\mathbf{a}^{(0)}}_{(n+1) \times 1}
+  + \underbrace{\mathbf{b}}_{(k+1) \times 1}
+\Big)
+$$
+
+- $\mathbf{W}$ has one **row per neuron in the next layer** and one **column per neuron in the current layer**. Row $j$ holds every weight going into neuron $j$, and $w_{j,i}$ connects neuron $i$ to neuron $j$.
+- The top equation in @fig-3b1b-full is just row 0 of this matrix product: $a_0^{(1)} = \sigma(w_{0,0} a_0^{(0)} + \cdots + w_{0,n} a_n^{(0)} + b_0)$.
+- The inner dimensions ($n+1$) must match, and the result is a $(k+1) \times 1$ vector. $\sigma$ is then applied to each entry separately.
+- In the course notation, $W_1$ is $m \times p$: $m = k+1$ hidden neurons and $p = n+1$ predictors. For @fig-nn-one-layer, $\underbrace{W_1}_{4 \times 2} \underbrace{\mathbf{x}}_{2 \times 1} + \underbrace{\mathbf{b}_1}_{4 \times 1}$ gives a $4 \times 1$ vector $\mathbf{h}^{(1)}$.
+- Each layer's output size is the next layer's input size. In @fig-nn-two-layers, $W_2$ is $3 \times 4$ (4 neurons in, 3 out), and $\mathbf{w}_{\text{out}}^t$ is $1 \times 3$, which produces the single number $\hat{y}$.
+
+--->
+
+#### Training the model
+
+The network is trained by minimizing a loss function over the training data. For a continuous outcome, the loss is mean squared error:
+
+$$
+\mathcal{L}(\mathbf{w}) = \frac{1}{n} \sum_{i=1}^n \bigl(y_i - \hat{y}(\mathbf{x}_i)\bigr)^2
+$$
+
+We minimize the loss function through **gradient descent**, where the weights are updated iteratively in the direction that reduces the loss most steeply. At each step,
+
+$$
+\mathbf{w} \leftarrow \mathbf{w} - \eta \, \nabla_{\mathbf{w}} \mathcal{L}
+$$
+
+$\eta > 0$ is the **learning rate**, which controls the size of each step. If it is too large, the optimizer diverges; if it is too small, convergence is slow. Other key training hyperparameters are the number of **epochs** (passes over the training data) and the **batch size** (how many observations are used to estimate each gradient update).
+
+The gradients $\nabla_{\mathbf{w}} \mathcal{L}$ are computed efficiently by applying the chain rule backwards through the network, from the output layer to the first hidden layer. This procedure is called **backpropagation**.
+
+
+#### Really helpful resource for explaining this
+
+{{< video https://www.youtube.com/embed/videoseries?si=pqP_7xKfXb1cQp1j&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi >}}
+
+<!---
 ***
 
 ### 3b1b video 1 content
@@ -71,6 +261,10 @@ every component of the negative gradient of the weights tells you how to change 
 Loss / cost function take in all weights and biases and outpus 1 number (the cost / loss)
 - function from Tom's 5.4.4 section "training"
 
+$$
+\mathcal{L}(\mathbf{w}) = \frac{1}{n} \sum_{i=1}^n \bigl(y_i - \hat{y}(\mathbf{x}_i)\bigr)^2
+$$
+
 ***
 
 ### 3b1b video 3 content
@@ -92,7 +286,7 @@ get computational speed up by doing steps on each one of these instead of doing 
 * backpropogation is the algorithm for determining how a single training example would like to nudge the weights and biases
 * a true gradient descent step requires doing this for all training samples
 * so instead we divide into mini batches and make the adjustements of back propogation for each mini batch
-
+--->
 
 ### Sources:
 
@@ -125,10 +319,12 @@ Rosenblatt (1958): The Perceptron: A Probabilistic Model for Information Storage
 Rumelhart, Hinton & Williams (1986): Learning Representations by Back-Propagating Errors
 - Introduces back-propagation: a way to train networks with hidden units by gradient descent on the error.
 - Why it matters: the perceptron's middle "feature analysers" are fixed by hand, so they never learn representations. Back-prop trains the hidden-layer weights too, so hidden units discover useful features on their own.
+
 - Setup (matches our class notation):
     - total input to unit $j$: $x_j = \sum_i y_i w_{ji}$ (a bias is a weight on an extra input that is always 1)
     - output: $y_j = \frac{1}{1 + e^{-x_j}}$ (sigmoid; any function with a bounded derivative works)
     - error: $E = \frac{1}{2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2$, summed over cases $c$ and output units $j$
+
 - Two passes: the forward pass computes outputs layer by layer from input to output; the backward pass uses the chain rule from output back to input:
     - $\partial E / \partial y_j = y_j - d_j$
     - $\partial E / \partial x_j = \partial E / \partial y_j \cdot y_j (1 - y_j)$
@@ -140,8 +336,9 @@ Rumelhart, Hinton & Williams (1986): Learning Representations by Back-Propagatin
 - Also uses weight decay (shrinking every weight by 0.2% after each update), an early form of regularization.
 
 How the three connect (possible thread for the chapter)
+
 - 1943: neuron = weighted sum + threshold; networks can compute logic, but the weights are set by hand.
 - 1958: the perceptron learns its output weights from experience; framed probabilistically; can't handle relational problems.
 - 1986: back-propagation learns the hidden-layer weights, which lets networks build their own features. This ties to our note that "the nonlinear activation is the essential ingredient": the sigmoid provides the nonlinearity and a derivative for the chain rule.
---->
 
+--->
