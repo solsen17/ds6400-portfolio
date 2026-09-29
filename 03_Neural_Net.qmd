@@ -1,1 +1,147 @@
 # Neural Net
+
+***
+
+### 3b1b video 1 content
+
+Neuron: A thing that holds a number [0, 1]
+Input layer - every value comes from the feature / predictor set after normalization between 0 and 1
+The number inside a neuron can be called its "activation"
+
+Output layer - activation represents how much the system predicts the outcome
+
+Activations of one layer determine activations of the next layer
+
+Why layers?
+- able to isolate / distinguish features and their relationships to the predictions
+- divide and combine features within the input to produce the output
+
+Weighted sum for each neuron
+sum of all weights * activations = input for a given neuron in the next layer
+
+we pump the weighted sum into an activation function so that values are between 0 and 1
+- ex. Sigmoid function
+
+activation for a neuron is basically a measure of "how positive is this weighted sum?"
+
+if we want some bias for it to be inactive, then we add in a bias bector inside the activation function
+- bias tells you how high the weighted sum needs to be before the neuron starts getting meaningfully active
+
+Learning: Finding the right weights and biases
+
+More accurate definition
+Neuron: a function that takes in the outputs of all the numbers in the previous layer and spits out a number between 0 and 1
+
+end notes:
+ReLU is more common / easier to use now
+- simplification of sigmoid
+- faster to train, works well for deep neural networks
+
+***
+
+### 3b1b video 2 content
+
+Introducing gradient decent and how networks learn
+
+Start by initializing all the weights and biases randomly
+then define a "cost" funciton to define the difference
+
+"add up the squares of differences between bad outputs and what you wanted"
+- the cost here is the MSE!
+
+the average cost over all the training data is the Loss
+- our measure for how bad the network is
+
+Gradient descent:
+- find the slope of the function at your given location
+- then step in the direction that reduces the slope most steeply (right if slope is negative, left if slope is positive)
+- this slope is computed at individual values of the loss function
+- eventually you will get to a local minimum of the function
+
+take negative gradient of entire weights vector inside the cost/loss function
+
+Algorithm for computing the gradient efficiently is called "backpropogation"
+
+When we talk about a network learning, we're simply talking about minimizing a cost function
+- one consequence is that the cost function needs to have a nice smooth output
+- that's why neurons are not binary, but able to vary [0,1]
+
+every component of the negative gradient of the weights tells you how to change the weight and what matters more
+
+Loss / cost function take in all weights and biases and outpus 1 number (the cost / loss)
+- function from Tom's 5.4.4 section "training"
+
+***
+
+### 3b1b video 3 content
+
+Backpropogation: an algorithm for computing the crazy complicated gradient
+
+we can't change the activations, we can only change the weights and biases
+
+adding together all of the desired effects gives us a list of "nudges" that we want to happen to the second to last layer, then the layer prior, etc. until we get back to the first layer and have "nudged" all the weights and biases
+- "recursively apply" the process moving backwards through the network
+
+This is all just a single training example, so you have to do back propogation for every training sample and average the backpropogaiton nudges over the whole training set
+- this is loosely speaking the negative gradient of the cost/loss function
+
+typically we split our training data into mini batches
+get computational speed up by doing steps on each one of these instead of doing everything on the full dataset
+"Stochastic gradient descent"
+
+* backpropogation is the algorithm for determining how a single training example would like to nudge the weights and biases
+* a true gradient descent step requires doing this for all training samples
+* so instead we divide into mini batches and make the adjustements of back propogation for each mini batch
+
+
+### Sources:
+
+1. Tom Stewart, Intro to Prediction Modeling: https://tgstewart.cloud/ipm/models-overview.html#sec-nnet
+2. 3Blue1Brown, Neural Networks: https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&si=eTLONIqIN-zzii3t
+3. McCulloch, W. S. & Pitts, W. (1943), A Logical Calculus of the Ideas Immanent in Nervous Activity, *Bulletin of Mathematical Biophysics* 5: 115-133
+4. Rosenblatt, F. (1958), The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain, *Psychological Review* 65(6): 386-408
+5. Rumelhart, D. E., Hinton, G. E. & Williams, R. J. (1986), Learning Representations by Back-Propagating Errors, *Nature* 323: 533-536
+
+### Future Reference:
+1. http://neuralnetworksanddeeplearning.com/
+
+<!---
+PAPER SUMMARIES (draft for review; move what you want into the chapter)
+
+McCulloch & Pitts (1943): A Logical Calculus of the Ideas Immanent in Nervous Activity
+- The first mathematical model of a neuron. Because a neuron either fires or doesn't ("all-or-none"), its activity can be treated as a true/false proposition, and a network of neurons as a logical expression.
+- Model neuron: adds up its excitatory inputs and fires if the sum exceeds a fixed threshold; any active inhibitory input blocks firing. This is the ancestor of "weighted sum + step activation."
+- Showed that small nets realize AND, OR, and AND NOT, so any logical expression can be built out of these neurons. Nets with loops ("circles") can hold memory, and with a tape they can compute exactly what a Turing machine can.
+- Key limitation: the connections and thresholds are fixed by hand and the net does not change over time, so there is no learning. (They argue learning can be *represented* by an equivalent fixed net, not that the net learns.)
+
+Rosenblatt (1958): The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain
+- Asks how information is stored and how it affects recognition. Takes the "connectionist" position: memory lives in the strength of connections, not in stored copies of images.
+- Architecture: sensory units (S-points, the "retina") feed association units (A-units) through random connections, which feed response units (R-units). An A-unit fires when excitatory minus inhibitory input reaches a threshold $\theta$.
+- Learning: each A-unit carries a "value" $V$ (essentially a weight) that grows when the unit is active and the response is reinforced. "Bivalent" versions let values go up or down (reward / punishment), which gives trial-and-error learning.
+- Uses probability instead of symbolic logic: derives the probability of a correct response to a trained stimulus ($P_r$) and of correct generalization to a new stimulus ($P_g$). Generalization beats chance only when the classes really differ (a "differentiated environment"); with purely random stimuli there is nothing to generalize.
+- Only the A-to-R connections learn; the S-to-A wiring is random and fixed.
+- Limitation Rosenblatt names himself: the perceptron handles concrete patterns but not relationships ("Name the object left of the square"). "Some system, more advanced in principle than the perceptron, seems to be required."
+
+Rumelhart, Hinton & Williams (1986): Learning Representations by Back-Propagating Errors
+- Introduces back-propagation: a way to train networks with hidden units by gradient descent on the error.
+- Why it matters: the perceptron's middle "feature analysers" are fixed by hand, so they never learn representations. Back-prop trains the hidden-layer weights too, so hidden units discover useful features on their own.
+- Setup (matches our class notation):
+    - total input to unit $j$: $x_j = \sum_i y_i w_{ji}$ (a bias is a weight on an extra input that is always 1)
+    - output: $y_j = \frac{1}{1 + e^{-x_j}}$ (sigmoid; any function with a bounded derivative works)
+    - error: $E = \frac{1}{2} \sum_c \sum_j (y_{j,c} - d_{j,c})^2$, summed over cases $c$ and output units $j$
+- Two passes: the forward pass computes outputs layer by layer from input to output; the backward pass uses the chain rule from output back to input:
+    - $\partial E / \partial y_j = y_j - d_j$
+    - $\partial E / \partial x_j = \partial E / \partial y_j \cdot y_j (1 - y_j)$
+    - $\partial E / \partial w_{ji} = \partial E / \partial x_j \cdot y_i$
+    - $\partial E / \partial y_i = \sum_j \partial E / \partial x_j \cdot w_{ji}$ (sends the error back to the previous layer)
+- Weight update: $\Delta w = -\varepsilon \, \partial E / \partial w$ (gradient descent, $\varepsilon$ = learning rate), with an optional momentum term: $\Delta w(t) = -\varepsilon \, \partial E / \partial w(t) + \alpha \Delta w(t-1)$. Start from small random weights to "break symmetry."
+- Examples: detecting mirror symmetry in a binary input (impossible without a hidden layer; solved with 2 hidden units), and a family-tree task where hidden units learned nationality, generation, and family branch without those being in the input, then answered 4 held-out questions correctly.
+- Limitations the authors note: gradient descent can get stuck in local minima (rare in practice; adding connections helps), and back-prop is not a plausible model of how brains learn.
+- Also uses weight decay (shrinking every weight by 0.2% after each update), an early form of regularization.
+
+How the three connect (possible thread for the chapter)
+- 1943: neuron = weighted sum + threshold; networks can compute logic, but the weights are set by hand.
+- 1958: the perceptron learns its output weights from experience; framed probabilistically; can't handle relational problems.
+- 1986: back-propagation learns the hidden-layer weights, which lets networks build their own features. This ties to our note that "the nonlinear activation is the essential ingredient": the sigmoid provides the nonlinearity and a derivative for the chain rule.
+--->
+
