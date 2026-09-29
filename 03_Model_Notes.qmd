@@ -3,6 +3,56 @@
 Review of Master's Content:
 https://tgstewart.cloud/ml1/03-four-models.html
 
+### Background notes
+- **non-parametric**: no coefficients are estimated, no functional form is assumed
+    - example: KNN
+- **hyperparameter**: a tuning parameter that is set before training the model. It is NOT dependent upon the training data, and does not change during the training process. It may be tuned or adjusted outside of the training loops through grid search processes, but that requires training many individual models according to the hyperparameter selections
+    - example: $k$ in KNN
+- ***parameter**: a parameter that is learned during the model training, based on the training data
+    - example: $\beta$ in regression
+- **standardization**: (also called feature scaling, and also helpfully also called Z-score normalization) rescales data so that every feature has a mean of 0 and a standard deviation of 1. This is especially helpful for KNN, because magnitude of features has a significant effect on the model.
+- **curse of dimensionality**: as the dimension increases, meaning the number of features used for prediction grows, the nearness of training data to a new points decreases, because things are just further away in high dimensional space. Therefore, KNN works well in low dimensions, but not so well in high dimensions.
+
+
+### K-Nearest Neighbors (KNN)
+- Given a new observation, return the average outcome value based on the $k$ nearest values in the training set. 
+    - "Nearest" or **closeness** is determined by a distance function, most commonly the Euclidean distance.
+- This model is non-parametric, because no coefficients are estimated and no functional form is assumed
+- $k$ is the hyperparameter determining how many points should be included in the predicted outcome for a new point provided to the model
+    - if $k$ is small, there are few local points used to make the prediction
+    - as $k$ grows, more local to global points are used in the prediction average
+    - increasing $k$ makes the model more smooth and trades variance for bias (lower variance, higher bias)
+- Standard KNN workflow:
+    1. standardize the predictors
+    2. fit on the training data
+    3. generate predictions on a grid
+    4. plot a partial effect plot for one predictor
+
+**Key Callout**
+- "The bias-variance tradeoff. At $k=1$, KNN memorizes the training data — zero bias on training observations, high variance across different training sets. At $k=n$, it ignores everything except the mean — high bias, low variance. The optimal $k$ sits somewhere in between, and finding it requires the cross-validation tools from Module 3. This tradeoff — and the challenge of navigating it — is the central tension in all of predictive modeling."
+
+### Random Forests
+- Built on the decision tree
+    - continually splitting the predictor space into partitions through binary splits
+    - at each step, determine the splita cross the space that reduces within-node MSE
+    - REPEAT until a termination condition is met
+    - also called *"recursive binary partitioning"*
+- **dendrogram**: the branching diagram that gives decision trees their name, and also the way to visualize the splits made in the decision tree
+- "The random forest averages many trees, each trained on a different bootstrap sample of the training data. Averaging over many unstable but roughly unbiased models reduces variance without increasing bias — the central maneuver behind ensemble methods."
+    - Because each tree is different when different bootstrap samples are used, we want to average over them to get the "best" model.
+
+- The "random" in random forests is from the feature randomization that happens at each split. For every split, you only get to choose from a subset of the overall features, so that not every tree ends up being dominated by the same feature splits. Typically you use $p/3$ at each step to determine the number of features available.
+    - This reduces correlation among the trees so we have a model with lower variance.
+
+- Key hyperparameters:
+    - $B$: the number of trees
+        - more stable predictions, more reliable error estimate
+        - more computation required 
+    - $mtry$: the number of predictors considered at each split
+        - smaller mtry leads to less correlation between trees
+        - larger mtry leads to less feature randomization
+
+
 ### Neural Networks
 
 From Tom's content:
@@ -11,6 +61,13 @@ From Tom's content:
 What does that mean?
 It is a continuous prediction surface that is smooth, not rectangular or stair-step like you would see in K-Nearest Neighbors or Random Forests.
 All points in the training set contribute to all weights in the network, so information sharing is **global.**
+
+Neuron: basic building block of a neural network
+- receives linear combination of inputs, passes result through a non-linear function, produces a single number
+Layers: arrangement of neurons
+- first layer receives predictors $(x_1, x_2, ..., x_p)$
+- hidden layers transform the output of a previous layer into a new representation
+- final layer produces the prediction $\hat{y}$
 
 
 In the diagram 5.21, x1 and x2 are the individual neurons receiving predictors, the first layer. It passes through no hidden layers, so the predictors are directly related to the prediction $\hat{y}$. There are weights on the lines connecting the neurons, which we can consider the betas in a linear regression. Therefore, this representaiton is equivalent to a linear regression.
@@ -24,3 +81,43 @@ Draw up the simplest network we can put on the white board and walk through it.
 
 ## TO DO
 Write out the math behind a neural network for reference on the board.
+expand upon 5.4.2 with Tom's equations, a matrix, and a sample network.
+include sections 5.4.3 and 5.4.4 with definitions / examples (backpropogation, activation functions, hyper parameters)
+
+
+
+<!---
+Bias-variance trade off explained:
+https://www.youtube.com/watch?v=1ejOXl6jYTs
+
+Error(x) = Bias^2 + Variance + Irreducible Error
+- Error(x): expected prediction error
+- Bias: error from wrong assuptions
+- Variance: error from sensitivity to data fluctuations
+- Irreducible Error: Noise in data we cannot eliminate
+
+Bias: Error from overly simplistic assumptions
+* High bias -> underfitting
+* too simple to capture underlying patterns
+* ex. not enough predictors
+
+Variance: error from excessive sensitivity to training data
+* High variance -> overfitting
+* learns the noise along with the signal
+* Model memorizes the training data but fails to generalize
+* ex. decision trees perfect on training data but bad on test data
+
+Trade-off: bias and variance move in opposite directions
+* Low complexity: high bias, low variance -> underfit
+* High complexity: low bias, high variance -> overfit
+
+Examples:
+Linear regression: low variance, high bias - not very complex
+Deep decision trees: low bias, high variance - over fit to training data easily
+Random forest / regularized models: balance bias and variance
+Neural Networks: can go both ways depending on size, data, regularization
+
+High bias: poor accuracy on training and test data
+High variance: excellent accuracy on training data, poor on test data
+
+--->
