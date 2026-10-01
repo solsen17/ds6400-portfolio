@@ -75,6 +75,8 @@ In the diagram 5.21, x1 and x2 are the individual neurons receiving predictors, 
 We need nonlinear activation functions in the hidden layers, because otherwise we'd just be modeling linear relationships, since our network is just doing multiplication and addition throughout the layers.
 - From Tom: "Without nonlinear activation, the forward pass simplifies to ... linear regression. Every additional hidden layer without activation collapses in the same way. The nonlinear activation is the essential ingredient."
 
+
+<!---
 ## TODO
 Draw up the simplest network we can put on the white board and walk through it.
 - A network with no hidden layers is equivalent to linear regression.
@@ -86,7 +88,6 @@ include sections 5.4.3 and 5.4.4 with definitions / examples (backpropogation, a
 
 
 
-<!---
 Bias-variance trade off explained:
 https://www.youtube.com/watch?v=1ejOXl6jYTs
 

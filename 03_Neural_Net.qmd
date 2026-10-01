@@ -187,7 +187,313 @@ The gradients $\nabla_{\mathbf{w}} \mathcal{L}$ are computed efficiently by appl
 
 #### Really helpful resource for explaining this
 
-{{< video https://www.youtube.com/embed/videoseries?si=pqP_7xKfXb1cQp1j&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi >}}
+{{< video https://youtu.be/aircAruvnKk?si=rcepTJBVQbB5APTH >}}
+
+[Watch 3Blue1Brown Playlist for Deep Learning on Youtube](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+
+#### Computational Exploration
+
+Below is an exploration of the neural networks math above using the [Run Club Marathon Performance Dataset](https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data) from Kaggle. This is a synthetic dataset created to simulate marathon training data for machine learning practice. It was generated with some realistic correlations based on sports science principles.
+
+```{python get-kaggle}
+
+import kagglehub
+import pandas as pd
+
+path = kagglehub.dataset_download("likithagedipudi/run-club-marathon-performance-dataset")
+
+train_data = pd.read_csv(path + "/train.csv")
+test_data = pd.read_csv(path + "/test.csv")
+
+train_data.head()
+```
+
+##### Preparing the data
+
+We'll predict a runner's `actual_finish_time_minutes` from two predictors, `running_experience_months` and `weekly_mileage_km`. With two inputs, the networks below match the figures and situation covered above (@fig-nn-zero-layers, @fig-nn-one-layer, and @fig-nn-two-layers).
+
+The networks are trained on `train.csv` and evaluated on `test.csv`.
+
+```{python}
+from sklearn.preprocessing import StandardScaler
+
+predictors = ["running_experience_months", "weekly_mileage_km"]
+outcome = "actual_finish_time_minutes"
+
+# drop the runners with no recorded finish time
+train = train_data.dropna(subset=[outcome])
+test = test_data.dropna(subset=[outcome])
+
+X_train, y_train = train[predictors], train[outcome]
+X_test, y_test = test[predictors], test[outcome]
+
+# Standardize to mean 0, sd 1. Gradient descent struggles when values are on
+# very different scales (months vs. km vs. ~300 minutes).
+# The scalers are fit on the training data only.
+x_scaler = StandardScaler().fit(X_train)
+y_scaler = StandardScaler().fit(y_train.to_frame())
+
+X_train_s = x_scaler.transform(X_train)
+X_test_s = x_scaler.transform(X_test)
+y_train_s = y_scaler.transform(y_train.to_frame()).ravel()
+```
+
+##### Training settings
+
+Using scikit-learn's `MLPRegressor` (multi-layer perceptron) to set up the network definition function. In subsequent tests, we will only change the hidden layers argument. 
+
+```{python}
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics import root_mean_squared_error
+
+def make_network(hidden_layers, seed=1717):
+    return MLPRegressor(
+        hidden_layer_sizes=hidden_layers,  # neurons in each hidden layer
+        activation="relu",                 # sigma(z) = max(0, z)
+        solver="sgd",                      # (stochastic) gradient descent
+        learning_rate_init=0.01,           # eta, the learning rate
+        max_iter=100,                      # maximum number of epochs
+        batch_size=64,                     # observations per gradient update
+        alpha=0,                           # no penalty, so the loss is just MSE
+        random_state=seed,                 # which random starting weights to use
+    )
+
+def predict_minutes(model, X_s):
+    # the network predicts standardized y, so convert back to minutes
+    y_s = model.predict(X_s)
+    return y_scaler.inverse_transform(y_s.reshape(-1, 1)).ravel()
+```
+
+##### No hidden layers
+
+If we set up the no hidden layers neural network, we simply have a linear regression: $\hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{x} + b_{\text{out}}$. An empty tuple `()` in the make_network function gives us zero hidden layers.
+
+```{python}
+nn0 = make_network(hidden_layers=()).fit(X_train_s, y_train_s)
+
+print("w_out:", nn0.coefs_[0].ravel(), " b_out:", nn0.intercepts_[0])
+
+# compare to ordinary linear regression on the same data
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression().fit(X_train_s, y_train_s)
+print("linear regression coefficients:", lm.coef_)
+print("linear regression intercept:", lm.intercept_)
+
+print("Neural Network test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))
+```
+
+We can compare the two models and see that the coefficients are actually close between them here.
+
+##### One hidden layer
+
+With one hidden layer, we now introduce the non-linearity of the activation function in between the input and output. We'll use 4 neurons on our one hidden layer, like we had in the image @fig-nn-one-layer.
+
+```{python}
+nn1 = make_network(hidden_layers=(4,)).fit(X_train_s, y_train_s)
+
+# coefs_ holds the weight matrices, intercepts_ holds the bias vectors
+print("weight shapes:", [w.shape for w in nn1.coefs_])
+print("bias shapes:  ", [b.shape for b in nn1.intercepts_])
+
+print("Test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn1, X_test_s)))
+```
+
+We recall the equation from above:
+
+$$
+\hat{y}(\mathbf{x}) = \mathbf{w}_{\text{out}}^t \,
+  \sigma\!\left( W_1 \mathbf{x} + \mathbf{b}_1 \right) + b_{\text{out}}
+$$
+
+The first weight matrix is $2 \times 4$. scikit-learn stores it as $p \times m$, the transpose of our $m \times p$ matrix $W_1$, but it holds the same 8 weights (one per input-to-hidden arrow in @fig-nn-one-layer). The second is $\mathbf{w}_{\text{out}}$ with 4 entries.
+
+##### Two hidden layers
+
+Finally, let's set up the two hidden layers network. We use 4 neurons in the first hidden layer and 3 in the second, as in @fig-nn-two-layers.
+
+```{python}
+nn2 = make_network(hidden_layers=(4, 3)).fit(X_train_s, y_train_s)
+
+print("weight shapes:", [w.shape for w in nn2.coefs_])
+print("Test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn2, X_test_s)))
+```
+
+Now there are three weight matrices: $W_1^t$ ($2 \times 4$), $W_2^t$ ($4 \times 3$), and $\mathbf{w}_{\text{out}}$ (3 entries).
+
+##### Partial effects
+
+Let's take a look at the partial effects plots for both of these varialbles.
+A partial effect plot shows how the prediction changes as one predictor varies while the other is held constant (here at its median). Each variable runs from its 1st to 99th percentile, so we aren't plotting where there's almost no data.
+
+```{python}
+#| label: fig-nn-partial-effects
+#| fig-cap: "Partial effects of each predictor for the three networks. Left: running experience varies with weekly mileage held at its median. Right: weekly mileage varies with running experience held at its median."
+import numpy as np
+import matplotlib.pyplot as plt
+
+models = {
+    "No hidden layers": nn0,
+    "One hidden layer (4)": nn1,
+    "Two hidden layers (4, 3)": nn2,
+}
+colors = ["#2a78d6", "#eb6834", "#1baf7a"]
+labels = {
+    "running_experience_months": "Running experience (months)",
+    "weekly_mileage_km": "Weekly mileage (km)",
+}
+
+def partial_effect(model, variable):
+    # every row starts with each predictor at its median...
+    grid = pd.DataFrame({p: [X_train[p].median()] * 100 for p in predictors})
+    # ...then the variable of interest sweeps across its range
+    grid[variable] = np.linspace(X_train[variable].quantile(0.01),
+                                 X_train[variable].quantile(0.99), 100)
+    return grid[variable], predict_minutes(model, x_scaler.transform(grid))
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)
+for ax, variable in zip(axes, predictors):
+    for (name, model), color in zip(models.items(), colors):
+        x, pred = partial_effect(model, variable)
+        ax.plot(x, pred, color=color, linewidth=2, label=name)
+    other = [labels[p] for p in predictors if p != variable][0]
+    ax.set(xlabel=labels[variable], title=f"{other} held at its median")
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.grid(alpha=0.3)
+axes[0].set_ylabel("Predicted finish time (minutes)")
+axes[0].legend(frameon=False)
+fig.tight_layout()
+plt.show()
+```
+
+From the partial effects plots we can observe a handful of things.
+
+1. No Hidden Layers model only shows linear relationships.
+2. Across all 3 models, Running Experience is the more influential feature in prediction.
+3. The two hidden layers model starts to uncover progressively more information about the relationships.
+
+##### Comparing the models
+
+There was a little bit of weirdness when applying the random seed value for the gradient descent starting weights. In one case, where I used my favorite number 17, the RMSE for the third model (2 hidden layers) was significantly higher than the first two models and the partial effects plots were totally flat for both lines. So in the code below, we're going to train the networks with 5 different randomized starting positions to check how the RMSE may converge over multiple runs. 
+
+```{python}
+
+seed_results = []
+for name, layers in [("No hidden layers", ()),
+                     ("One hidden layer (4)", (4,)),
+                     ("Two hidden layers (4, 3)", (4, 3))]:
+    for seed in range(5):
+        model = make_network(layers, seed=seed).fit(X_train_s, y_train_s)
+        seed_results.append({
+            "Model": name,
+            "Test RMSE": root_mean_squared_error(y_test, predict_minutes(model, X_test_s)),
+        })
+
+pd.DataFrame(seed_results).groupby("Model", sort=False)["Test RMSE"].agg(["mean", "min", "max"]).round(2)
+
+```
+
+We see that the RMSE is smaller on average for the more complex model. That's not necessarily saying we must use the more complex model, but it is the behavior we expect from these models.
+
+
+#### The curious case of seed 17...
+
+Check this out. Maybe gradient descent doesn't like my favorite number `:(`
+
+```{python}
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics import root_mean_squared_error
+
+def make_network(hidden_layers, seed=17):
+    return MLPRegressor(
+        hidden_layer_sizes=hidden_layers,  # neurons in each hidden layer
+        activation="relu",                 # sigma(z) = max(0, z)
+        solver="sgd",                      # (stochastic) gradient descent
+        learning_rate_init=0.01,           # eta, the learning rate
+        max_iter=100,                      # maximum number of epochs
+        batch_size=64,                     # observations per gradient update
+        alpha=0,                           # no penalty, so the loss is just MSE
+        random_state=seed,                 # which random starting weights to use
+    )
+
+def predict_minutes(model, X_s):
+    # the network predicts standardized y, so convert back to minutes
+    y_s = model.predict(X_s)
+    return y_scaler.inverse_transform(y_s.reshape(-1, 1)).ravel()
+```
+
+```{python}
+#| code-fold: true
+nn0 = make_network(hidden_layers=()).fit(X_train_s, y_train_s)
+
+print("w_out:", nn0.coefs_[0].ravel(), " b_out:", nn0.intercepts_[0])
+
+# compare to ordinary linear regression on the same data
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression().fit(X_train_s, y_train_s)
+print("linear regression coefficients:", lm.coef_)
+print("linear regression intercept:", lm.intercept_)
+
+print("Neural Network test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))
+```
+
+```{python}
+#| code-fold: true
+nn1 = make_network(hidden_layers=(4,)).fit(X_train_s, y_train_s)
+
+# coefs_ holds the weight matrices, intercepts_ holds the bias vectors
+print("weight shapes:", [w.shape for w in nn1.coefs_])
+print("bias shapes:  ", [b.shape for b in nn1.intercepts_])
+
+print("Test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn1, X_test_s)))
+```
+
+```{python}
+#| code-fold: true
+nn2 = make_network(hidden_layers=(4, 3)).fit(X_train_s, y_train_s)
+
+print("weight shapes:", [w.shape for w in nn2.coefs_])
+print("Test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn2, X_test_s)))
+```
+
+```{python}
+#| code-fold: true
+import numpy as np
+import matplotlib.pyplot as plt
+
+models = {
+    "No hidden layers": nn0,
+    "One hidden layer (4)": nn1,
+    "Two hidden layers (4, 3)": nn2,
+}
+colors = ["#2a78d6", "#eb6834", "#1baf7a"]
+labels = {
+    "running_experience_months": "Running experience (months)",
+    "weekly_mileage_km": "Weekly mileage (km)",
+}
+
+def partial_effect(model, variable):
+    # every row starts with each predictor at its median...
+    grid = pd.DataFrame({p: [X_train[p].median()] * 100 for p in predictors})
+    # ...then the variable of interest sweeps across its range
+    grid[variable] = np.linspace(X_train[variable].quantile(0.01),
+                                 X_train[variable].quantile(0.99), 100)
+    return grid[variable], predict_minutes(model, x_scaler.transform(grid))
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)
+for ax, variable in zip(axes, predictors):
+    for (name, model), color in zip(models.items(), colors):
+        x, pred = partial_effect(model, variable)
+        ax.plot(x, pred, color=color, linewidth=2, label=name)
+    other = [labels[p] for p in predictors if p != variable][0]
+    ax.set(xlabel=labels[variable], title=f"{other} held at its median")
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.grid(alpha=0.3)
+axes[0].set_ylabel("Predicted finish time (minutes)")
+axes[0].legend(frameon=False)
+fig.tight_layout()
+plt.show()
+```
+
 
 <!---
 ***
@@ -295,6 +601,7 @@ get computational speed up by doing steps on each one of these instead of doing 
 3. McCulloch, W. S. & Pitts, W. (1943), A Logical Calculus of the Ideas Immanent in Nervous Activity, *Bulletin of Mathematical Biophysics* 5: 115-133
 4. Rosenblatt, F. (1958), The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain, *Psychological Review* 65(6): 386-408
 5. Rumelhart, D. E., Hinton, G. E. & Williams, R. J. (1986), Learning Representations by Back-Propagating Errors, *Nature* 323: 533-536
+6. Kaggle Run Club Marathon Performance Dataset: https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data
 
 ### Future Reference:
 1. http://neuralnetworksanddeeplearning.com/

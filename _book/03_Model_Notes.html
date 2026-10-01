@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03_Generalized_Linear_Model.html" rel="next">
+<link href="./03_Neural_Net.html" rel="next">
 <link href="./02_Visualizing_the_Model_1.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -217,32 +217,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03_Generalized_Linear_Model.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generalized Linear Model</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./03_Neural_Net.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Neural Net</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./03_Random_Forest.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Random Forest</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./03_Ordinal_Regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_Comparison.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Comparison</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparison</span></span></a>
   </div>
 </li>
       </ul>
@@ -261,8 +243,6 @@ window.Quarto = {
   <li><a href="#k-nearest-neighbors-knn" id="toc-k-nearest-neighbors-knn" class="nav-link" data-scroll-target="#k-nearest-neighbors-knn"><span class="header-section-number">6.0.2</span> K-Nearest Neighbors (KNN)</a></li>
   <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="header-section-number">6.0.3</span> Random Forests</a></li>
   <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">6.0.4</span> Neural Networks</a></li>
-  <li><a href="#todo" id="toc-todo" class="nav-link" data-scroll-target="#todo"><span class="header-section-number">6.1</span> TODO</a></li>
-  <li><a href="#to-do" id="toc-to-do" class="nav-link" data-scroll-target="#to-do"><span class="header-section-number">6.2</span> TO DO</a></li>
   </ul>
 </nav>
     </div>
@@ -373,15 +353,18 @@ window.Quarto = {
 <p>Neuron: basic building block of a neural network - receives linear combination of inputs, passes result through a non-linear function, produces a single number Layers: arrangement of neurons - first layer receives predictors <span class="math inline">\((x_1, x_2, ..., x_p)\)</span> - hidden layers transform the output of a previous layer into a new representation - final layer produces the prediction <span class="math inline">\(\hat{y}\)</span></p>
 <p>In the diagram 5.21, x1 and x2 are the individual neurons receiving predictors, the first layer. It passes through no hidden layers, so the predictors are directly related to the prediction <span class="math inline">\(\hat{y}\)</span>. There are weights on the lines connecting the neurons, which we can consider the betas in a linear regression. Therefore, this representaiton is equivalent to a linear regression.</p>
 <p>We need nonlinear activation functions in the hidden layers, because otherwise we’d just be modeling linear relationships, since our network is just doing multiplication and addition throughout the layers. - From Tom: “Without nonlinear activation, the forward pass simplifies to … linear regression. Every additional hidden layer without activation collapses in the same way. The nonlinear activation is the essential ingredient.”</p>
-</section>
-<section id="todo" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="todo"><span class="header-section-number">6.1</span> TODO</h2>
-<p>Draw up the simplest network we can put on the white board and walk through it. - A network with no hidden layers is equivalent to linear regression.</p>
-</section>
-<section id="to-do" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="to-do"><span class="header-section-number">6.2</span> TO DO</h2>
-<p>Write out the math behind a neural network for reference on the board. expand upon 5.4.2 with Tom’s equations, a matrix, and a sample network. include sections 5.4.3 and 5.4.4 with definitions / examples (backpropogation, activation functions, hyper parameters)</p>
 <!---
+## TODO
+Draw up the simplest network we can put on the white board and walk through it.
+- A network with no hidden layers is equivalent to linear regression.
+
+## TO DO
+Write out the math behind a neural network for reference on the board.
+expand upon 5.4.2 with Tom's equations, a matrix, and a sample network.
+include sections 5.4.3 and 5.4.4 with definitions / examples (backpropogation, activation functions, hyper parameters)
+
+
+
 Bias-variance trade off explained:
 https://www.youtube.com/watch?v=1ejOXl6jYTs
 
@@ -828,8 +811,8 @@ High variance: excellent accuracy on training data, poor on test data
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03_Generalized_Linear_Model.html" class="pagination-link" aria-label="Generalized Linear Model">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generalized Linear Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./03_Neural_Net.html" class="pagination-link" aria-label="Neural Net">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

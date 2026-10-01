@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8&nbsp; Neural Net – DS6400 Portfolio</title>
+<title>7&nbsp; Neural Net – DS6400 Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,18 +26,53 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03_Random_Forest.html" rel="next">
-<link href="./03_Generalized_Linear_Model.html" rel="prev">
+<link href="./03_Comparison.html" rel="next">
+<link href="./03_Model_Notes.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -75,6 +110,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
@@ -117,7 +155,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_Model_Notes.html">03: 4 models</a></li><li class="breadcrumb-item"><a href="./03_Neural_Net.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Neural Net</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_Model_Notes.html">03: 4 models</a></li><li class="breadcrumb-item"><a href="./03_Neural_Net.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -217,32 +255,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03_Generalized_Linear_Model.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generalized Linear Model</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./03_Neural_Net.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Neural Net</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./03_Random_Forest.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Random Forest</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./03_Ordinal_Regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_Comparison.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Comparison</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparison</span></span></a>
   </div>
 </li>
       </ul>
@@ -257,19 +277,19 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#motivating-ideas-and-chronology" id="toc-motivating-ideas-and-chronology" class="nav-link active" data-scroll-target="#motivating-ideas-and-chronology"><span class="header-section-number">8.0.1</span> Motivating ideas and chronology</a></li>
-  <li><a href="#math-behind-the-model" id="toc-math-behind-the-model" class="nav-link" data-scroll-target="#math-behind-the-model"><span class="header-section-number">8.0.2</span> Math behind the model</a></li>
-  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"><span class="header-section-number">8.0.3</span> Sources:</a></li>
-  <li><a href="#future-reference" id="toc-future-reference" class="nav-link" data-scroll-target="#future-reference"><span class="header-section-number">8.0.4</span> Future Reference:</a></li>
+  <li><a href="#motivating-ideas-and-chronology" id="toc-motivating-ideas-and-chronology" class="nav-link active" data-scroll-target="#motivating-ideas-and-chronology"><span class="header-section-number">7.0.1</span> Motivating ideas and chronology</a></li>
+  <li><a href="#math-behind-the-model" id="toc-math-behind-the-model" class="nav-link" data-scroll-target="#math-behind-the-model"><span class="header-section-number">7.0.2</span> Math behind the model</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"><span class="header-section-number">7.0.3</span> Sources:</a></li>
+  <li><a href="#future-reference" id="toc-future-reference" class="nav-link" data-scroll-target="#future-reference"><span class="header-section-number">7.0.4</span> Future Reference:</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_Model_Notes.html">03: 4 models</a></li><li class="breadcrumb-item"><a href="./03_Neural_Net.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Neural Net</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_Model_Notes.html">03: 4 models</a></li><li class="breadcrumb-item"><a href="./03_Neural_Net.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Neural Net</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></h1>
 </div>
 
 
@@ -286,8 +306,8 @@ window.Quarto = {
 </header>
 
 
-<section id="motivating-ideas-and-chronology" class="level3" data-number="8.0.1">
-<h3 data-number="8.0.1" class="anchored" data-anchor-id="motivating-ideas-and-chronology"><span class="header-section-number">8.0.1</span> Motivating ideas and chronology</h3>
+<section id="motivating-ideas-and-chronology" class="level3" data-number="7.0.1">
+<h3 data-number="7.0.1" class="anchored" data-anchor-id="motivating-ideas-and-chronology"><span class="header-section-number">7.0.1</span> Motivating ideas and chronology</h3>
 <p>Our brains are incredible recognition and prediction machines. How do they work? Can we replicate the behavior artificially in a computer?</p>
 <p>The provided papers give an chronology of the ideas in published literature.</p>
 <ol type="1">
@@ -308,11 +328,11 @@ window.Quarto = {
 </ul></li>
 </ol>
 </section>
-<section id="math-behind-the-model" class="level3" data-number="8.0.2">
-<h3 data-number="8.0.2" class="anchored" data-anchor-id="math-behind-the-model"><span class="header-section-number">8.0.2</span> Math behind the model</h3>
+<section id="math-behind-the-model" class="level3" data-number="7.0.2">
+<h3 data-number="7.0.2" class="anchored" data-anchor-id="math-behind-the-model"><span class="header-section-number">7.0.2</span> Math behind the model</h3>
 <p>Let’s jump into the notation and formulas with some visuals along the way to help out.</p>
-<section id="some-definitions" class="level4" data-number="8.0.2.1">
-<h4 data-number="8.0.2.1" class="anchored" data-anchor-id="some-definitions"><span class="header-section-number">8.0.2.1</span> Some definitions</h4>
+<section id="some-definitions" class="level4" data-number="7.0.2.1">
+<h4 data-number="7.0.2.1" class="anchored" data-anchor-id="some-definitions"><span class="header-section-number">7.0.2.1</span> Some definitions</h4>
 <p><strong>Neuron</strong>: The building block of a neural network.</p>
 <ul>
 <li>A function that takes inputs and produces a single number output (between 0 and 1)</li>
@@ -375,7 +395,7 @@ window.Quarto = {
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-zero-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.1: A network with no hidden layers is equivalent to linear regression: the output is a linear combination of the inputs.
+Figure&nbsp;7.1: A network with no hidden layers is equivalent to linear regression: the output is a linear combination of the inputs.
 </figcaption>
 </figure>
 </div>
@@ -511,15 +531,15 @@ Figure&nbsp;8.1: A network with no hidden layers is equivalent to linear regress
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-one-layer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.2: A network with one hidden layer. Each hidden neuron applies a nonlinear activation function to a weighted sum of the inputs.
+Figure&nbsp;7.2: A network with one hidden layer. Each hidden neuron applies a nonlinear activation function to a weighted sum of the inputs.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="some-equations" class="level4" data-number="8.0.2.2">
-<h4 data-number="8.0.2.2" class="anchored" data-anchor-id="some-equations"><span class="header-section-number">8.0.2.2</span> Some equations</h4>
+<section id="some-equations" class="level4" data-number="7.0.2.2">
+<h4 data-number="7.0.2.2" class="anchored" data-anchor-id="some-equations"><span class="header-section-number">7.0.2.2</span> Some equations</h4>
 <p>Let’s start with the example for the single hidden layer. The full equation for going from input <span class="math inline">\(\mathbf{x}\)</span> to predicted <span class="math inline">\(\hat{y}\)</span> is</p>
 <p><span class="math display">\[
 \hat{y}(\mathbf{x}) = \mathbf{w}_{\text{out}}^t \,
@@ -531,7 +551,7 @@ Figure&nbsp;8.2: A network with one hidden layer. Each hidden neuron applies a n
 <li><span class="math inline">\(\mathbf{b}_1 \in \mathbb{R}^m\)</span> is the hidden layer’s <strong>bias</strong> vector</li>
 <li><span class="math inline">\(\sigma(\cdot)\)</span> is a nonlinear activation function applied element-wise</li>
 <li>The hidden layer’s outputs are then combined linearly using the output-layer weights <span class="math inline">\(\mathbf{w}_{\text{out}} \in \mathbb{R}^m\)</span> and bias <span class="math inline">\(b_{\text{out}} \in \mathbb{R}\)</span>.</li>
-<li>In <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>8.2</span></a> there are <span class="math inline">\(p = 2\)</span> inputs and <span class="math inline">\(m = 4\)</span> hidden neurons, so <span class="math inline">\(W_1\)</span> is a <span class="math inline">\(4 \times 2\)</span> matrix, <span class="math inline">\(\mathbf{b}_1\)</span> and <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> each have 4 entries, and each arrow in the figure is one weight.</li>
+<li>In <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> there are <span class="math inline">\(p = 2\)</span> inputs and <span class="math inline">\(m = 4\)</span> hidden neurons, so <span class="math inline">\(W_1\)</span> is a <span class="math inline">\(4 \times 2\)</span> matrix, <span class="math inline">\(\mathbf{b}_1\)</span> and <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> each have 4 entries, and each arrow in the figure is one weight.</li>
 </ul>
 <p>Then we can consider the generalization of this function for multiple layers.</p>
 <div class="cell" data-layout-align="default">
@@ -747,7 +767,7 @@ Figure&nbsp;8.2: A network with one hidden layer. Each hidden neuron applies a n
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-two-layers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.3: A network with two hidden layers. Each layer refines the representation of the previous layer, enabling hierarchical feature construction.
+Figure&nbsp;7.3: A network with two hidden layers. Each layer refines the representation of the previous layer, enabling hierarchical feature construction.
 </figcaption>
 </figure>
 </div>
@@ -759,7 +779,7 @@ Figure&nbsp;8.3: A network with two hidden layers. Each layer refines the repres
 \mathbf{h}^{(2)} = \sigma(W_2 \mathbf{h}^{(1)} + \mathbf{b}_2), \quad \ldots, \quad
 \hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{h}^{(L)} + b_{\text{out}}
 \]</span></p>
-<p>where <span class="math inline">\(L\)</span> is the number of hidden layers. <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> has <span class="math inline">\(L = 2\)</span>: <span class="math inline">\(W_1\)</span> is <span class="math inline">\(4 \times 2\)</span> and <span class="math inline">\(W_2\)</span> is <span class="math inline">\(3 \times 4\)</span>.</p>
+<p>where <span class="math inline">\(L\)</span> is the number of hidden layers. <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> has <span class="math inline">\(L = 2\)</span>: <span class="math inline">\(W_1\)</span> is <span class="math inline">\(4 \times 2\)</span> and <span class="math inline">\(W_2\)</span> is <span class="math inline">\(3 \times 4\)</span>.</p>
 <p>Those sigmas represent activation functions. These make the network nonlinear, so that it isn’t just linear regression.</p>
 <table class="caption-top table">
 <thead>
@@ -784,15 +804,15 @@ Figure&nbsp;8.3: A network with two hidden layers. Each layer refines the repres
 </tbody>
 </table>
 </section>
-<section id="a-larger-visualization-of-the-matrix" class="level4" data-number="8.0.2.3">
-<h4 data-number="8.0.2.3" class="anchored" data-anchor-id="a-larger-visualization-of-the-matrix"><span class="header-section-number">8.0.2.3</span> A larger visualization of the matrix</h4>
+<section id="a-larger-visualization-of-the-matrix" class="level4" data-number="7.0.2.3">
+<h4 data-number="7.0.2.3" class="anchored" data-anchor-id="a-larger-visualization-of-the-matrix"><span class="header-section-number">7.0.2.3</span> A larger visualization of the matrix</h4>
 <div id="fig-3b1b-full" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-3b1b-full-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="03_images/3b1b_function_NN.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3b1b-full-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.4: One layer of the forward pass written out in full: the weighted sum for a single neuron (top) and for every neuron in the next layer at once (bottom). Source: 3Blue1Brown.
+Figure&nbsp;7.4: One layer of the forward pass written out in full: the weighted sum for a single neuron (top) and for every neuron in the next layer at once (bottom). Source: 3Blue1Brown.
 </figcaption>
 </figure>
 </div>
@@ -802,7 +822,7 @@ Figure&nbsp;8.4: One layer of the forward pass written out in full: the weighted
 <img src="03_images/3b1b_NN_func_small.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3b1b-compact-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.5: The same calculation in compact matrix form. Source: 3Blue1Brown.
+Figure&nbsp;7.5: The same calculation in compact matrix form. Source: 3Blue1Brown.
 </figcaption>
 </figure>
 </div>
@@ -827,8 +847,8 @@ $$
 
 --->
 </section>
-<section id="training-the-model" class="level4" data-number="8.0.2.4">
-<h4 data-number="8.0.2.4" class="anchored" data-anchor-id="training-the-model"><span class="header-section-number">8.0.2.4</span> Training the model</h4>
+<section id="training-the-model" class="level4" data-number="7.0.2.4">
+<h4 data-number="7.0.2.4" class="anchored" data-anchor-id="training-the-model"><span class="header-section-number">7.0.2.4</span> Training the model</h4>
 <p>The network is trained by minimizing a loss function over the training data. For a continuous outcome, the loss is mean squared error:</p>
 <p><span class="math display">\[
 \mathcal{L}(\mathbf{w}) = \frac{1}{n} \sum_{i=1}^n \bigl(y_i - \hat{y}(\mathbf{x}_i)\bigr)^2
@@ -840,9 +860,544 @@ $$
 <p><span class="math inline">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong>, which controls the size of each step. If it is too large, the optimizer diverges; if it is too small, convergence is slow. Other key training hyperparameters are the number of <strong>epochs</strong> (passes over the training data) and the <strong>batch size</strong> (how many observations are used to estimate each gradient update).</p>
 <p>The gradients <span class="math inline">\(\nabla_{\mathbf{w}} \mathcal{L}\)</span> are computed efficiently by applying the chain rule backwards through the network, from the output layer to the first hidden layer. This procedure is called <strong>backpropagation</strong>.</p>
 </section>
-<section id="really-helpful-resource-for-explaining-this" class="level4" data-number="8.0.2.5">
-<h4 data-number="8.0.2.5" class="anchored" data-anchor-id="really-helpful-resource-for-explaining-this"><span class="header-section-number">8.0.2.5</span> Really helpful resource for explaining this</h4>
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/videoseries?si=pqP_7xKfXb1cQp1j&amp;list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<section id="really-helpful-resource-for-explaining-this" class="level4" data-number="7.0.2.5">
+<h4 data-number="7.0.2.5" class="anchored" data-anchor-id="really-helpful-resource-for-explaining-this"><span class="header-section-number">7.0.2.5</span> Really helpful resource for explaining this</h4>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/aircAruvnKk?si=rcepTJBVQbB5APTH" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">Watch 3Blue1Brown Playlist for Deep Learning on Youtube</a></p>
+</section>
+<section id="computational-exploration" class="level4" data-number="7.0.2.6">
+<h4 data-number="7.0.2.6" class="anchored" data-anchor-id="computational-exploration"><span class="header-section-number">7.0.2.6</span> Computational Exploration</h4>
+<p>Below is an exploration of the neural networks math above using the <a href="https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data">Run Club Marathon Performance Dataset</a> from Kaggle. This is a synthetic dataset created to simulate marathon training data for machine learning practice. It was generated with some realistic correlations based on sports science principles.</p>
+<div id="f76062a0" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> kagglehub</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> kagglehub.dataset_download(<span class="st">"likithagedipudi/run-club-marathon-performance-dataset"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>train_data <span class="op">=</span> pd.read_csv(path <span class="op">+</span> <span class="st">"/train.csv"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>test_data <span class="op">=</span> pd.read_csv(path <span class="op">+</span> <span class="st">"/test.csv"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>train_data.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">runner_id</th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">running_experience_months</th>
+<th data-quarto-table-cell-role="th">previous_marathon_count</th>
+<th data-quarto-table-cell-role="th">training_program</th>
+<th data-quarto-table-cell-role="th">motivation_level</th>
+<th data-quarto-table-cell-role="th">personal_best_minutes</th>
+<th data-quarto-table-cell-role="th">weekly_mileage_km</th>
+<th data-quarto-table-cell-role="th">weekly_mileage_miles</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">run_club_attendance_rate</th>
+<th data-quarto-table-cell-role="th">warmup_adherence_pct</th>
+<th data-quarto-table-cell-role="th">stretching_adherence_pct</th>
+<th data-quarto-table-cell-role="th">marathon_date</th>
+<th data-quarto-table-cell-role="th">marathon_weather</th>
+<th data-quarto-table-cell-role="th">course_difficulty</th>
+<th data-quarto-table-cell-role="th">target_finish_time_minutes</th>
+<th data-quarto-table-cell-role="th">actual_finish_time_minutes</th>
+<th data-quarto-table-cell-role="th">mental_preparation_score</th>
+<th data-quarto-table-cell-role="th">medal_outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>R009432</td>
+<td>25</td>
+<td>Male</td>
+<td>48</td>
+<td>0</td>
+<td>Intermediate</td>
+<td>4</td>
+<td>NaN</td>
+<td>20.0</td>
+<td>12.4</td>
+<td>...</td>
+<td>0</td>
+<td>70</td>
+<td>29</td>
+<td>2025-02-02</td>
+<td>Hot</td>
+<td>Mixed</td>
+<td>254</td>
+<td>297.0</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>R077741</td>
+<td>43</td>
+<td>Female</td>
+<td>151</td>
+<td>2</td>
+<td>Advanced</td>
+<td>1</td>
+<td>196.0</td>
+<td>20.0</td>
+<td>12.4</td>
+<td>...</td>
+<td>0</td>
+<td>94</td>
+<td>0</td>
+<td>2024-02-11</td>
+<td>Sunny</td>
+<td>Mixed</td>
+<td>201</td>
+<td>231.0</td>
+<td>7</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>R034376</td>
+<td>32</td>
+<td>Female</td>
+<td>82</td>
+<td>3</td>
+<td>Advanced</td>
+<td>6</td>
+<td>211.0</td>
+<td>23.1</td>
+<td>14.4</td>
+<td>...</td>
+<td>54</td>
+<td>47</td>
+<td>39</td>
+<td>2025-03-27</td>
+<td>Rainy</td>
+<td>Flat</td>
+<td>204</td>
+<td>234.0</td>
+<td>9</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>R020754</td>
+<td>57</td>
+<td>Male</td>
+<td>6</td>
+<td>0</td>
+<td>Beginner</td>
+<td>8</td>
+<td>NaN</td>
+<td>27.3</td>
+<td>17.0</td>
+<td>...</td>
+<td>63</td>
+<td>77</td>
+<td>45</td>
+<td>2024-04-16</td>
+<td>Sunny</td>
+<td>Hilly</td>
+<td>258</td>
+<td>276.0</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>R001301</td>
+<td>54</td>
+<td>Female</td>
+<td>11</td>
+<td>0</td>
+<td>Beginner</td>
+<td>3</td>
+<td>NaN</td>
+<td>20.0</td>
+<td>12.4</td>
+<td>...</td>
+<td>20</td>
+<td>64</td>
+<td>40</td>
+<td>2025-10-21</td>
+<td>Cloudy</td>
+<td>Mixed</td>
+<td>245</td>
+<td>296.0</td>
+<td>8</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>5 rows × 41 columns</p>
+</div>
+</div>
+</div>
+<section id="preparing-the-data" class="level5" data-number="7.0.2.6.1">
+<h5 data-number="7.0.2.6.1" class="anchored" data-anchor-id="preparing-the-data"><span class="header-section-number">7.0.2.6.1</span> Preparing the data</h5>
+<p>We’ll predict a runner’s <code>actual_finish_time_minutes</code> from two predictors, <code>running_experience_months</code> and <code>weekly_mileage_km</code>. With two inputs, the networks below match the figures and situation covered above (<a href="#fig-nn-zero-layers" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>, and <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>7.3</span></a>).</p>
+<p>The networks are trained on <code>train.csv</code> and evaluated on <code>test.csv</code>.</p>
+<div id="e831fd64" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>predictors <span class="op">=</span> [<span class="st">"running_experience_months"</span>, <span class="st">"weekly_mileage_km"</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>outcome <span class="op">=</span> <span class="st">"actual_finish_time_minutes"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># drop the runners with no recorded finish time</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> train_data.dropna(subset<span class="op">=</span>[outcome])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> test_data.dropna(subset<span class="op">=</span>[outcome])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X_train, y_train <span class="op">=</span> train[predictors], train[outcome]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>X_test, y_test <span class="op">=</span> test[predictors], test[outcome]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize to mean 0, sd 1. Gradient descent struggles when values are on</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># very different scales (months vs. km vs. ~300 minutes).</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># The scalers are fit on the training data only.</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>x_scaler <span class="op">=</span> StandardScaler().fit(X_train)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>y_scaler <span class="op">=</span> StandardScaler().fit(y_train.to_frame())</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>X_train_s <span class="op">=</span> x_scaler.transform(X_train)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>X_test_s <span class="op">=</span> x_scaler.transform(X_test)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>y_train_s <span class="op">=</span> y_scaler.transform(y_train.to_frame()).ravel()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="training-settings" class="level5" data-number="7.0.2.6.2">
+<h5 data-number="7.0.2.6.2" class="anchored" data-anchor-id="training-settings"><span class="header-section-number">7.0.2.6.2</span> Training settings</h5>
+<p>Using scikit-learn’s <code>MLPRegressor</code> (multi-layer perceptron) to set up the network definition function. In subsequent tests, we will only change the hidden layers argument.</p>
+<div id="c392a8b1" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> root_mean_squared_error</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_network(hidden_layers, seed<span class="op">=</span><span class="dv">1717</span>):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> MLPRegressor(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        hidden_layer_sizes<span class="op">=</span>hidden_layers,  <span class="co"># neurons in each hidden layer</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        activation<span class="op">=</span><span class="st">"relu"</span>,                 <span class="co"># sigma(z) = max(0, z)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"sgd"</span>,                      <span class="co"># (stochastic) gradient descent</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        learning_rate_init<span class="op">=</span><span class="fl">0.01</span>,           <span class="co"># eta, the learning rate</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        max_iter<span class="op">=</span><span class="dv">100</span>,                      <span class="co"># maximum number of epochs</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        batch_size<span class="op">=</span><span class="dv">64</span>,                     <span class="co"># observations per gradient update</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="dv">0</span>,                           <span class="co"># no penalty, so the loss is just MSE</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span>seed,                 <span class="co"># which random starting weights to use</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_minutes(model, X_s):</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the network predicts standardized y, so convert back to minutes</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    y_s <span class="op">=</span> model.predict(X_s)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y_scaler.inverse_transform(y_s.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)).ravel()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="no-hidden-layers" class="level5" data-number="7.0.2.6.3">
+<h5 data-number="7.0.2.6.3" class="anchored" data-anchor-id="no-hidden-layers"><span class="header-section-number">7.0.2.6.3</span> No hidden layers</h5>
+<p>If we set up the no hidden layers neural network, we simply have a linear regression: <span class="math inline">\(\hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{x} + b_{\text{out}}\)</span>. An empty tuple <code>()</code> in the make_network function gives us zero hidden layers.</p>
+<div id="7a8950c4" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nn0 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>()).fit(X_train_s, y_train_s)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"w_out:"</span>, nn0.coefs_[<span class="dv">0</span>].ravel(), <span class="st">" b_out:"</span>, nn0.intercepts_[<span class="dv">0</span>])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to ordinary linear regression on the same data</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>lm <span class="op">=</span> LinearRegression().fit(X_train_s, y_train_s)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"linear regression coefficients:"</span>, lm.coef_)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"linear regression intercept:"</span>, lm.intercept_)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Neural Network test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>w_out: [-0.62354756  0.0126559 ]  b_out: [-0.0067104]
+linear regression coefficients: [-0.64664405 -0.02330685]
+linear regression intercept: -1.9109609522985936e-17
+Neural Network test RMSE (minutes): 25.614727707768825</code></pre>
+</div>
+</div>
+<p>We can compare the two models and see that the coefficients are actually close between them here.</p>
+</section>
+<section id="one-hidden-layer" class="level5" data-number="7.0.2.6.4">
+<h5 data-number="7.0.2.6.4" class="anchored" data-anchor-id="one-hidden-layer"><span class="header-section-number">7.0.2.6.4</span> One hidden layer</h5>
+<p>With one hidden layer, we now introduce the non-linearity of the activation function in between the input and output. We’ll use 4 neurons on our one hidden layer, like we had in the image <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>.</p>
+<div id="7ab090df" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nn1 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>,)).fit(X_train_s, y_train_s)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs_ holds the weight matrices, intercepts_ holds the bias vectors</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"weight shapes:"</span>, [w.shape <span class="cf">for</span> w <span class="kw">in</span> nn1.coefs_])</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"bias shapes:  "</span>, [b.shape <span class="cf">for</span> b <span class="kw">in</span> nn1.intercepts_])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn1, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>weight shapes: [(2, 4), (4, 1)]
+bias shapes:   [(4,), (1,)]
+Test RMSE (minutes): 23.522162138666413</code></pre>
+</div>
+</div>
+<p>We recall the equation from above:</p>
+<p><span class="math display">\[
+\hat{y}(\mathbf{x}) = \mathbf{w}_{\text{out}}^t \,
+  \sigma\!\left( W_1 \mathbf{x} + \mathbf{b}_1 \right) + b_{\text{out}}
+\]</span></p>
+<p>The first weight matrix is <span class="math inline">\(2 \times 4\)</span>. scikit-learn stores it as <span class="math inline">\(p \times m\)</span>, the transpose of our <span class="math inline">\(m \times p\)</span> matrix <span class="math inline">\(W_1\)</span>, but it holds the same 8 weights (one per input-to-hidden arrow in <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>). The second is <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> with 4 entries.</p>
+</section>
+<section id="two-hidden-layers" class="level5" data-number="7.0.2.6.5">
+<h5 data-number="7.0.2.6.5" class="anchored" data-anchor-id="two-hidden-layers"><span class="header-section-number">7.0.2.6.5</span> Two hidden layers</h5>
+<p>Finally, let’s set up the two hidden layers network. We use 4 neurons in the first hidden layer and 3 in the second, as in <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>7.3</span></a>.</p>
+<div id="7be7af26" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nn2 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">3</span>)).fit(X_train_s, y_train_s)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"weight shapes:"</span>, [w.shape <span class="cf">for</span> w <span class="kw">in</span> nn2.coefs_])</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn2, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>weight shapes: [(2, 4), (4, 3), (3, 1)]
+Test RMSE (minutes): 22.886675111689467</code></pre>
+</div>
+</div>
+<p>Now there are three weight matrices: <span class="math inline">\(W_1^t\)</span> (<span class="math inline">\(2 \times 4\)</span>), <span class="math inline">\(W_2^t\)</span> (<span class="math inline">\(4 \times 3\)</span>), and <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> (3 entries).</p>
+</section>
+<section id="partial-effects" class="level5" data-number="7.0.2.6.6">
+<h5 data-number="7.0.2.6.6" class="anchored" data-anchor-id="partial-effects"><span class="header-section-number">7.0.2.6.6</span> Partial effects</h5>
+<p>Let’s take a look at the partial effects plots for both of these varialbles. A partial effect plot shows how the prediction changes as one predictor varies while the other is held constant (here at its median). Each variable runs from its 1st to 99th percentile, so we aren’t plotting where there’s almost no data.</p>
+<div id="cell-fig-nn-partial-effects" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No hidden layers"</span>: nn0,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"One hidden layer (4)"</span>: nn1,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Two hidden layers (4, 3)"</span>: nn2,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">"#2a78d6"</span>, <span class="st">"#eb6834"</span>, <span class="st">"#1baf7a"</span>]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> {</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"running_experience_months"</span>: <span class="st">"Running experience (months)"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"weekly_mileage_km"</span>: <span class="st">"Weekly mileage (km)"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> partial_effect(model, variable):</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># every row starts with each predictor at its median...</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    grid <span class="op">=</span> pd.DataFrame({p: [X_train[p].median()] <span class="op">*</span> <span class="dv">100</span> <span class="cf">for</span> p <span class="kw">in</span> predictors})</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...then the variable of interest sweeps across its range</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    grid[variable] <span class="op">=</span> np.linspace(X_train[variable].quantile(<span class="fl">0.01</span>),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                                 X_train[variable].quantile(<span class="fl">0.99</span>), <span class="dv">100</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grid[variable], predict_minutes(model, x_scaler.transform(grid))</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="fl">4.5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, variable <span class="kw">in</span> <span class="bu">zip</span>(axes, predictors):</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (name, model), color <span class="kw">in</span> <span class="bu">zip</span>(models.items(), colors):</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        x, pred <span class="op">=</span> partial_effect(model, variable)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        ax.plot(x, pred, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span>name)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    other <span class="op">=</span> [labels[p] <span class="cf">for</span> p <span class="kw">in</span> predictors <span class="cf">if</span> p <span class="op">!=</span> variable][<span class="dv">0</span>]</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    ax.<span class="bu">set</span>(xlabel<span class="op">=</span>labels[variable], title<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>other<span class="sc">}</span><span class="ss"> held at its median"</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Predicted finish time (minutes)"</span>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend(frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-nn-partial-effects" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-partial-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03_Neural_Net_files/figure-html/fig-nn-partial-effects-output-1.png" width="1047" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-partial-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.6: Partial effects of each predictor for the three networks. Left: running experience varies with weekly mileage held at its median. Right: weekly mileage varies with running experience held at its median.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>From the partial effects plots we can observe a handful of things.</p>
+<ol type="1">
+<li>No Hidden Layers model only shows linear relationships.</li>
+<li>Across all 3 models, Running Experience is the more influential feature in prediction.</li>
+<li>The two hidden layers model starts to uncover progressively more information about the relationships.</li>
+</ol>
+</section>
+<section id="comparing-the-models" class="level5" data-number="7.0.2.6.7">
+<h5 data-number="7.0.2.6.7" class="anchored" data-anchor-id="comparing-the-models"><span class="header-section-number">7.0.2.6.7</span> Comparing the models</h5>
+<p>There was a little bit of weirdness when applying the random seed value for the gradient descent starting weights. In one case, where I used my favorite number 17, the RMSE for the third model (2 hidden layers) was significantly higher than the first two models and the partial effects plots were totally flat for both lines. So in the code below, we’re going to train the networks with 5 different randomized starting positions to check how the RMSE may converge over multiple runs.</p>
+<div id="aefbd29d" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>seed_results <span class="op">=</span> []</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, layers <span class="kw">in</span> [(<span class="st">"No hidden layers"</span>, ()),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                     (<span class="st">"One hidden layer (4)"</span>, (<span class="dv">4</span>,)),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                     (<span class="st">"Two hidden layers (4, 3)"</span>, (<span class="dv">4</span>, <span class="dv">3</span>))]:</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> seed <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> make_network(layers, seed<span class="op">=</span>seed).fit(X_train_s, y_train_s)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        seed_results.append({</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Model"</span>: name,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Test RMSE"</span>: root_mean_squared_error(y_test, predict_minutes(model, X_test_s)),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(seed_results).groupby(<span class="st">"Model"</span>, sort<span class="op">=</span><span class="va">False</span>)[<span class="st">"Test RMSE"</span>].agg([<span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">No hidden layers</th>
+<td>25.58</td>
+<td>25.55</td>
+<td>25.61</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">One hidden layer (4)</th>
+<td>23.34</td>
+<td>23.21</td>
+<td>23.44</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Two hidden layers (4, 3)</th>
+<td>22.98</td>
+<td>22.51</td>
+<td>23.29</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>We see that the RMSE is smaller on average for the more complex model. That’s not necessarily saying we must use the more complex model, but it is the behavior we expect from these models.</p>
+</section>
+</section>
+<section id="the-curious-case-of-seed-17" class="level4" data-number="7.0.2.7">
+<h4 data-number="7.0.2.7" class="anchored" data-anchor-id="the-curious-case-of-seed-17"><span class="header-section-number">7.0.2.7</span> The curious case of seed 17…</h4>
+<p>Check this out. Maybe gradient descent doesn’t like my favorite number <code>:(</code></p>
+<div id="66b84fce" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> root_mean_squared_error</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_network(hidden_layers, seed<span class="op">=</span><span class="dv">17</span>):</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> MLPRegressor(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        hidden_layer_sizes<span class="op">=</span>hidden_layers,  <span class="co"># neurons in each hidden layer</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        activation<span class="op">=</span><span class="st">"relu"</span>,                 <span class="co"># sigma(z) = max(0, z)</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"sgd"</span>,                      <span class="co"># (stochastic) gradient descent</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        learning_rate_init<span class="op">=</span><span class="fl">0.01</span>,           <span class="co"># eta, the learning rate</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        max_iter<span class="op">=</span><span class="dv">100</span>,                      <span class="co"># maximum number of epochs</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        batch_size<span class="op">=</span><span class="dv">64</span>,                     <span class="co"># observations per gradient update</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="dv">0</span>,                           <span class="co"># no penalty, so the loss is just MSE</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span>seed,                 <span class="co"># which random starting weights to use</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_minutes(model, X_s):</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the network predicts standardized y, so convert back to minutes</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    y_s <span class="op">=</span> model.predict(X_s)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y_scaler.inverse_transform(y_s.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)).ravel()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="88892628" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nn0 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>()).fit(X_train_s, y_train_s)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"w_out:"</span>, nn0.coefs_[<span class="dv">0</span>].ravel(), <span class="st">" b_out:"</span>, nn0.intercepts_[<span class="dv">0</span>])</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to ordinary linear regression on the same data</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>lm <span class="op">=</span> LinearRegression().fit(X_train_s, y_train_s)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"linear regression coefficients:"</span>, lm.coef_)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"linear regression intercept:"</span>, lm.intercept_)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Neural Network test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>w_out: [-0.64672594  0.01073962]  b_out: [-0.00929721]
+linear regression coefficients: [-0.64664405 -0.02330685]
+linear regression intercept: -1.9109609522985936e-17
+Neural Network test RMSE (minutes): 25.587313814563995</code></pre>
+</div>
+</div>
+<div id="6e22e198" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nn1 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>,)).fit(X_train_s, y_train_s)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs_ holds the weight matrices, intercepts_ holds the bias vectors</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"weight shapes:"</span>, [w.shape <span class="cf">for</span> w <span class="kw">in</span> nn1.coefs_])</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"bias shapes:  "</span>, [b.shape <span class="cf">for</span> b <span class="kw">in</span> nn1.intercepts_])</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn1, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>weight shapes: [(2, 4), (4, 1)]
+bias shapes:   [(4,), (1,)]
+Test RMSE (minutes): 23.309913328762505</code></pre>
+</div>
+</div>
+<div id="f3532577" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nn2 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">3</span>)).fit(X_train_s, y_train_s)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"weight shapes:"</span>, [w.shape <span class="cf">for</span> w <span class="kw">in</span> nn2.coefs_])</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn2, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>weight shapes: [(2, 4), (4, 3), (3, 1)]
+Test RMSE (minutes): 33.69433433220708</code></pre>
+</div>
+</div>
+<div id="33aa16b7" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No hidden layers"</span>: nn0,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"One hidden layer (4)"</span>: nn1,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Two hidden layers (4, 3)"</span>: nn2,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">"#2a78d6"</span>, <span class="st">"#eb6834"</span>, <span class="st">"#1baf7a"</span>]</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> {</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"running_experience_months"</span>: <span class="st">"Running experience (months)"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"weekly_mileage_km"</span>: <span class="st">"Weekly mileage (km)"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> partial_effect(model, variable):</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># every row starts with each predictor at its median...</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    grid <span class="op">=</span> pd.DataFrame({p: [X_train[p].median()] <span class="op">*</span> <span class="dv">100</span> <span class="cf">for</span> p <span class="kw">in</span> predictors})</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...then the variable of interest sweeps across its range</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    grid[variable] <span class="op">=</span> np.linspace(X_train[variable].quantile(<span class="fl">0.01</span>),</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                                 X_train[variable].quantile(<span class="fl">0.99</span>), <span class="dv">100</span>)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grid[variable], predict_minutes(model, x_scaler.transform(grid))</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="fl">4.5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, variable <span class="kw">in</span> <span class="bu">zip</span>(axes, predictors):</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (name, model), color <span class="kw">in</span> <span class="bu">zip</span>(models.items(), colors):</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>        x, pred <span class="op">=</span> partial_effect(model, variable)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>        ax.plot(x, pred, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span>name)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    other <span class="op">=</span> [labels[p] <span class="cf">for</span> p <span class="kw">in</span> predictors <span class="cf">if</span> p <span class="op">!=</span> variable][<span class="dv">0</span>]</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    ax.<span class="bu">set</span>(xlabel<span class="op">=</span>labels[variable], title<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>other<span class="sc">}</span><span class="ss"> held at its median"</span>)</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Predicted finish time (minutes)"</span>)</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend(frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_Neural_Net_files/figure-html/cell-14-output-1.png" width="1047" height="422" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 <!---
 ***
 
@@ -943,18 +1498,19 @@ get computational speed up by doing steps on each one of these instead of doing 
 --->
 </section>
 </section>
-<section id="sources" class="level3" data-number="8.0.3">
-<h3 data-number="8.0.3" class="anchored" data-anchor-id="sources"><span class="header-section-number">8.0.3</span> Sources:</h3>
+<section id="sources" class="level3" data-number="7.0.3">
+<h3 data-number="7.0.3" class="anchored" data-anchor-id="sources"><span class="header-section-number">7.0.3</span> Sources:</h3>
 <ol type="1">
 <li>Tom Stewart, Intro to Prediction Modeling: https://tgstewart.cloud/ipm/models-overview.html#sec-nnet</li>
 <li>3Blue1Brown, Neural Networks: https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&amp;si=eTLONIqIN-zzii3t</li>
 <li>McCulloch, W. S. &amp; Pitts, W. (1943), A Logical Calculus of the Ideas Immanent in Nervous Activity, <em>Bulletin of Mathematical Biophysics</em> 5: 115-133</li>
 <li>Rosenblatt, F. (1958), The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain, <em>Psychological Review</em> 65(6): 386-408</li>
 <li>Rumelhart, D. E., Hinton, G. E. &amp; Williams, R. J. (1986), Learning Representations by Back-Propagating Errors, <em>Nature</em> 323: 533-536</li>
+<li>Kaggle Run Club Marathon Performance Dataset: https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data</li>
 </ol>
 </section>
-<section id="future-reference" class="level3" data-number="8.0.4">
-<h3 data-number="8.0.4" class="anchored" data-anchor-id="future-reference"><span class="header-section-number">8.0.4</span> Future Reference:</h3>
+<section id="future-reference" class="level3" data-number="7.0.4">
+<h3 data-number="7.0.4" class="anchored" data-anchor-id="future-reference"><span class="header-section-number">7.0.4</span> Future Reference:</h3>
 <ol type="1">
 <li>http://neuralnetworksanddeeplearning.com/</li>
 </ol>
@@ -1408,13 +1964,13 @@ How the three connect (possible thread for the chapter)
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03_Generalized_Linear_Model.html" class="pagination-link" aria-label="Generalized Linear Model">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Generalized Linear Model</span></span>
+      <a href="./03_Model_Notes.html" class="pagination-link" aria-label="In class exploration and discussion">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03_Random_Forest.html" class="pagination-link" aria-label="Random Forest">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./03_Comparison.html" class="pagination-link" aria-label="Comparison">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparison</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
