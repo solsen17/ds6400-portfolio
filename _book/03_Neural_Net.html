@@ -279,8 +279,9 @@ window.Quarto = {
   <ul>
   <li><a href="#motivating-ideas-and-chronology" id="toc-motivating-ideas-and-chronology" class="nav-link active" data-scroll-target="#motivating-ideas-and-chronology"><span class="header-section-number">7.0.1</span> Motivating ideas and chronology</a></li>
   <li><a href="#math-behind-the-model" id="toc-math-behind-the-model" class="nav-link" data-scroll-target="#math-behind-the-model"><span class="header-section-number">7.0.2</span> Math behind the model</a></li>
-  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"><span class="header-section-number">7.0.3</span> Sources:</a></li>
-  <li><a href="#future-reference" id="toc-future-reference" class="nav-link" data-scroll-target="#future-reference"><span class="header-section-number">7.0.4</span> Future Reference:</a></li>
+  <li><a href="#computational-exploration" id="toc-computational-exploration" class="nav-link" data-scroll-target="#computational-exploration"><span class="header-section-number">7.0.3</span> Computational Exploration</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"><span class="header-section-number">7.0.4</span> Sources:</a></li>
+  <li><a href="#future-reference" id="toc-future-reference" class="nav-link" data-scroll-target="#future-reference"><span class="header-section-number">7.0.5</span> Future Reference:</a></li>
   </ul>
 </nav>
     </div>
@@ -865,10 +866,13 @@ $$
 <div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/aircAruvnKk?si=rcepTJBVQbB5APTH" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 <p><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">Watch 3Blue1Brown Playlist for Deep Learning on Youtube</a></p>
 </section>
-<section id="computational-exploration" class="level4" data-number="7.0.2.6">
-<h4 data-number="7.0.2.6" class="anchored" data-anchor-id="computational-exploration"><span class="header-section-number">7.0.2.6</span> Computational Exploration</h4>
+</section>
+<section id="computational-exploration" class="level3" data-number="7.0.3">
+<h3 data-number="7.0.3" class="anchored" data-anchor-id="computational-exploration"><span class="header-section-number">7.0.3</span> Computational Exploration</h3>
 <p>Below is an exploration of the neural networks math above using the <a href="https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data">Run Club Marathon Performance Dataset</a> from Kaggle. This is a synthetic dataset created to simulate marathon training data for machine learning practice. It was generated with some realistic correlations based on sports science principles.</p>
-<div id="f76062a0" class="cell" data-execution_count="1">
+<div id="167f8f5a" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> kagglehub</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -878,6 +882,7 @@ $$
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>test_data <span class="op">=</span> pd.read_csv(path <span class="op">+</span> <span class="st">"/test.csv"</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>train_data.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
@@ -1037,11 +1042,13 @@ $$
 </div>
 </div>
 </div>
-<section id="preparing-the-data" class="level5" data-number="7.0.2.6.1">
-<h5 data-number="7.0.2.6.1" class="anchored" data-anchor-id="preparing-the-data"><span class="header-section-number">7.0.2.6.1</span> Preparing the data</h5>
+<section id="preparing-the-data" class="level5" data-number="7.0.3.0.1">
+<h5 data-number="7.0.3.0.1" class="anchored" data-anchor-id="preparing-the-data"><span class="header-section-number">7.0.3.0.1</span> Preparing the data</h5>
 <p>We’ll predict a runner’s <code>actual_finish_time_minutes</code> from two predictors, <code>running_experience_months</code> and <code>weekly_mileage_km</code>. With two inputs, the networks below match the figures and situation covered above (<a href="#fig-nn-zero-layers" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>, and <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>7.3</span></a>).</p>
 <p>The networks are trained on <code>train.csv</code> and evaluated on <code>test.csv</code>.</p>
-<div id="e831fd64" class="cell" data-execution_count="2">
+<div id="bd245a09" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>predictors <span class="op">=</span> [<span class="st">"running_experience_months"</span>, <span class="st">"weekly_mileage_km"</span>]</span>
@@ -1063,12 +1070,15 @@ $$
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>X_train_s <span class="op">=</span> x_scaler.transform(X_train)</span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>X_test_s <span class="op">=</span> x_scaler.transform(X_test)</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>y_train_s <span class="op">=</span> y_scaler.transform(y_train.to_frame()).ravel()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
-<section id="training-settings" class="level5" data-number="7.0.2.6.2">
-<h5 data-number="7.0.2.6.2" class="anchored" data-anchor-id="training-settings"><span class="header-section-number">7.0.2.6.2</span> Training settings</h5>
+<section id="training-settings" class="level5" data-number="7.0.3.0.2">
+<h5 data-number="7.0.3.0.2" class="anchored" data-anchor-id="training-settings"><span class="header-section-number">7.0.3.0.2</span> Training settings</h5>
 <p>Using scikit-learn’s <code>MLPRegressor</code> (multi-layer perceptron) to set up the network definition function. In subsequent tests, we will only change the hidden layers argument.</p>
-<div id="c392a8b1" class="cell" data-execution_count="3">
+<div id="ee39ff1d" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> root_mean_squared_error</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1088,12 +1098,15 @@ $$
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the network predicts standardized y, so convert back to minutes</span></span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    y_s <span class="op">=</span> model.predict(X_s)</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y_scaler.inverse_transform(y_s.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)).ravel()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
-<section id="no-hidden-layers" class="level5" data-number="7.0.2.6.3">
-<h5 data-number="7.0.2.6.3" class="anchored" data-anchor-id="no-hidden-layers"><span class="header-section-number">7.0.2.6.3</span> No hidden layers</h5>
+<section id="no-hidden-layers" class="level5" data-number="7.0.3.0.3">
+<h5 data-number="7.0.3.0.3" class="anchored" data-anchor-id="no-hidden-layers"><span class="header-section-number">7.0.3.0.3</span> No hidden layers</h5>
 <p>If we set up the no hidden layers neural network, we simply have a linear regression: <span class="math inline">\(\hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{x} + b_{\text{out}}\)</span>. An empty tuple <code>()</code> in the make_network function gives us zero hidden layers.</p>
-<div id="7a8950c4" class="cell" data-execution_count="4">
+<div id="2038eefc" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nn0 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>()).fit(X_train_s, y_train_s)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"w_out:"</span>, nn0.coefs_[<span class="dv">0</span>].ravel(), <span class="st">" b_out:"</span>, nn0.intercepts_[<span class="dv">0</span>])</span>
@@ -1103,21 +1116,28 @@ $$
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>lm <span class="op">=</span> LinearRegression().fit(X_train_s, y_train_s)</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"linear regression coefficients:"</span>, lm.coef_)</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"linear regression intercept:"</span>, lm.intercept_)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Neural Network test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Neural Network test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Linear Regression test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(lm, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>w_out: [-0.62354756  0.0126559 ]  b_out: [-0.0067104]
 linear regression coefficients: [-0.64664405 -0.02330685]
 linear regression intercept: -1.9109609522985936e-17
-Neural Network test RMSE (minutes): 25.614727707768825</code></pre>
+
+
+Neural Network test RMSE (minutes): 25.614727707768825
+Linear Regression test RMSE (minutes): 25.54888984904703</code></pre>
 </div>
 </div>
-<p>We can compare the two models and see that the coefficients are actually close between them here.</p>
+<p>We can compare the two models and see that the coefficients are very close between them, and the RMSE is nearly the same, too.</p>
 </section>
-<section id="one-hidden-layer" class="level5" data-number="7.0.2.6.4">
-<h5 data-number="7.0.2.6.4" class="anchored" data-anchor-id="one-hidden-layer"><span class="header-section-number">7.0.2.6.4</span> One hidden layer</h5>
+<section id="one-hidden-layer" class="level5" data-number="7.0.3.0.4">
+<h5 data-number="7.0.3.0.4" class="anchored" data-anchor-id="one-hidden-layer"><span class="header-section-number">7.0.3.0.4</span> One hidden layer</h5>
 <p>With one hidden layer, we now introduce the non-linearity of the activation function in between the input and output. We’ll use 4 neurons on our one hidden layer, like we had in the image <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>.</p>
-<div id="7ab090df" class="cell" data-execution_count="5">
+<div id="ec896e6c" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nn1 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>,)).fit(X_train_s, y_train_s)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs_ holds the weight matrices, intercepts_ holds the bias vectors</span></span>
@@ -1125,6 +1145,7 @@ Neural Network test RMSE (minutes): 25.614727707768825</code></pre>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"bias shapes:  "</span>, [b.shape <span class="cf">for</span> b <span class="kw">in</span> nn1.intercepts_])</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn1, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>weight shapes: [(2, 4), (4, 1)]
 bias shapes:   [(4,), (1,)]
@@ -1138,14 +1159,17 @@ Test RMSE (minutes): 23.522162138666413</code></pre>
 \]</span></p>
 <p>The first weight matrix is <span class="math inline">\(2 \times 4\)</span>. scikit-learn stores it as <span class="math inline">\(p \times m\)</span>, the transpose of our <span class="math inline">\(m \times p\)</span> matrix <span class="math inline">\(W_1\)</span>, but it holds the same 8 weights (one per input-to-hidden arrow in <a href="#fig-nn-one-layer" class="quarto-xref">Figure&nbsp;<span>7.2</span></a>). The second is <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> with 4 entries.</p>
 </section>
-<section id="two-hidden-layers" class="level5" data-number="7.0.2.6.5">
-<h5 data-number="7.0.2.6.5" class="anchored" data-anchor-id="two-hidden-layers"><span class="header-section-number">7.0.2.6.5</span> Two hidden layers</h5>
+<section id="two-hidden-layers" class="level5" data-number="7.0.3.0.5">
+<h5 data-number="7.0.3.0.5" class="anchored" data-anchor-id="two-hidden-layers"><span class="header-section-number">7.0.3.0.5</span> Two hidden layers</h5>
 <p>Finally, let’s set up the two hidden layers network. We use 4 neurons in the first hidden layer and 3 in the second, as in <a href="#fig-nn-two-layers" class="quarto-xref">Figure&nbsp;<span>7.3</span></a>.</p>
-<div id="7be7af26" class="cell" data-execution_count="6">
+<div id="3a34934c" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nn2 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">3</span>)).fit(X_train_s, y_train_s)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"weight shapes:"</span>, [w.shape <span class="cf">for</span> w <span class="kw">in</span> nn2.coefs_])</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test RMSE (minutes):"</span>, root_mean_squared_error(y_test, predict_minutes(nn2, X_test_s)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>weight shapes: [(2, 4), (4, 3), (3, 1)]
 Test RMSE (minutes): 22.886675111689467</code></pre>
@@ -1153,10 +1177,12 @@ Test RMSE (minutes): 22.886675111689467</code></pre>
 </div>
 <p>Now there are three weight matrices: <span class="math inline">\(W_1^t\)</span> (<span class="math inline">\(2 \times 4\)</span>), <span class="math inline">\(W_2^t\)</span> (<span class="math inline">\(4 \times 3\)</span>), and <span class="math inline">\(\mathbf{w}_{\text{out}}\)</span> (3 entries).</p>
 </section>
-<section id="partial-effects" class="level5" data-number="7.0.2.6.6">
-<h5 data-number="7.0.2.6.6" class="anchored" data-anchor-id="partial-effects"><span class="header-section-number">7.0.2.6.6</span> Partial effects</h5>
+<section id="partial-effects" class="level5" data-number="7.0.3.0.6">
+<h5 data-number="7.0.3.0.6" class="anchored" data-anchor-id="partial-effects"><span class="header-section-number">7.0.3.0.6</span> Partial effects</h5>
 <p>Let’s take a look at the partial effects plots for both of these varialbles. A partial effect plot shows how the prediction changes as one predictor varies while the other is held constant (here at its median). Each variable runs from its 1st to 99th percentile, so we aren’t plotting where there’s almost no data.</p>
 <div id="cell-fig-nn-partial-effects" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1192,6 +1218,7 @@ Test RMSE (minutes): 22.886675111689467</code></pre>
 <span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend(frameon<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
 <span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display">
 <div id="fig-nn-partial-effects" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1212,10 +1239,12 @@ Figure&nbsp;7.6: Partial effects of each predictor for the three networks. Left:
 <li>The two hidden layers model starts to uncover progressively more information about the relationships.</li>
 </ol>
 </section>
-<section id="comparing-the-models" class="level5" data-number="7.0.2.6.7">
-<h5 data-number="7.0.2.6.7" class="anchored" data-anchor-id="comparing-the-models"><span class="header-section-number">7.0.2.6.7</span> Comparing the models</h5>
+<section id="comparing-the-models" class="level5" data-number="7.0.3.0.7">
+<h5 data-number="7.0.3.0.7" class="anchored" data-anchor-id="comparing-the-models"><span class="header-section-number">7.0.3.0.7</span> Comparing the models</h5>
 <p>There was a little bit of weirdness when applying the random seed value for the gradient descent starting weights. In one case, where I used my favorite number 17, the RMSE for the third model (2 hidden layers) was significantly higher than the first two models and the partial effects plots were totally flat for both lines. So in the code below, we’re going to train the networks with 5 different randomized starting positions to check how the RMSE may converge over multiple runs.</p>
-<div id="aefbd29d" class="cell" data-execution_count="8">
+<div id="1f79e6cc" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>seed_results <span class="op">=</span> []</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, layers <span class="kw">in</span> [(<span class="st">"No hidden layers"</span>, ()),</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                     (<span class="st">"One hidden layer (4)"</span>, (<span class="dv">4</span>,)),</span>
@@ -1228,6 +1257,7 @@ Figure&nbsp;7.6: Partial effects of each predictor for the three networks. Left:
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        })</span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(seed_results).groupby(<span class="st">"Model"</span>, sort<span class="op">=</span><span class="va">False</span>)[<span class="st">"Test RMSE"</span>].agg([<span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
@@ -1274,11 +1304,12 @@ Figure&nbsp;7.6: Partial effects of each predictor for the three networks. Left:
 </div>
 <p>We see that the RMSE is smaller on average for the more complex model. That’s not necessarily saying we must use the more complex model, but it is the behavior we expect from these models.</p>
 </section>
-</section>
-<section id="the-curious-case-of-seed-17" class="level4" data-number="7.0.2.7">
-<h4 data-number="7.0.2.7" class="anchored" data-anchor-id="the-curious-case-of-seed-17"><span class="header-section-number">7.0.2.7</span> The curious case of seed 17…</h4>
+<section id="the-curious-case-of-seed-17" class="level4" data-number="7.0.3.1">
+<h4 data-number="7.0.3.1" class="anchored" data-anchor-id="the-curious-case-of-seed-17"><span class="header-section-number">7.0.3.1</span> The curious case of seed 17…</h4>
 <p>Check this out. Maybe gradient descent doesn’t like my favorite number <code>:(</code></p>
-<div id="66b84fce" class="cell" data-execution_count="9">
+<div id="434641de" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> root_mean_squared_error</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1298,8 +1329,9 @@ Figure&nbsp;7.6: Partial effects of each predictor for the three networks. Left:
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the network predicts standardized y, so convert back to minutes</span></span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    y_s <span class="op">=</span> model.predict(X_s)</span>
 <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y_scaler.inverse_transform(y_s.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)).ravel()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
-<div id="88892628" class="cell" data-execution_count="10">
+<div id="cb388d15" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nn0 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>()).fit(X_train_s, y_train_s)</span>
@@ -1321,7 +1353,7 @@ linear regression intercept: -1.9109609522985936e-17
 Neural Network test RMSE (minutes): 25.587313814563995</code></pre>
 </div>
 </div>
-<div id="6e22e198" class="cell" data-execution_count="11">
+<div id="357eb6c1" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nn1 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>,)).fit(X_train_s, y_train_s)</span>
@@ -1338,7 +1370,7 @@ bias shapes:   [(4,), (1,)]
 Test RMSE (minutes): 23.309913328762505</code></pre>
 </div>
 </div>
-<div id="f3532577" class="cell" data-execution_count="12">
+<div id="b7da7dac" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nn2 <span class="op">=</span> make_network(hidden_layers<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">3</span>)).fit(X_train_s, y_train_s)</span>
@@ -1351,7 +1383,7 @@ Test RMSE (minutes): 23.309913328762505</code></pre>
 Test RMSE (minutes): 33.69433433220708</code></pre>
 </div>
 </div>
-<div id="33aa16b7" class="cell" data-execution_count="13">
+<div id="64c5c519" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1498,8 +1530,8 @@ get computational speed up by doing steps on each one of these instead of doing 
 --->
 </section>
 </section>
-<section id="sources" class="level3" data-number="7.0.3">
-<h3 data-number="7.0.3" class="anchored" data-anchor-id="sources"><span class="header-section-number">7.0.3</span> Sources:</h3>
+<section id="sources" class="level3" data-number="7.0.4">
+<h3 data-number="7.0.4" class="anchored" data-anchor-id="sources"><span class="header-section-number">7.0.4</span> Sources:</h3>
 <ol type="1">
 <li>Tom Stewart, Intro to Prediction Modeling: https://tgstewart.cloud/ipm/models-overview.html#sec-nnet</li>
 <li>3Blue1Brown, Neural Networks: https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&amp;si=eTLONIqIN-zzii3t</li>
@@ -1509,8 +1541,8 @@ get computational speed up by doing steps on each one of these instead of doing 
 <li>Kaggle Run Club Marathon Performance Dataset: https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data</li>
 </ol>
 </section>
-<section id="future-reference" class="level3" data-number="7.0.4">
-<h3 data-number="7.0.4" class="anchored" data-anchor-id="future-reference"><span class="header-section-number">7.0.4</span> Future Reference:</h3>
+<section id="future-reference" class="level3" data-number="7.0.5">
+<h3 data-number="7.0.5" class="anchored" data-anchor-id="future-reference"><span class="header-section-number">7.0.5</span> Future Reference:</h3>
 <ol type="1">
 <li>http://neuralnetworksanddeeplearning.com/</li>
 </ol>

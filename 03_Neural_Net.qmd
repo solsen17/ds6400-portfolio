@@ -191,11 +191,12 @@ The gradients $\nabla_{\mathbf{w}} \mathcal{L}$ are computed efficiently by appl
 
 [Watch 3Blue1Brown Playlist for Deep Learning on Youtube](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 
-#### Computational Exploration
+### Computational Exploration
 
 Below is an exploration of the neural networks math above using the [Run Club Marathon Performance Dataset](https://www.kaggle.com/datasets/likithagedipudi/run-club-marathon-performance-dataset/data) from Kaggle. This is a synthetic dataset created to simulate marathon training data for machine learning practice. It was generated with some realistic correlations based on sports science principles.
 
 ```{python get-kaggle}
+#| code-fold: true
 
 import kagglehub
 import pandas as pd
@@ -215,6 +216,7 @@ We'll predict a runner's `actual_finish_time_minutes` from two predictors, `runn
 The networks are trained on `train.csv` and evaluated on `test.csv`.
 
 ```{python}
+#| code-fold: true
 from sklearn.preprocessing import StandardScaler
 
 predictors = ["running_experience_months", "weekly_mileage_km"]
@@ -243,6 +245,7 @@ y_train_s = y_scaler.transform(y_train.to_frame()).ravel()
 Using scikit-learn's `MLPRegressor` (multi-layer perceptron) to set up the network definition function. In subsequent tests, we will only change the hidden layers argument. 
 
 ```{python}
+#| code-fold: true
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 
@@ -269,6 +272,7 @@ def predict_minutes(model, X_s):
 If we set up the no hidden layers neural network, we simply have a linear regression: $\hat{y} = \mathbf{w}_{\text{out}}^t \mathbf{x} + b_{\text{out}}$. An empty tuple `()` in the make_network function gives us zero hidden layers.
 
 ```{python}
+#| code-fold: true
 nn0 = make_network(hidden_layers=()).fit(X_train_s, y_train_s)
 
 print("w_out:", nn0.coefs_[0].ravel(), " b_out:", nn0.intercepts_[0])
@@ -278,17 +282,19 @@ from sklearn.linear_model import LinearRegression
 lm = LinearRegression().fit(X_train_s, y_train_s)
 print("linear regression coefficients:", lm.coef_)
 print("linear regression intercept:", lm.intercept_)
-
+print("\n")
 print("Neural Network test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(nn0, X_test_s)))
+print("Linear Regression test RMSE (minutes):", root_mean_squared_error(y_test, predict_minutes(lm, X_test_s)))
 ```
 
-We can compare the two models and see that the coefficients are actually close between them here.
+We can compare the two models and see that the coefficients are very close between them, and the RMSE is nearly the same, too.
 
 ##### One hidden layer
 
 With one hidden layer, we now introduce the non-linearity of the activation function in between the input and output. We'll use 4 neurons on our one hidden layer, like we had in the image @fig-nn-one-layer.
 
 ```{python}
+#| code-fold: true
 nn1 = make_network(hidden_layers=(4,)).fit(X_train_s, y_train_s)
 
 # coefs_ holds the weight matrices, intercepts_ holds the bias vectors
@@ -312,6 +318,7 @@ The first weight matrix is $2 \times 4$. scikit-learn stores it as $p \times m$,
 Finally, let's set up the two hidden layers network. We use 4 neurons in the first hidden layer and 3 in the second, as in @fig-nn-two-layers.
 
 ```{python}
+#| code-fold: true
 nn2 = make_network(hidden_layers=(4, 3)).fit(X_train_s, y_train_s)
 
 print("weight shapes:", [w.shape for w in nn2.coefs_])
@@ -326,6 +333,7 @@ Let's take a look at the partial effects plots for both of these varialbles.
 A partial effect plot shows how the prediction changes as one predictor varies while the other is held constant (here at its median). Each variable runs from its 1st to 99th percentile, so we aren't plotting where there's almost no data.
 
 ```{python}
+#| code-fold: true
 #| label: fig-nn-partial-effects
 #| fig-cap: "Partial effects of each predictor for the three networks. Left: running experience varies with weekly mileage held at its median. Right: weekly mileage varies with running experience held at its median."
 import numpy as np
@@ -376,7 +384,7 @@ From the partial effects plots we can observe a handful of things.
 There was a little bit of weirdness when applying the random seed value for the gradient descent starting weights. In one case, where I used my favorite number 17, the RMSE for the third model (2 hidden layers) was significantly higher than the first two models and the partial effects plots were totally flat for both lines. So in the code below, we're going to train the networks with 5 different randomized starting positions to check how the RMSE may converge over multiple runs. 
 
 ```{python}
-
+#| code-fold: true
 seed_results = []
 for name, layers in [("No hidden layers", ()),
                      ("One hidden layer (4)", (4,)),
@@ -400,6 +408,7 @@ We see that the RMSE is smaller on average for the more complex model. That's no
 Check this out. Maybe gradient descent doesn't like my favorite number `:(`
 
 ```{python}
+#| code-fold: true
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 
