@@ -23,7 +23,12 @@ book:
         - "03_Neural_Net.qmd"
         #- "03_Random_Forest.qmd"
         #- "03_Ordinal_Regression.qmd"
-        - "03_Comparison.qmd"
+        #- "03_Comparison.qmd"
+    - part: "04: Linear Algebra Review"
+      chapters:
+      - "04_Appendix_A.qmd"
+      - "04_Appendix_B.qmd"
+
 
 bibliography: references.bib
 

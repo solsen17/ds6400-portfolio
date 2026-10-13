@@ -1,0 +1,47 @@
+# Appendix B
+
+Review the material in Appendix B of *Plane Answers to Complex Questions: The Theory of Linear Models* by Ronald Christensen.
+
+## Self-assessment
+
+To help focus class time, rate each topic below. Use no stars for no familiarity. Use ★★★★★ for high familiarity.
+
+| Topic                                                                                    | Comfort level (☆☆☆☆☆) |
+|------------------------------------------------------------------------------------------|------------------------|
+| Square, symmetric, diagonal, and identity matrices                                       |          ★★★★          |
+| Transpose                                                                                |          ★★★           |
+| Partitioned (block) matrices                                                             |          ★             |
+| Kronecker products                                                                       |          ★             |
+| The Vec operator                                                                         |          ★             |
+| Nonsingular and singular matrices                                                        |          ★★            |
+| Matrix inverse                                                                           |          ★★★           |
+| Rank of null space $N(A)$                                                                |          ★★            |
+| Eigenvalues, eigenvectors, and multiplicity                                              |          ★★            |
+| Eigenspaces as subspaces                                                                 |          ★★            |
+| For symmetric matrices, eigenvectors of different eigenvalues are orthogonal             |          ★★            |
+| A basis for $C(A)$ made of eigenvectors; rank as the number of nonzero eigenvalues       |          ★★            |
+| Orthonormal eigenvector basis for symmetric matrices (spectral theorem)                  |          ★             |
+| Orthonormal (orthogonal) matrices                                                        |          ★★            |
+| Spectral or singular value decomposition: $A = PD(\lambda_i)P'$                          |          ★★            |
+| Positive definite and nonnegative definite matrices                                      |          ★             |
+| $A = QQ'$                                                                                |          ★             |
+| Trace, and the cyclic property $\text{tr}(AB) = \text{tr}(BA)$                           |          ★             |
+| Trace as the sum of eigenvalues                                                          |          ★             |
+| Determinant as the product of eigenvalues                                                |          ★★            |
+| Complex eigenvalues                                                                      |          ★             |
+| Perpendicular projection operators (ppo)                                                 |          ★             |
+| Characterizing a ppo: idempotent and symmetric ($MM = M$, $M' = M$)                      |          ★             |
+| Why a ppo is unique                                                                      |          ★             |
+| Building a ppo from an orthonormal basis: $M = OO'$                                      |          ★             |
+| Generalized inverses                                                                     |          ★             |
+| Projection matrix $X(X'X)^-X'$                                                           |          ★             |
+| Sums and differences of projection operators; orthogonal complements within a subspace   |          ★             |
+| $I - M$ as the projection onto the orthogonal complement                                 |          ★             |
+| How projections relate to Gram–Schmidt                                                   |          ★             |
+| Eigenvalues of projection matrices (0 and 1), and $\text{tr}(M) = r(M)$                  |          ★             |
+| Idempotent matrices                                                                      |          ★             |
+| $C(XX') = C(X)$ and $r(XX') = r(X)$                                                      |          ★             |
+
+## Overall assessment:
+
+Like with the Appendix A material on Vector Spaces, the last time I did any problems like this was during college (6-9 years ago depending on the class), so I am not initially confident in my ability to solve any of the problems. However, with some practice and refreshers, I believe I could relearn the concepts in due time. Many of the words and concepts are familiar in words, but not so much in application and thorough understanding.

@@ -1,0 +1,33 @@
+# Appendix A
+
+Review the material in Appendix A of *Plane Answers to Complex Questions: The Theory of Linear Models* by Ronald Christensen.
+
+## Self-assessment
+
+To help focus class time, rate each topic below. Use no stars for no familiarity. Use ★★★★★ for high familiarity.
+
+| Topic                                     | Comfort level (☆☆☆☆☆) |
+|-------------------------------------------|------------------------|
+| Vector spaces                             |         ★★★            |
+| Subspaces                                 |         ★★★            |
+| Linear combinations                       |         ★★★            |
+| Span                                      |         ★★             |
+| Column space $C(A)$                       |         ★★             |
+| Null space $N(A)$                         |         ★★★            |
+| Linear dependence and independence        |         ★★             |
+| Bases                                     |         ★★             |
+| Rank                                      |         ★★             |
+| Uniqueness in basis                       |         ★★             |
+| Sums of subspaces (direct sums)           |         ★★             |
+| Euclidean inner product                   |         ★★             |
+| Orthogonality                             |         ★★★            |
+| Norm and distance                         |         ★★             |
+| Orthogonal and orthonormal bases          |         ★★             |
+| Gram–Schmidt                              |         ★              |
+| Orthogonal complements                    |         ★              |
+| Subspace plus orthogonal complement       |         ★              |
+| Orthogonal complement of an intersection  |         ★              |
+
+## Overall assessment:
+
+The last time I did any problems like this was freshman year of college (9 years ago), so I am not initially confident in my ability to solve any of the problems. However, with some practice and refreshers, I believe I could relearn the concepts in due time. Many of the words and concepts are familiar in words, but not so much in application and thorough understanding.
