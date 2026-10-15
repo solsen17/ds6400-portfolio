@@ -157,7 +157,7 @@
     "href": "04_Appendix_A.html#self-assessment",
     "title": "8  Appendix A",
     "section": "",
-    "text": "Topic\nComfort level (☆☆☆☆☆)\n\n\n\n\nVector spaces\n\n\n\nSubspaces\n\n\n\nLinear combinations\n\n\n\nSpan\n\n\n\nColumn space \\(C(A)\\)\n\n\n\nNull space \\(N(A)\\)\n\n\n\nLinear dependence and independence\n\n\n\nBases\n\n\n\nRank\n\n\n\nUniqueness in basis\n\n\n\nSums of subspaces (direct sums)\n\n\n\nEuclidean inner product\n\n\n\nOrthogonality\n\n\n\nNorm and distance\n\n\n\nOrthogonal and orthonormal bases\n\n\n\nGram–Schmidt\n\n\n\nOrthogonal complements\n\n\n\nSubspace plus orthogonal complement\n\n\n\nOrthogonal complement of an intersection",
+    "text": "Topic\nComfort level (☆☆☆☆☆)\n\n\n\n\nVector spaces\n★★★\n\n\nSubspaces\n★★★\n\n\nLinear combinations\n★★★\n\n\nSpan\n★★\n\n\nColumn space \\(C(A)\\)\n★★\n\n\nNull space \\(N(A)\\)\n★★★\n\n\nLinear dependence and independence\n★★\n\n\nBases\n★★\n\n\nRank\n★★\n\n\nUniqueness in basis\n★★\n\n\nSums of subspaces (direct sums)\n★★\n\n\nEuclidean inner product\n★★\n\n\nOrthogonality\n★★★\n\n\nNorm and distance\n★★\n\n\nOrthogonal and orthonormal bases\n★★\n\n\nGram–Schmidt\n★\n\n\nOrthogonal complements\n★\n\n\nSubspace plus orthogonal complement\n★\n\n\nOrthogonal complement of an intersection\n★",
     "crumbs": [
       "04: Linear Algebra Review",
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>Appendix A</span>"
@@ -179,7 +179,29 @@
     "href": "04_Appendix_B.html#self-assessment",
     "title": "9  Appendix B",
     "section": "",
-    "text": "Topic\nComfort level (☆☆☆☆☆)\n\n\n\n\nSquare, symmetric, diagonal, and identity matrices\n\n\n\nTranspose\n\n\n\nPartitioned (block) matrices\n\n\n\nKronecker products\n\n\n\nThe Vec operator\n\n\n\nNonsingular and singular matrices\n\n\n\nMatrix inverse\n\n\n\nRank of null space \\(N(A)\\)\n\n\n\nEigenvalues, eigenvectors, and multiplicity\n\n\n\nEigenspaces as subspaces\n\n\n\nFor symmetric matrices, eigenvectors of different eigenvalues are orthogonal\n\n\n\nA basis for \\(C(A)\\) made of eigenvectors; rank as the number of nonzero eigenvalues\n\n\n\nOrthonormal eigenvector basis for symmetric matrices (spectral theorem)\n\n\n\nOrthonormal (orthogonal) matrices\n\n\n\nSpectral or singular value decomposition: \\(A = PD(\\lambda_i)P'\\)\n\n\n\nPositive definite and nonnegative definite matrices\n\n\n\n\\(A = QQ'\\)\n\n\n\nTrace, and the cyclic property \\(\\text{tr}(AB) = \\text{tr}(BA)\\)\n\n\n\nTrace as the sum of eigenvalues\n\n\n\nDeterminant as the product of eigenvalues\n\n\n\nComplex eigenvalues\n\n\n\nPerpendicular projection operators (ppo)\n\n\n\nCharacterizing a ppo: idempotent and symmetric (\\(MM = M\\), \\(M' = M\\))\n\n\n\nWhy a ppo is unique\n\n\n\nBuilding a ppo from an orthonormal basis: \\(M = OO'\\)\n\n\n\nGeneralized inverses\n\n\n\nProjection matrix \\(X(X'X)^-X'\\)\n\n\n\nSums and differences of projection operators; orthogonal complements within a subspace\n\n\n\n\\(I - M\\) as the projection onto the orthogonal complement\n\n\n\nHow projections relate to Gram–Schmidt\n\n\n\nEigenvalues of projection matrices (0 and 1), and \\(\\text{tr}(M) = r(M)\\)\n\n\n\nIdempotent matrices\n\n\n\n\\(C(XX') = C(X)\\) and \\(r(XX') = r(X)\\)",
+    "text": "Topic\nComfort level (☆☆☆☆☆)\n\n\n\n\nSquare, symmetric, diagonal, and identity matrices\n★★★★\n\n\nTranspose\n★★★\n\n\nPartitioned (block) matrices\n★\n\n\nKronecker products\n★\n\n\nThe Vec operator\n★\n\n\nNonsingular and singular matrices\n★★\n\n\nMatrix inverse\n★★★\n\n\nRank of null space \\(N(A)\\)\n★★\n\n\nEigenvalues, eigenvectors, and multiplicity\n★★\n\n\nEigenspaces as subspaces\n★★\n\n\nFor symmetric matrices, eigenvectors of different eigenvalues are orthogonal\n★★\n\n\nA basis for \\(C(A)\\) made of eigenvectors; rank as the number of nonzero eigenvalues\n★★\n\n\nOrthonormal eigenvector basis for symmetric matrices (spectral theorem)\n★\n\n\nOrthonormal (orthogonal) matrices\n★★\n\n\nSpectral or singular value decomposition: \\(A = PD(\\lambda_i)P'\\)\n★★\n\n\nPositive definite and nonnegative definite matrices\n★\n\n\n\\(A = QQ'\\)\n★\n\n\nTrace, and the cyclic property \\(\\text{tr}(AB) = \\text{tr}(BA)\\)\n★\n\n\nTrace as the sum of eigenvalues\n★\n\n\nDeterminant as the product of eigenvalues\n★★\n\n\nComplex eigenvalues\n★\n\n\nPerpendicular projection operators (ppo)\n★\n\n\nCharacterizing a ppo: idempotent and symmetric (\\(MM = M\\), \\(M' = M\\))\n★\n\n\nWhy a ppo is unique\n★\n\n\nBuilding a ppo from an orthonormal basis: \\(M = OO'\\)\n★\n\n\nGeneralized inverses\n★\n\n\nProjection matrix \\(X(X'X)^-X'\\)\n★\n\n\nSums and differences of projection operators; orthogonal complements within a subspace\n★\n\n\n\\(I - M\\) as the projection onto the orthogonal complement\n★\n\n\nHow projections relate to Gram–Schmidt\n★\n\n\nEigenvalues of projection matrices (0 and 1), and \\(\\text{tr}(M) = r(M)\\)\n★\n\n\nIdempotent matrices\n★\n\n\n\\(C(XX') = C(X)\\) and \\(r(XX') = r(X)\\)\n★",
+    "crumbs": [
+      "04: Linear Algebra Review",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Appendix B</span>"
+    ]
+  },
+  {
+    "objectID": "04_Appendix_A.html#overall-assessment",
+    "href": "04_Appendix_A.html#overall-assessment",
+    "title": "8  Appendix A",
+    "section": "8.2 Overall assessment:",
+    "text": "8.2 Overall assessment:\nThe last time I did any problems like this was freshman year of college (9 years ago), so I am not initially confident in my ability to solve any of the problems. However, with some practice and refreshers, I believe I could relearn the concepts in due time. Many of the words and concepts are familiar in words, but not so much in application and thorough understanding.",
+    "crumbs": [
+      "04: Linear Algebra Review",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Appendix A</span>"
+    ]
+  },
+  {
+    "objectID": "04_Appendix_B.html#overall-assessment",
+    "href": "04_Appendix_B.html#overall-assessment",
+    "title": "9  Appendix B",
+    "section": "9.2 Overall assessment:",
+    "text": "9.2 Overall assessment:\nLike with the Appendix A material on Vector Spaces, the last time I did any problems like this was during college (6-9 years ago depending on the class), so I am not initially confident in my ability to solve any of the problems. However, with some practice and refreshers, I believe I could relearn the concepts in due time. Many of the words and concepts are familiar in words, but not so much in application and thorough understanding.",
     "crumbs": [
       "04: Linear Algebra Review",
       "<span class='chapter-number'>9</span>  <span class='chapter-title'>Appendix B</span>"
