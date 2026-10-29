@@ -1,1 +1,149 @@
 # Comparison
+
+
+<!---
+
+```{r}
+# medal outcome is not in run_data_small (outcome variable)
+colnames(demo_data) %in% colnames(run_data_small)
+
+```
+
+```{r}
+
+library(splines)
+library(splines2)
+library(rms)
+
+```
+
+```{r, models}
+
+kn <- quantile(demo_data$weekly_mileage_km, c(.05, .35, .65, .95))
+x_range <- range(c(demo_data$weekly_mileage_km, demo_data_test$weekly_mileage_km))
+
+fits <- list(
+  raw = lm(actual_finish_time_minutes ~ poly(weekly_mileage_km, 5, raw = TRUE), data = demo_data),
+
+  orthogonal = lm(actual_finish_time_minutes ~ poly(weekly_mileage_km, 5), data = demo_data),
+
+  bernstein = lm(actual_finish_time_minutes ~ bpoly(weekly_mileage_km, 5, Boundary.knots = range(x_range)), data = demo_data),
+
+  linear_sp = lm(actual_finish_time_minutes ~ bs(weekly_mileage_km, degree = 1, knots = kn[2:3]), data = demo_data),
+
+  cubic_sp = lm(actual_finish_time_minutes ~ bs(weekly_mileage_km, knots = kn[2:3]), data = demo_data),
+
+  natural_sp = lm(actual_finish_time_minutes ~ ns(weekly_mileage_km, knots = kn[2:3], Boundary.knots = kn[c(1, 4)]), data = demo_data),
+
+  rcs = lm(actual_finish_time_minutes ~ rcs(weekly_mileage_km, kn), data = demo_data)
+)
+
+test_mse <- function(f) {
+  mean((demo_data_test$actual_finish_time_minutes - predict(f, demo_data_test))^2, na.rm = TRUE)
+}
+cond_num <- function(f) kappa(scale(model.matrix(f)[, -1]), exact = TRUE)
+
+data.frame(test_mse = sapply(fits, test_mse),
+           condition_number = sapply(fits, cond_num)) |>
+  knitr::kable(digits = 2)
+
+```
+
+
+```{r test-data}
+
+mean(demo_data$running_experience_months == 6)    # share of runners at the floor
+hist(demo_data$running_experience_months, breaks = 50)
+
+plot(actual_finish_time_minutes ~ running_experience_months, data = demo_data,
+     pch = 16, col = adjustcolor("steelblue", 0.3))
+lines(lowess(demo_data$running_experience_months, demo_data$actual_finish_time_minutes),
+      col = "darkorange", lwd = 3)
+```
+
+```{r}
+y <- demo_data$actual_finish_time_minutes
+num_vars <- setdiff(names(demo_data)[sapply(demo_data, is.numeric)],
+                    "actual_finish_time_minutes")
+
+screen <- do.call(rbind, lapply(num_vars, function(v) {
+  x  <- demo_data[[v]]
+  ok <- !is.na(x) & !is.na(y)
+  x  <- x[ok]; yy <- y[ok]
+
+  kn <- unique(quantile(x, c(.05, .35, .65, .95)))
+  gain <- if (length(kn) < 3) NA else {
+    r2_ns <- summary(lm(yy ~ splines::ns(x, knots = kn[-c(1, length(kn))],
+                                         Boundary.knots = range(kn))))$r.squared
+    r2_ns - summary(lm(yy ~ x))$r.squared
+  }
+
+  data.frame(variable  = v,
+             n_unique  = length(unique(x)),
+             top_share = round(max(table(x)) / length(x), 3),   # share at the most common value
+             r2_gain   = round(gain, 4))
+}))
+
+screen[order(-screen$r2_gain), ]
+```
+
+
+```{r}
+
+x <- demo_data$running_experience_months
+as.numeric(names(which.max(table(x))))   # the most common value
+hist(x, breaks = 50)
+
+# 1. Create the scatterplot
+plot(actual_finish_time_minutes ~ running_experience_months, data = demo_data,
+     pch = 16, col = adjustcolor("steelblue", 0.3))
+
+# 2. Compute the lowess values
+lowess_fit <- stats::lowess(demo_data$running_experience_months,
+                            demo_data$actual_finish_time_minutes,
+                            f = 0.9, delta = 0)
+
+# 3. Sort by X so the line draws cleanly from left to right
+lines(lowess_fit$x[order(lowess_fit$x)], 
+      lowess_fit$y[order(lowess_fit$x)], 
+      col = "darkorange", lwd = 3)
+
+
+```
+
+```{r}
+# 1. Fit the LOESS model 
+# (span = 0.9 matches your f = 0.9; surface = "direct" prevents shortcut approximations)
+smooth_model <- loess(actual_finish_time_minutes ~ running_experience_months, 
+                      data = demo_data, span = 0.9, surface = "direct")
+
+# 2. Create a clean, evenly spaced grid from your minimum to maximum X values
+grid_x <- seq(min(demo_data$running_experience_months, na.rm = TRUE),
+              max(demo_data$running_experience_months, na.rm = TRUE), 
+              length.out = 300)
+
+# 3. Predict Y values across that clean sequence
+grid_y <- predict(smooth_model, newdata = data.frame(running_experience_months = grid_x))
+
+# 4. Plot
+plot(actual_finish_time_minutes ~ running_experience_months, data = demo_data,
+     pch = 16, col = adjustcolor("steelblue", 0.3))
+lines(grid_x, grid_y, col = "darkorange", lwd = 3)
+
+
+```
+
+```{r}
+plot(actual_finish_time_minutes ~ training_adherence_pct, data = demo_data,
+     pch = 16, col = adjustcolor("steelblue", 0.3))
+```
+
+```{r}
+class(demo_data)
+str(demo_data$running_experience_months)
+str(demo_data$actual_finish_time_minutes)
+
+lw <- lowess(demo_data$running_experience_months, demo_data$actual_finish_time_minutes)
+sum(diff(sign(diff(lw$y))) != 0)   # direction changes; a smooth lowess curve has only a few
+```
+---->

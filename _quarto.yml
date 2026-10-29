@@ -28,6 +28,9 @@ book:
       chapters:
       - "04_Appendix_A.qmd"
       - "04_Appendix_B.qmd"
+    - part: "05: Nonlinearity"
+      chapters:
+      - "05_Explainer.qmd"
 
 
 bibliography: references.bib
