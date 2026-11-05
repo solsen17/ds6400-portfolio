@@ -1,0 +1,22 @@
+# Explainer testing in python
+
+```{python}
+
+import pandas as pd
+import numpy as np
+import os
+
+os.getcwd()
+```
+
+```{python}
+
+data = pd.read_csv("./ds6400-portfolio/data/kaggle_train_marathon.csv")
+
+```
+
+```{python}
+
+
+
+```

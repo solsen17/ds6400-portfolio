@@ -138,7 +138,6 @@ plot(actual_finish_time_minutes ~ running_experience_months, data = demo_data,
 
 ```
 
-
 #### Polynomials
 
 As we mentioned briefly earlier when we introduced x^2 to the linear model, the easiest way to conceive of basis expansion models is with the polynomial.
@@ -149,3 +148,37 @@ which produces a model that looks like this:
 
 We maintain linearity in our beta parameters.
 
+
+
+
+#### A separate exploration (in-class live code)
+
+```{r}
+
+## need to drop the NAs to make sure the plots work
+d1 <- demo_data %>% select(actual_finish_time_minutes, running_experience_months) %>% drop_na()
+
+plot(d1[,2:1])
+
+lm1 <- lm(actual_finish_time_minutes ~ running_experience_months, data = d1)
+yhat <- predict(lm1)
+
+points(d1$running_experience_months, yhat, col="red")
+
+lm2 <- lm(actual_finish_time_minutes ~ poly(running_experience_months, 2), data = d1)
+yhat2 <- predict(lm2)
+
+points(d1$running_experience_months, yhat2, col="blue")
+
+lm3 <- lm(actual_finish_time_minutes ~ poly(running_experience_months, 3), data = d1)
+yhat3 <- predict(lm3)
+
+points(d1$running_experience_months, yhat3, col="green")
+
+
+lmN <- lm(actual_finish_time_minutes ~ poly(running_experience_months, 5), data = d1)
+yhatN <- predict(lmN)
+
+points(d1$running_experience_months, yhatN, col="pink")
+
+```

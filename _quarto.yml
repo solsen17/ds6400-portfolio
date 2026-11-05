@@ -31,6 +31,9 @@ book:
     - part: "05: Nonlinearity"
       chapters:
       - "05_Explainer.qmd"
+    - part: "06: Regularization"
+      chapters:
+      - "06_Homework.qmd"
 
 
 bibliography: references.bib

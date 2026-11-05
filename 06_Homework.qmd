@@ -1,0 +1,244 @@
+# Regularization
+
+## Homework Problems
+
+From [https://tgstewart.cloud/ipm/regularization.html#module-8-homework](https://tgstewart.cloud/ipm/regularization.html#module-8-homework)
+
+In this homework you will work with the riboflavin dataset from the `hdi` package: 71 samples of *B. subtilis*, each with 4,088 gene expression features. The outcome is riboflavin (vitamin B2) production rate. Because $p \gg n$, ordinary least squares fails — this is the setting where regularization is not optional.
+
+### Preliminary: install required packages
+
+This only installs packages that are missing, so it is safe to leave in the book. Note that `hdi` (and its dependency `scalreg`) were archived from CRAN in 2026, so they are installed from the CRAN archive as source packages.
+
+```{r}
+#| label: install-packages
+#| message: false
+#| warning: false
+cran <- "https://cloud.r-project.org"
+
+for (p in c("glmnet", "pls", "lars", "linprog", "MASS")) {
+  if (!requireNamespace(p, quietly = TRUE)) install.packages(p, repos = cran)
+}
+
+archive <- paste0(cran, "/src/contrib/Archive/")
+if (!requireNamespace("scalreg", quietly = TRUE)) {
+  install.packages(paste0(archive, "scalreg/scalreg_1.0.1.tar.gz"),
+                   repos = NULL, type = "source")
+}
+if (!requireNamespace("hdi", quietly = TRUE)) {
+  install.packages(paste0(archive, "hdi/hdi_0.1-10.tar.gz"),
+                   repos = NULL, type = "source")
+}
+```
+
+### Setup
+
+```{r}
+#| label: setup
+#| message: false
+library(hdi)
+library(glmnet)
+library(pls)
+
+data(riboflavin)
+X <- riboflavin$x   # 71 × 4088 matrix
+y <- riboflavin$y   # length-71 vector
+```
+
+### Problem 0
+
+Create `HW7.qmd` in your Quarto book and add it to `_quarto.yml`.
+
+Done: this chapter (`06_Homework.qmd`) is listed in `_quarto.yml` under "06: Regularization".
+
+### Problem 1: The Problem
+
+Confirm that OLS cannot create a unique solution for this dataset. Attempt to fit a linear model using `lm()` and report what happens. How many coefficients does R return as `NA`, and why?
+
+```{r}
+#| label: p1
+
+set.seed(17)
+
+model1 <- lm(y ~ X)
+#summary(model1)
+sum(is.na(coef(model1)))
+
+```
+
+**Answer:**
+
+In the output above, we see that 4018 coefficients are returned as `NA` and the summary cites "because of singularities". In order to still achieve a solution, R drops those 4018 predictors where it didn't return a coefficient. Because we don't have uniqueness in the solution and our standard matrix inverse for $X^{T}X$ does not exist, we have a model produced here but we may not want to proceed with it. 
+
+### Problem 2: Ridge
+
+Fit ridge regression using `glmnet` (`alpha = 0`). Select $\lambda$ via 10-fold cross-validation. Report $\lambda_{\min}$ and $\lambda_{\text{1se}}$. Plot the CV error curve with the two vertical lines. How does CV-MSE change as $\lambda$ increases?
+
+```{r}
+#| label: p2
+
+set.seed(17)
+#Xs <- scale(X)
+#ys <- scale(y)
+
+cv_ridge <- cv.glmnet(X, y, alpha = 0, nfolds = 10)
+plot(cv_ridge)
+
+```
+
+```{r}
+
+c(`lambda.min` = round(cv_ridge$lambda.min,4), `lambda.1se` = round(cv_ridge$lambda.1se, 4))
+
+```
+
+**Answer:**
+
+As $\lambda$ increases, the CV-MSE also increases. We can see on the plot that $\lambda_{min}$ does not provide a significant improvement in our model error compared to $\lambda_{1se}$. For that reason, we'll use the $\lambda_{1se}$ as our selected value.
+
+### Problem 3: Ridge
+
+Plot the ridge coefficient path ($-\log(\lambda)$ on the x-axis, coefficient values on the y-axis). Describe qualitatively what happens to the coefficients as $\lambda$ increases. Does any coefficient reach exactly zero?
+
+```{r}
+#| label: p3
+fit_ridge <- glmnet(riboflavin$x[,1:100], riboflavin$y, alpha = 0)
+plot(fit_ridge, xvar = "lambda", label = FALSE,
+     main = "Ridge coefficient path (riboflavin, 100 predictors subset)", col = "#00000030", font.main = 1)
+```
+
+**Answer:**
+
+Note the x-axis is $-Log(\lambda)$ again, so large values of $\lambda$ are on the left. So we can see that as $\lambda$ increases, all the coefficients shrink toward zero, but none of them ever actually reach exactly zero. This is an important property to note that Ridge Regression shrinks the coefficients, but it does not actually perform variable selection.
+
+### Problem 4: Lasso
+
+Fit lasso regression (`alpha = 1`) and select $\lambda$ via 10-fold CV. At $\lambda_{\text{1se}}$, how many gene expression features are retained (non-zero coefficients)? Plot the coefficient path and the CV error curve.
+
+```{r}
+#| label: p4
+
+set.seed(17)
+cv_lasso <- cv.glmnet(riboflavin$x, riboflavin$y, alpha = 1, nfolds = 10)
+plot(cv_lasso)
+
+c(`lambda.min` = round(cv_lasso$lambda.min,4), `lambda.1se` = round(cv_lasso$lambda.1se, 4))
+```
+
+We again select the $\lambda_{1se}$ based on how it is not significantly different from $\lambda_{min}$ in reducing the error.
+
+```{r}
+n_selected <- sum(coef(cv_lasso, s = "lambda.1se") != 0) - 1  # subtract intercept
+c(`Non-zero gene expression features of 4,088 at lambda.1se` = n_selected)
+```
+
+This selection of $\lambda$ keeps only a small fraction of the features we had originally. We are now working with just 24 features of the original 4,088.
+
+```{r}
+
+fit_lasso <- glmnet(riboflavin$x, riboflavin$y, alpha = 1)
+plot(fit_lasso, xvar = "lambda", label = FALSE,
+     main = "Lasso path: -log(λ)")
+
+```
+
+**Answer:**
+
+Finally, we see the coefficient path for Lasso with our selected $\lambda$. Note that Lasso does perform variable selection, so all coefficients are equal to zero initially, and they are introduced to the model as $\lambda$ is reduced (moving to the right on our graph).
+
+### Problem 5: Elastic Net
+
+Fit an elastic net with $\alpha \in \{0.25, 0.5, 0.75\}$. For each $\alpha$, record the minimum CV-MSE. Create a small table showing $(\alpha,\, \lambda_{\min},\, \text{min CV-MSE})$. Which $\alpha$ yields the lowest CV-MSE? How does the number of selected features compare to lasso?
+
+```{r}
+#| label: p5
+
+set.seed(17)
+alphas <- c(0.25, 0.5, 0.75)
+cv_results <- lapply(alphas, function(a) {
+  set.seed(17)
+  cv <- cv.glmnet(riboflavin$x, riboflavin$y, alpha = a, nfolds = 10)
+  n_selected <- sum(coef(cv, s = "lambda.min") != 0) - 1  # subtract intercept
+  list(alpha = a, lambda.min = cv$lambda.min, cvm.min = min(cv$cvm), features = n_selected)
+})
+
+result_df <- do.call(rbind, lapply(cv_results, function(r)
+  data.frame(alpha = r$alpha,
+             lambda.min = round(r$lambda.min, 4),
+             min_CV_MSE = round(r$cvm.min, 4),
+             num_features = r$features)))
+print(result_df)
+
+```
+
+**Answer:**
+
+We see in the table above that the $\alpha$ value of 0.75 produces the lowest CV-MSE. We also see that the number of selected features decreases as $\alpha$ increases. That's the expected behavior, because a value of $\alpha = 1$ would be pure lasso, and we would expect a model with fewer features as above.
+
+### Problem 6: PCR
+
+Fit PCR using the `pls` package (or manual SVD as shown in the chapter). Select the number of components $k$ via cross-validation (use `validationplot`). Report the optimal $k$.
+
+```{r}
+#| label: p6
+
+fit_pcr <- pcr(y ~ x, data = riboflavin, scale = TRUE, validation = "CV")
+validationplot(fit_pcr, val.type = "MSE",
+               main = "PCR: CV MSE vs. number of components")
+
+# Identify optimal k
+msep_vals <- MSEP(fit_pcr)$val[1, 1, ]
+k_opt <- which.min(msep_vals) - 1  # subtract 1 for intercept-only model at position 1
+c(`Optimal number of components` = k_opt)
+
+```
+
+**Answer:**
+
+The optimal $k$ is shown above.
+
+a. Back-transform the PCR fit to obtain the full 4,088-dimensional coefficient vector $\hat{\beta}_{\text{PCR}}$.
+
+```{r}
+#| label: p6a
+
+```
+
+b. Use $\hat{\beta}_{\text{PCR}}$ to generate a prediction for the first observation in the dataset (`X[1, ]`). Show your R code and the predicted value.
+
+```{r}
+#| label: p6b
+
+```
+
+**Answer:**
+
+c. In one sentence, explain why you needed all 4,088 gene expression values to generate this prediction even though you only fit $k$ principal components.
+
+**Answer:**
+
+We need all 4,088 gene expression values to generate this prediction because each of the $k$ principal components is a linear combination of all of the features. PCR is not a data reduction technique, it just reduces the complexity of the model, not the dimensionality of the data required for prediction.
+
+### Problem 7: Comparison
+
+Comparing across methods:
+
+a. Report the CV-MSE at the selected tuning parameter for each of the four methods (ridge, lasso, elastic net, PCR).
+
+```{r}
+#| label: p7a
+
+```
+
+**Answer:**
+
+b. Which method achieves the lowest CV-MSE on this dataset?
+
+
+**Answer:**
+
+c. Based on the guidance in the chapter, would you expect ridge or lasso to work better here? Does the data agree with your expectation? Why or why not?
+
+**Answer:**
+
+I expect that ridge would reduce the CV-MSE further than lasso, but the lasso will provide a more interpretable and smaller model in terms of the number of predictors retained. I think the CV-MSE will be further reduced when you keep all the coefficients from ridge, but lasso will ultimately be a better approach for us.
