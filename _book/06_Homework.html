@@ -71,6 +71,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./06_Paper.html" rel="next">
 <link href="./05_Explainer.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -312,6 +313,18 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Regularization</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Explainer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -419,6 +432,7 @@ window.Quarto = {
 </div>
 <p><strong>Answer:</strong></p>
 <p>In the output above, we see that 4018 coefficients are returned as <code>NA</code> and the summary cites “because of singularities”. In order to still achieve a solution, R drops those 4018 predictors where it didn’t return a coefficient. Because we don’t have uniqueness in the solution and our standard matrix inverse for <span class="math inline">\(X^{T}X\)</span> does not exist, we have a model produced here but we may not want to proceed with it.</p>
+<p><em>CORRECTION</em>: We used some generalized inverse to get an answer here! Under the hood, R has picked some kind of approach in order to get a solution, maybe the QR with pivots or the SVD.</p>
 </section>
 <section id="problem-2-ridge" class="level3" data-number="11.1.5">
 <h3 data-number="11.1.5" class="anchored" data-anchor-id="problem-2-ridge"><span class="header-section-number">11.1.5</span> Problem 2: Ridge</h3>
@@ -1007,6 +1021,9 @@ window.Quarto = {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./06_Paper.html" class="pagination-link" aria-label="Paper: Lasso's Victory Lap">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

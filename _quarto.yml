@@ -34,6 +34,8 @@ book:
     - part: "06: Regularization"
       chapters:
       - "06_Homework.qmd"
+      - "06_Paper.qmd"
+      - "06_Explainer.qmd"
 
 
 bibliography: references.bib

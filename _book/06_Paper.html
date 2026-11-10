@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12&nbsp; Paper: Lasso’s Victory Lap – DS6400 Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06_Explainer.html" rel="next">
+<link href="./06_Homework.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_Homework.html">06: Regularization</a></li><li class="breadcrumb-item"><a href="./06_Paper.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">DS6400 Portfolio</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">01: Performance Measures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Week 1: Steyerberg et al.&nbsp;(2001)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Week 2: Efron 1997</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">02: Visualizing the Model</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Visualizing_the_Model_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Visualizing_the_Model_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Partial Dependence Plots (PDP)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">03: 4 models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Model_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Neural_Net.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">04: Linear Algebra Review</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_Appendix_A.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Appendix A</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_Appendix_B.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Appendix B</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">05: Nonlinearity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_Explainer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Explainer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">06: Regularization</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Homework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Regularization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Paper.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Explainer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sparsity" id="toc-sparsity" class="nav-link active" data-scroll-target="#sparsity"><span class="header-section-number">12.1</span> 1. Sparsity</a>
+  <ul class="collapse">
+  <li><a href="#extended-applications-table-1" id="toc-extended-applications-table-1" class="nav-link" data-scroll-target="#extended-applications-table-1"><span class="header-section-number">12.1.1</span> Extended applications (Table 1)</a></li>
+  </ul></li>
+  <li><a href="#the-ell_1-penalty-convexity-and-the-contrast-with-ridge" id="toc-the-ell_1-penalty-convexity-and-the-contrast-with-ridge" class="nav-link" data-scroll-target="#the-ell_1-penalty-convexity-and-the-contrast-with-ridge"><span class="header-section-number">12.2</span> 2. The <span class="math inline">\(\ell_1\)</span> penalty, convexity, and the contrast with ridge</a></li>
+  <li><a href="#why-do-the-relaxed-lasso-the-s-stands-for-screening-not-selection" id="toc-why-do-the-relaxed-lasso-the-s-stands-for-screening-not-selection" class="nav-link" data-scroll-target="#why-do-the-relaxed-lasso-the-s-stands-for-screening-not-selection"><span class="header-section-number">12.3</span> 3. Why do the relaxed lasso? The ‘S’ stands for screening, not selection</a></li>
+  <li><a href="#critiques" id="toc-critiques" class="nav-link" data-scroll-target="#critiques"><span class="header-section-number">12.4</span> 4. Critiques</a>
+  <ul class="collapse">
+  <li><a href="#bayesian-holmes" id="toc-bayesian-holmes" class="nav-link" data-scroll-target="#bayesian-holmes"><span class="header-section-number">12.4.1</span> Bayesian (Holmes)</a></li>
+  <li><a href="#correlated-predictors" id="toc-correlated-predictors" class="nav-link" data-scroll-target="#correlated-predictors"><span class="header-section-number">12.4.2</span> Correlated predictors</a></li>
+  </ul></li>
+  <li><a href="#response-the-known-gap-is-inference" id="toc-response-the-known-gap-is-inference" class="nav-link" data-scroll-target="#response-the-known-gap-is-inference"><span class="header-section-number">12.5</span> 5. Response: the known gap is inference</a></li>
+  <li><a href="#general-notes" id="toc-general-notes" class="nav-link" data-scroll-target="#general-notes"><span class="header-section-number">12.6</span> General notes</a>
+  <ul class="collapse">
+  <li><a href="#history-and-why-it-took-a-while-to-catch-on" id="toc-history-and-why-it-took-a-while-to-catch-on" class="nav-link" data-scroll-target="#history-and-why-it-took-a-while-to-catch-on"><span class="header-section-number">12.6.1</span> History, and why it took a while to catch on</a></li>
+  <li><a href="#computational-advances" id="toc-computational-advances" class="nav-link" data-scroll-target="#computational-advances"><span class="header-section-number">12.6.2</span> Computational advances</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_Homework.html">06: Regularization</a></li><li class="breadcrumb-item"><a href="./06_Paper.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Paper:</strong> Tibshirani, R. (2011). “Regression shrinkage and selection via the lasso: a retrospective.” <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em>, 73(3), 273–282. <a href="https://webdoc.agsci.colostate.edu/koontz/arec-econ535/papers/Tibshirani%20(JRSS-B%202011).pdf">link</a></p>
+<p>A victory lap, reflection, and some additional ideas about the original Lasso Paper 1996.</p>
+<p>Key points to highlight: 1. Sparsity - And the extended applications from the table 2. L1 and Convex idea - contrast with Ridge 3. Why do you do relaxed lasso? - ‘S’ stands for screening, not selection! 4. Critiques - Bayesian - Correlated Predictors 5. Response - Known gap is inference</p>
+<!---
+## The paper in one paragraph
+
+The lasso is least squares with an $\ell_1$ penalty on the coefficients. Because of that penalty it **shrinks** coefficients and also **selects** variables by setting some of them exactly to zero, all in one convex optimization problem. The 1996 paper got little attention at first, mainly because computing it was slow and opaque and because people did not yet care much about sparsity. Three computational advances changed that: LARS/homotopy, then coordinate descent, then the `glmnet` package. After them the lasso became a basic tool, and the $\ell_1$ idea spread to grouped, fused, adaptive, graphical, matrix-completion, and compressed-sensing problems. The discussants add the two missing pieces. Bühlmann covers *theory*: when the lasso predicts well and when it actually finds the right variables. Holmes gives a *Bayesian critique*: the lasso is a MAP estimate under a Laplace prior, and that is a strange place to stop. Tibshirani ends by saying that **inference for the lasso**, meaning standard errors and the sampling distributions of the estimates, is the big open problem.
+
+--->
+<section id="sparsity" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="sparsity"><span class="header-section-number">12.1</span> 1. Sparsity</h2>
+<p>A model is <strong>sparse</strong> when most of its coefficients are exactly zero. Write the <em>active set</em> as <span class="math inline">\(S = \{j : \beta_j \ne 0\}\)</span> with size <span class="math inline">\(s = |S|\)</span>. Sparsity means <span class="math inline">\(s \ll p\)</span>: only a few predictors actually matter.</p>
+<p>The lasso is least squares with an <span class="math inline">\(\ell_1\)</span> penalty (details in Section 2), and its defining feature is that it returns sparse solutions. It sets some coefficients <strong>exactly to zero</strong>, so shrinkage and variable selection happen in one step. For a single standardized predictor whose least-squares coefficient is <span class="math inline">\(z\)</span>, the lasso estimate is</p>
+<p><span class="math display">\[
+\hat\beta = \text{sign}(z)\,(|z| - \lambda)_+ ,
+\]</span></p>
+<p>so any coefficient with <span class="math inline">\(|z| \le \lambda\)</span> is set to 0, not just made small.</p>
+<p><strong>Why sparsity matters.</strong> One of Tibshirani’s explanations for the slow uptake of the 1996 paper is that “the statistical and numerical advantages of sparsity were not immediately apparent.” Those advantages are:</p>
+<ul>
+<li><strong>Statistical:</strong> a sparse model is easier to interpret (you can name the predictors that matter) and estimates fewer parameters, so it has lower variance. Sparsity is also what makes <span class="math inline">\(p \gg n\)</span> workable. Bühlmann’s discussion shows the lasso’s prediction error grows only like <span class="math inline">\(\sqrt{\log p / n}\)</span> when the true <span class="math inline">\(\beta\)</span> is sparse.</li>
+<li><strong>Numerical:</strong> algorithms can exploit sparsity. In coordinate descent, a coefficient that is 0 and stays 0 costs almost nothing to update (see the Computation notes below).</li>
+</ul>
+<section id="extended-applications-table-1" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="extended-applications-table-1"><span class="header-section-number">12.1.1</span> Extended applications (Table 1)</h3>
+<p>The paper’s Table 1 shows that the <span class="math inline">\(\ell_1\)</span> idea carries over to other problems. Each method below puts an <span class="math inline">\(\ell_1\)</span>-type penalty on a <em>different object</em>, so a different thing becomes sparse:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">Reference</th>
+<th style="text-align: left;">Penalty / problem</th>
+<th style="text-align: left;">What gets set to zero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Group lasso</td>
+<td style="text-align: left;">Yuan &amp; Lin (2007a)</td>
+<td style="text-align: left;"><span class="math inline">\(\sum_g \lVert\beta_g\rVert_2\)</span></td>
+<td style="text-align: left;">Whole groups of coefficients (e.g., all dummies for one factor)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Elastic net</td>
+<td style="text-align: left;">Zou &amp; Hastie (2005)</td>
+<td style="text-align: left;"><span class="math inline">\(\lambda_1\sum_j\lvert\beta_j\rvert + \lambda_2\sum_j\beta_j^2\)</span></td>
+<td style="text-align: left;">Individual coefficients, while correlated predictors share weight</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fused lasso</td>
+<td style="text-align: left;">Tibshirani et al.&nbsp;(2005)</td>
+<td style="text-align: left;"><span class="math inline">\(\lambda\sum_j\lvert\beta_{j+1}-\beta_j\rvert\)</span></td>
+<td style="text-align: left;"><em>Differences</em> between neighboring coefficients, giving piecewise-constant fits</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Adaptive lasso</td>
+<td style="text-align: left;">Zou (2006)</td>
+<td style="text-align: left;"><span class="math inline">\(\lambda\sum_j w_j\lvert\beta_j\rvert\)</span></td>
+<td style="text-align: left;">Individual coefficients, with data-driven weights (less penalty on large effects)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Graphical lasso</td>
+<td style="text-align: left;">Yuan &amp; Lin (2007b); Friedman et al.&nbsp;(2007)</td>
+<td style="text-align: left;"><span class="math inline">\(\text{loglik} - \lambda\lVert\Sigma^{-1}\rVert_1\)</span></td>
+<td style="text-align: left;">Entries of the inverse covariance, i.e., <em>edges</em> in a graph</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dantzig selector</td>
+<td style="text-align: left;">Candès &amp; Tao (2007)</td>
+<td style="text-align: left;"><span class="math inline">\(\min \lVert X^\top(y-X\beta)\rVert_\infty\)</span> s.t. <span class="math inline">\(\lVert\beta\rVert_1\le t\)</span></td>
+<td style="text-align: left;">Individual coefficients (an alternative <span class="math inline">\(\ell_1\)</span> estimator)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Near-isotonic regression</td>
+<td style="text-align: left;">Tibshirani et al.&nbsp;(2011)</td>
+<td style="text-align: left;"><span class="math inline">\(\sum_j(\beta_j-\beta_{j+1})_+\)</span></td>
+<td style="text-align: left;"><em>Decreases</em> in a sequence (relaxing monotonicity)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Matrix completion</td>
+<td style="text-align: left;">Candès &amp; Tao (2009); Mazumder et al.&nbsp;(2010)</td>
+<td style="text-align: left;"><span class="math inline">\(\lVert X-\hat X\rVert^2 + \lambda\lVert\hat X\rVert_*\)</span></td>
+<td style="text-align: left;"><em>Singular values</em>, giving a low-rank matrix (Netflix-style missing entries)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Compressive sensing</td>
+<td style="text-align: left;">Donoho (2004); Candès (2006)</td>
+<td style="text-align: left;"><span class="math inline">\(\min\lVert\beta\rVert_1\)</span> s.t. <span class="math inline">\(y = X\beta\)</span></td>
+<td style="text-align: left;">Signal coefficients, recovered from few measurements</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sparse multivariate methods</td>
+<td style="text-align: left;">Jolliffe et al.&nbsp;(2003); Witten et al.&nbsp;(2009)</td>
+<td style="text-align: left;"><span class="math inline">\(\ell_1\)</span> on loadings</td>
+<td style="text-align: left;">Loadings in PCA, LDA, CCA</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="the-ell_1-penalty-convexity-and-the-contrast-with-ridge" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="the-ell_1-penalty-convexity-and-the-contrast-with-ridge"><span class="header-section-number">12.2</span> 2. The <span class="math inline">\(\ell_1\)</span> penalty, convexity, and the contrast with ridge</h2>
+<p>Assume standardized predictors <span class="math inline">\(x_{ij}\)</span> and a centered response <span class="math inline">\(y_i\)</span>, for <span class="math inline">\(i = 1, \ldots, N\)</span> and <span class="math inline">\(j = 1, \ldots, p\)</span>. The lasso solves</p>
+<p><span class="math display">\[
+\hat\beta^{\text{lasso}} = \arg\min_{\beta} \; \sum_{i=1}^{N}\Big(y_i - \sum_{j=1}^{p} x_{ij}\beta_j\Big)^2 + \lambda \sum_{j=1}^{p} |\beta_j|.
+\]</span></p>
+<p>The same problem can be written as a constraint:</p>
+<p><span class="math display">\[
+\min_\beta \sum_{i=1}^{N}\Big(y_i - \sum_j x_{ij}\beta_j\Big)^2 \quad \text{subject to} \quad \sum_j |\beta_j| \le t .
+\]</span></p>
+<p>Each <span class="math inline">\(\lambda\)</span> matches some budget <span class="math inline">\(t\)</span>.</p>
+<p><strong>Contrast with ridge.</strong> Ridge regression has the same form with a squared (<span class="math inline">\(\ell_2\)</span>) penalty, <span class="math inline">\(\lambda\sum_j \beta_j^2\)</span>, or equivalently the constraint <span class="math inline">\(\sum_j \beta_j^2 \le t\)</span>. That one change in the penalty changes the behavior:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Ridge (<span class="math inline">\(\ell_2\)</span>)</th>
+<th style="text-align: left;">Lasso (<span class="math inline">\(\ell_1\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Penalty</td>
+<td style="text-align: left;"><span class="math inline">\(\lambda\sum_j\beta_j^2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\lambda\sum_j\lvert\beta_j\rvert\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Closed form?</td>
+<td style="text-align: left;">yes: <span class="math inline">\((X^\top X + \lambda I)^{-1}X^\top y\)</span></td>
+<td style="text-align: left;">no (needs an algorithm; see Computation notes)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Shrinks coefficients?</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;">yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sets coefficients exactly to 0?</td>
+<td style="text-align: left;"><strong>no</strong>, only <em>shrinks</em></td>
+<td style="text-align: left;"><strong>yes</strong>, <em>shrinks and selects</em></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Correlated predictors</td>
+<td style="text-align: left;">spreads weight across them</td>
+<td style="text-align: left;">tends to pick one (see Section 4)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bridge family and convexity.</strong> Tibshirani puts both methods into the <strong>bridge</strong> family of penalties <span class="math inline">\(\sum_j |\beta_j|^q\)</span>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(q\)</span></th>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Shrinks?</th>
+<th style="text-align: center;">Selects (exact zeros)?</th>
+<th style="text-align: center;">Convex?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: left;">Best-subset selection (penalty counts the nonzero coefficients)</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><strong>Lasso</strong></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"><strong>yes</strong></td>
+<td style="text-align: center;"><strong>yes</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: left;">Ridge regression</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key point:</strong> <span class="math inline">\(q = 1\)</span> is the smallest value of <span class="math inline">\(q\)</span>, so the one closest to subset selection, that still gives a <em>convex</em> problem. Convexity is what makes the lasso cheap to compute: any local minimum is the global minimum, and fast algorithms are guaranteed to find it. Best subset is the “ideal” selector, but it is a combinatorial search over <span class="math inline">\(2^p\)</span> models. The lasso is the closest you can get to it while keeping the problem convex.</p>
+<p>The figure below shows why the corners matter. The constraint regions <span class="math inline">\(\sum_j |\beta_j|^q \le 1\)</span> have corners on the axes only when <span class="math inline">\(q \le 1\)</span>. A corner on an axis is a point where one coefficient is exactly zero. The RSS contours usually touch the lasso diamond first at a corner, which is where sparsity comes from. They touch the smooth ridge circle at a point where both coefficients are nonzero.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="dv">800</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lq_ball <span class="ot">&lt;-</span> <span class="cf">function</span>(q) {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># points on the boundary of |b1|^q + |b2|^q = 1</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> (<span class="fu">abs</span>(<span class="fu">cos</span>(theta))<span class="sc">^</span>q <span class="sc">+</span> <span class="fu">abs</span>(<span class="fu">sin</span>(theta))<span class="sc">^</span>q)<span class="sc">^</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">/</span> q)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(r <span class="sc">*</span> <span class="fu">cos</span>(theta), r <span class="sc">*</span> <span class="fu">sin</span>(theta))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>qs   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"grey50"</span>, <span class="st">"firebrick"</span>, <span class="st">"steelblue"</span>, <span class="st">"darkgreen"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="cn">NA</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="fl">1.1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="fl">1.1</span>), <span class="at">asp =</span> <span class="dv">1</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">expression</span>(beta[<span class="dv">1</span>]), <span class="at">ylab =</span> <span class="fu">expression</span>(beta[<span class="dv">2</span>]))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">v =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey85"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_along</span>(qs)) <span class="fu">lines</span>(<span class="fu">lq_ball</span>(qs[k]), <span class="at">col =</span> cols[k], <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">paste</span>(<span class="st">"q ="</span>, qs), <span class="at">col =</span> cols, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-lq-balls" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lq-balls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="06_Paper_files/figure-html/fig-lq-balls-1.png" class="img-fluid figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lq-balls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.1: Unit ‘balls’ of the bridge penalty for several q. The lasso (q = 1) is the only convex region with corners on the axes, and the corners are what produce exact zeros.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="why-do-the-relaxed-lasso-the-s-stands-for-screening-not-selection" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="why-do-the-relaxed-lasso-the-s-stands-for-screening-not-selection"><span class="header-section-number">12.3</span> 3. Why do the relaxed lasso? The ‘S’ stands for screening, not selection</h2>
+<p><strong>Bühlmann’s point.</strong> Bühlmann’s discussion summarizes the theory for <span class="math inline">\(p \gg n\)</span>, with true active set <span class="math inline">\(S_0 = \{j : \beta_{0j} \ne 0\}\)</span>. Each result needs stronger assumptions than the one before:</p>
+<ol type="1">
+<li><strong>Good prediction</strong> needs almost no conditions on <span class="math inline">\(X\)</span>, only that the true <span class="math inline">\(\beta\)</span> is sparse.</li>
+<li><strong>Accurate estimates of <span class="math inline">\(\beta\)</span></strong> need a “restricted eigenvalue” or “compatibility” condition. Roughly, small groups of columns of <span class="math inline">\(X\)</span> can’t be too collinear.</li>
+<li><strong>Recovering exactly the right variables</strong>, <span class="math inline">\(P(\hat S = S_0) \to 1\)</span>, needs much more: the <em>irrepresentable condition</em> (irrelevant predictors can’t be too correlated with relevant ones) plus a <em>“beta-min” condition</em> (every true nonzero effect must be large enough to detect). Bühlmann calls this “rather unlikely” in practice.</li>
+</ol>
+<p>What <em>does</em> hold under the weaker conditions is the <strong>screening property</strong>:</p>
+<p><span class="math display">\[
+\hat S \supseteq S_0 \quad \text{with high probability.}
+\]</span></p>
+<p>The lasso keeps all the important variables, <em>plus some false positives</em>. So Bühlmann suggests reading the second “s” in lasso (least absolute shrinkage and <strong>selection</strong> operator) as <strong>screening</strong>. When the lasso picks 24 genes in the riboflavin homework, the safe reading is “the true genes are probably among these 24”, not “these are the true genes”.</p>
+<p><strong>Why that leads to a second stage.</strong> The lasso uses one <span class="math inline">\(\lambda\)</span> for two jobs at once:</p>
+<ul>
+<li><strong>Selection:</strong> a larger <span class="math inline">\(\lambda\)</span> sets more coefficients to zero, so fewer false positives.</li>
+<li><strong>Shrinkage:</strong> a larger <span class="math inline">\(\lambda\)</span> also shrinks the coefficients it keeps, so more bias toward zero.</li>
+</ul>
+<p>Cross-validation chooses <span class="math inline">\(\lambda\)</span> for prediction. That usually means a fairly small <span class="math inline">\(\lambda\)</span>, which lets in extra variables. You can’t get a sparser model without also over-shrinking the real effects. Two-stage methods separate the two jobs.</p>
+<p><strong>The relaxed lasso</strong> (Meinshausen, 2007; formula not in this paper) first runs the lasso at <span class="math inline">\(\lambda\)</span> to get the selected set <span class="math inline">\(\mathcal M_\lambda\)</span>. It then refits <em>only those variables</em> with a smaller penalty <span class="math inline">\(\phi\lambda\)</span>:</p>
+<p><span class="math display">\[
+\hat\beta^{\lambda,\phi} = \arg\min_\beta \frac1n\sum_{i=1}^n\Big(y_i - \sum_{j \in \mathcal M_\lambda} x_{ij}\beta_j\Big)^2 + \phi\lambda\lVert\beta\rVert_1, \qquad 0 \le \phi \le 1 .
+\]</span></p>
+<p><span class="math inline">\(\phi = 1\)</span> is the ordinary lasso, and <span class="math inline">\(\phi = 0\)</span> is OLS on the selected variables. This removes the shrinkage bias from the variables that survive the screen. (In R: <code>glmnet(..., relax = TRUE)</code>.)</p>
+<p><strong>Tibshirani’s response:</strong> the relaxed lasso only re-estimates the nonzero coefficients. It <strong>does not prune the model</strong>, so it fixes the <em>bias</em> but not the <em>false positives</em> from screening. To get a sparser model he points to the <strong>adaptive lasso</strong> (weights <span class="math inline">\(w_j = 1/|\hat\beta_j^{\text{init}}|\)</span>, which penalize small effects more), or non-convex penalties such as SCAD and SparseNet. Bühlmann’s own approach is <strong>stability selection</strong>: rerun the lasso on many subsamples and keep only the variables chosen consistently, which controls the expected number of false positives.</p>
+</section>
+<section id="critiques" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="critiques"><span class="header-section-number">12.4</span> 4. Critiques</h2>
+<section id="bayesian-holmes" class="level3" data-number="12.4.1">
+<h3 data-number="12.4.1" class="anchored" data-anchor-id="bayesian-holmes"><span class="header-section-number">12.4.1</span> Bayesian (Holmes)</h3>
+<p>Holmes notes that the lasso is a <strong>MAP (posterior mode) estimate</strong> under independent Laplace (double-exponential) priors on the <span class="math inline">\(\beta_j\)</span>:</p>
+<p><span class="math display">\[
+\hat\beta = \arg\max_\beta \Big\{ \ell(\beta) - \lambda\sum_j|\beta_j| \Big\}.
+\]</span></p>
+<p>He also writes the lasso as a <strong>generalized ridge regression</strong> with a different variance for each coefficient:</p>
+<p><span class="math display">\[
+\{\hat\beta, \hat\eta\} = \arg\max_{\beta,\eta}\Big\{\ell(\beta) - \sum_j \eta_j^{-1}\beta_j^2\Big\} \quad \text{subject to} \quad \sum_j \eta_j = t .
+\]</span></p>
+<p>This view adds to the ridge contrast in Section 2:</p>
+<ul>
+<li><strong>Ridge:</strong> every coefficient gets the <em>same, fixed</em> prior variance.</li>
+<li><strong>Lasso:</strong> a fixed total variance budget is split up <em>based on the data</em>. Irrelevant predictors get <span class="math inline">\(\eta_j \to 0\)</span>, which pushes them to exactly zero and leaves more variance, and so less shrinkage, for the important ones.</li>
+</ul>
+<p>His critiques:</p>
+<ul>
+<li><strong>The tails are too light.</strong> Unbiased estimates of large effects would need <span class="math inline">\(\eta_j \to \infty\)</span>, which the fixed budget allows only if <span class="math inline">\(t \to \infty\)</span>. So the Laplace prior always biases large true effects toward zero, and the lasso doesn’t have “oracle” properties. This is the same bias the relaxed lasso tries to fix (Section 3). It also motivates heavier-tailed priors like the horseshoe.</li>
+<li><strong>Reporting the posterior mode is hard to justify.</strong> The posterior mode is only the optimal answer under a contrived 0–1 loss. A single point estimate also <strong>hides uncertainty</strong>, where a full Bayesian analysis would average over the unknowns.</li>
+<li>His conclusion: if you are going to add subjective penalties, it is “simpler and more natural to do so within a Bayesian paradigm.”</li>
+</ul>
+</section>
+<section id="correlated-predictors" class="level3" data-number="12.4.2">
+<h3 data-number="12.4.2" class="anchored" data-anchor-id="correlated-predictors"><span class="header-section-number">12.4.2</span> Correlated predictors</h3>
+<p>Holmes’s second concern, which he illustrates with genomics, is correlation:</p>
+<ul>
+<li>In a group of <strong>strongly correlated predictors</strong>, the lasso tends to keep <strong>one</strong> and set the rest to zero, and <em>which one</em> it keeps can change from sample to sample.</li>
+<li>Weak but real predictors that are correlated with stronger ones may be dropped completely.</li>
+<li>A Bayesian analysis can instead report <em>joint</em> posterior inclusion probabilities that show which predictors trade off with each other (Clyde &amp; George, 2004; Park &amp; Casella, 2008).</li>
+</ul>
+<p>This links to Section 3. Bühlmann’s irrepresentable condition, which is needed for exact selection, is a condition on exactly this kind of correlation between relevant and irrelevant predictors.</p>
+</section>
+</section>
+<section id="response-the-known-gap-is-inference" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="response-the-known-gap-is-inference"><span class="header-section-number">12.5</span> 5. Response: the known gap is inference</h2>
+<p>Tibshirani’s rejoinder:</p>
+<ul>
+<li><strong>On the Bayesian critique:</strong> under the Laplace prior, the posterior <strong>mean and median are not sparse</strong>. The Bayesian lasso (Park &amp; Casella, 2008) gives up the selection property. Bayesian sparsity needs a prior with <strong>point mass at zero</strong>, such as spike-and-slab (George &amp; McCulloch, 1993), which leads to non-convex, computationally daunting problems. That is the convexity tradeoff from Section 2 again. He also questions Holmes’s constrained-variance prior: “is this prior with a constraint something which a statistician might think is reasonable on its own?”</li>
+<li><strong>On correlated predictors:</strong> he agrees the problem is important, but prefers <strong>better penalties</strong> to full Bayes: the group lasso, the <strong>elastic net</strong>, or covariance-regularized regression (“scout”).</li>
+<li><strong>On screening:</strong> see Section 3. The adaptive lasso is promising, while the relaxed lasso doesn’t prune the model.</li>
+</ul>
+<p><strong>The known gap: inference.</strong> Tibshirani closes by saying “we need better tools for inference with the lasso”:</p>
+<ul>
+<li>We need reliable ways to assess the <strong>sampling variability</strong> of <span class="math inline">\(\hat\beta^{\text{lasso}}\)</span>.</li>
+<li>Ordinary standard errors would be a start, but they are not enough. Because the lasso sets coefficients exactly to zero, the sampling distribution of each <span class="math inline">\(\hat\beta_j\)</span> is a <strong>mixture with a point mass at zero</strong>, so it is not approximately normal.</li>
+<li>The <strong>bootstrap</strong> might be the fallback, but how to apply it here, and what its properties are, still had to be worked out.</li>
+<li>Bühlmann’s multiple-testing and p-value work for high-dimensional models is an early step in this direction.</li>
+</ul>
+<hr>
+</section>
+<section id="general-notes" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="general-notes"><span class="header-section-number">12.6</span> General notes</h2>
+<section id="history-and-why-it-took-a-while-to-catch-on" class="level3" data-number="12.6.1">
+<h3 data-number="12.6.1" class="anchored" data-anchor-id="history-and-why-it-took-a-while-to-catch-on"><span class="header-section-number">12.6.1</span> History, and why it took a while to catch on</h3>
+<p><strong>Inspiration: Breiman’s non-negative garrote (1995).</strong> First fit OLS to get <span class="math inline">\(\hat\beta_j\)</span>, then shrink each one by a factor <span class="math inline">\(c_j \ge 0\)</span> with <span class="math inline">\(\sum_j c_j \le t\)</span>. Because it depends on the OLS estimates, it breaks down when OLS is unstable or doesn’t exist. Tibshirani merged the two stages and constrained <span class="math inline">\(\beta\)</span> directly. Related work from the same period: bridge regression (Frank &amp; Friedman, 1993) and basis pursuit (Chen, Donoho &amp; Saunders, 1998).</p>
+<p><strong>Why the paper sat largely ignored for years.</strong> Tibshirani’s guesses:</p>
+<ol type="a">
+<li>Computation in 1996 was slow.</li>
+<li>The algorithms were black boxes (quadratic programming) with no statistical intuition until LARS in 2002.</li>
+<li>Neither he nor the community yet saw the statistical and numerical value of sparsity.</li>
+<li>Large problems (large <span class="math inline">\(N\)</span>, large <span class="math inline">\(p\)</span>, or both) were rare.</li>
+<li>There was no R ecosystem for fast, easy sharing of software.</li>
+</ol>
+</section>
+<section id="computational-advances" class="level3" data-number="12.6.2">
+<h3 data-number="12.6.2" class="anchored" data-anchor-id="computational-advances"><span class="header-section-number">12.6.2</span> Computational advances</h3>
+<p>The history of lasso computation goes in three steps:</p>
+<ol type="1">
+<li><strong>Off-the-shelf quadratic programming</strong> (1996). Correct, but it scales poorly and gives no insight into the problem.</li>
+<li><strong>LARS / homotopy</strong> (Osborne et al., 2000; Efron et al., 2002/2004). The solution path <span class="math inline">\(\hat\beta(\lambda)\)</span> is <em>piecewise linear</em> in <span class="math inline">\(\lambda\)</span>, so the whole path can be computed for about the cost of one least-squares fit. LARS also connects the lasso to forward stagewise regression, which helped explain older stepwise methods.</li>
+<li><strong>Coordinate descent</strong> (Fu, 1998; Friedman et al., 2007, 2010; Wu &amp; Lange, 2008). Cycle through the coefficients one at a time and update each with a closed-form <em>soft-thresholding</em> step. The method is “extremely simple and fast” and works especially well when the solution is sparse, because most coefficients stay at zero and their updates cost almost nothing. This is what <code>glmnet</code> uses, and it is what we call in the homework.</li>
+</ol>
+<!---
+## Extra material (not part of the five discussion points; kept for reference)
+
+### Table 1 details from the paper
+
+- Graphical lasso. Put an l1 penalty on the inverse covariance matrix. A zero in the inverse covariance means no edge between two variables in a Gaussian graphical model, so the penalty performs graph selection.
+- Nearly isotonic regression. Isotonic regression forces a fit y1 <= y2 <= ... The nearly isotonic version solves min (1/2) sum (y_i - beta_i)^2 + lambda sum (beta_i - beta_{i+1})_+. The penalty charges for decreases in the sequence but not for increases. At lambda = 0 you get the raw data, and as lambda goes to infinity you get full isotonic regression. The path in between lets you check whether monotonicity is a reasonable assumption. The degrees of freedom equal the number of unique fitted values.
+- The paper also says the lasso sheds light on older methods. For example, LARS changed how people understand forward stepwise selection.
+
+### Tibshirani's closing point
+
+"This is an enjoyable area to work in, but we should not invent new models and algorithms just for the sake of it. We should focus on developing tools and understanding their properties, to help us and our collaborators to solve real problems."
+
+### Bühlmann's rates (more detail)
+
+- Prediction: ||X(betahat - beta0)||^2 / n = ||beta0||_1 * O_P(sqrt(log p / n)), with no conditions on the design. p enters only through log p.
+- Optimal rates for prediction and estimation need a restricted eigenvalue or compatibility condition.
+- He also raises open problems: power, uncertainty quantification, and non-convex settings (mixture models, mixed models, missing data) where the "beauty of convex optimization" is lost.
+
+### Holmes's decision-theory detail
+
+Reporting a posterior mode is optimal only under the 0-1 loss Loss(a, beta) = 1 - 1{beta in ball of radius eps around a}, with eps going to 0.
+
+### Earlier "My takeaways" draft
+
+1. Convexity is the main idea. The lasso is not the best selector in theory (best subset is). It is the best selector you can actually compute, because q = 1 is the boundary of convexity.
+2. The method needed the algorithm. The lasso went from ignored to everywhere because of computation: LARS, coordinate descent, and glmnet, not new theory.
+3. Prediction vs. selection. The theory says the lasso is a reliable predictor and screener under mild conditions, but finding exactly the true variables needs strong, often unrealistic conditions.
+4. Ridge vs. lasso through priors. Holmes's equal-fixed versus adaptive-budget variance view is the clearest explanation of why ridge never produces exact zeros and the lasso does.
+
+### Discussion questions draft
+
+- If the lasso really "screens" rather than "selects", how should we report and interpret its selected variables in applied work?
+- Holmes says the Laplace prior's tails are too light, and Tibshirani says sparse Bayesian priors are non-convex and hard to compute. Does the horseshoe resolve this tension, or does it just pick a side?
+- Of the ten generalizations in Table 1, which ones seem to solve a real problem we have seen in this course?
+--->
+<!---
+## References cited above
+
+- Breiman, L. (1995). Better subset selection using the non-negative garotte. *Technometrics*, 37, 373–384.
+- Bühlmann, P. & van de Geer, S. (2011). *Statistics for High-Dimensional Data*. Springer.
+- Carvalho, C. M., Polson, N. G. & Scott, J. G. (2010). The horseshoe estimator for sparse signals. *Biometrika*, 97, 465–480.
+- Efron, B., Hastie, T., Johnstone, I. & Tibshirani, R. (2004). Least angle regression. *Annals of Statistics*, 32, 407–499.
+- Friedman, J., Hastie, T. & Tibshirani, R. (2010). Regularization paths for generalized linear models via coordinate descent. *Journal of Statistical Software*, 33(1).
+- Meinshausen, N. (2007). Relaxed lasso. *Computational Statistics & Data Analysis*, 52, 374–393.
+- Meinshausen, N. & Bühlmann, P. (2010). Stability selection. *JRSS-B*, 72, 417–473.
+- Park, T. & Casella, G. (2008). The Bayesian lasso. *JASA*, 103, 681–686.
+- Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. *JRSS-B*, 58, 267–288.
+- Zhao, P. & Yu, B. (2006). On model selection consistency of lasso. *JMLR*, 7, 2541–2563.
+- Zou, H. (2006). The adaptive lasso and its oracle properties. *JASA*, 101, 1418–1429.
+- Zou, H. & Hastie, T. (2005). Regularization and variable selection via the elastic net. *JRSS-B*, 67, 301–320.
+--->
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./06_Homework.html" class="pagination-link" aria-label="Regularization">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Regularization</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06_Explainer.html" class="pagination-link" aria-label="Explainer: Regularization">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

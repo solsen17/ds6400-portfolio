@@ -70,6 +70,8 @@ sum(is.na(coef(model1)))
 
 In the output above, we see that 4018 coefficients are returned as `NA` and the summary cites "because of singularities". In order to still achieve a solution, R drops those 4018 predictors where it didn't return a coefficient. Because we don't have uniqueness in the solution and our standard matrix inverse for $X^{T}X$ does not exist, we have a model produced here but we may not want to proceed with it. 
 
+*CORRECTION*: We used some generalized inverse to get an answer here! Under the hood, R has picked some kind of approach in order to get a solution, maybe the QR with pivots or the SVD.
+
 ### Problem 2: Ridge
 
 Fit ridge regression using `glmnet` (`alpha = 0`). Select $\lambda$ via 10-fold cross-validation. Report $\lambda_{\min}$ and $\lambda_{\text{1se}}$. Plot the CV error curve with the two vertical lines. How does CV-MSE change as $\lambda$ increases?
