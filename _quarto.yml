@@ -35,7 +35,8 @@ book:
       chapters:
       - "06_Homework.qmd"
       - "06_Paper.qmd"
-      - "06_Explainer.qmd"
+      - "O6_Explainer.qmd"
+      - "06_Explainer_claude.qmd"
 
 
 bibliography: references.bib
