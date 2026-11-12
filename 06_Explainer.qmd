@@ -1,3 +1,257 @@
 # Explainer for Regularization
 
-## 
+## Why do we do it?
+
+Recall the OLS estimator from the previous module, which we've been using to estimate what our $\hat{\mathbf{\beta}}$ coefficients should be.
+
+$$\hat{\mathbf{\beta}} = (X^\top X)^{-1} X^\top \mathbf{Y}$$
+
+We've said that $X^\top X$ must be invertible in order to get a solution here.
+
+We also discussed using external knowledge or prior beliefs to put some kind of constraints on the $\hat{\mathbf{\beta}}$ coefficient vector.
+
+In this module, we're going to talk about 2 ways that our OLS method breaks, and introduce some fixes.
+
+1. **P>N:** If the number of predictors is greater than the sample size $(p>n)$, then this means our design matrix $X$ has more columns ($p$) than rows ($n$), and therefor $X^\top X$ is singular, and the inverse does not exist. The issue arises then that OLS has infinitely many solutions.
+    - We can calculate a genralized inverse through various methods which return some minimized solution, but they aren't guaranteed to give us good predictive performance. Regularization gives us control over which solution we select!
+2. **Multicollinearity:** Even if $p<n$, collinearity can exist, which leads to numerical instability and $\hat{\mathbf{\beta}}$ coefficients that are not interpetable.
+    - The instability is a computational problem, but the predictions are not necessarily bad. However, if our goal is inference, or understanding individual predictor effects, then we'll have real issues. Regularization addresses the computational complexity issue!
+
+## Ridge Regression
+
+### The math
+
+Recall our OLS objective function, where we're minimizing the residual sum of squares.
+
+$$\hat{\beta}_{\text{OLS}} = \underset{\beta}{\arg\min}\ \|Y - X\beta\|_2^2$$
+
+With Ridge Regression, we're going to modify the OLS by adding a penalty on the size of the coefficient vector. Our new objective function is seen below.
+
+$$\hat{\beta}_{\text{ridge}} = \underset{\beta}{\arg\min}\ \|Y - X\beta\|_2^2 + \lambda\|\beta\|_2^2$$
+
+$\lambda \ge 0$ is the tuning parameter for the penalty, and it penalizes large coefficients.
+
+- As $\lambda -> 0, \hat{\beta}_{\text{ridge}} -> \hat{\beta}_{\text{OLS}}$
+- As $\lambda -> \infty, \hat{\beta}_{\text{ridge}} -> \textbf{0}_p$
+
+We can think of this penalty as "pushing" our solutions toward the zero vector with increasing $\lambda$ values.
+
+Note that the $L_2$ norm is used here, which is the usual Euclidean distance:
+$$\|x\| = x^tx = \sqrt{x_1^2 + x^2_2 + \dots + x^2_d}$$
+Also note, that the intercept is not penalized, it is estimated separately (or the outcome and predictors are centered first).
+
+The new ridge estimator we are using can be written
+$$\hat{\mathbf{\beta}} = (X^\top X +\lambda I)^{-1} X^\top \mathbf{Y}$$
+This restores invertibility, because adding the $\lambda I$ shifts all eigenvalues up by $\lambda$. That may become more apparent if we rewrite $X^\top X = V\Lambda V^\top$, which is the eigenvalue decomposition, and then: 
+$$X^\top X + \lambda I = V(\Lambda + \lambda I)V^\top$$
+has eigenvalues of $\lambda_j + \lambda > 0$ for all $j$ when $\lambda > 0$. The matrix is always invertible for any $\lambda > 0$, so we have resolbed both the $n<p$ and the near-zero eigen value problem from multicollinearity. Our two issues pointed out at the beginning of the module are resolved by this regularization technique; great success!
+
+**Bias and Variance Note:**
+The ridge solution introduces bias, because $\hat{\beta}_{\text{ridge}}$ is not centered on the true $\beta$, but it reduces variance. For prediciton, this trade-off is usually worthwhile, and typically reduces MSE.
+
+**One more math note:** The derivation below demonstrates that Ridge Regression can be formulated as an augmented OLS. If we begin with our new objective function defined previously, we can see that we arrive at a form of our original OLS objective function.
+
+$$\begin{align*}
+\|Y - X\beta\|^2 + \lambda\|\beta\|^2
+&= \|\mathbf{Y} - X\beta\|^2 + \|0_p - \sqrt{\lambda}\,I_p\beta\|^2 \\
+&= \left\|\begin{bmatrix}\mathbf{Y} \\ \mathbf{0}_p\end{bmatrix} - \begin{bmatrix}X \\ \sqrt{\lambda}\,I_p\end{bmatrix}\beta\right\|^2\\
+&= \left\|\mathbf{Y}^* - X^*\beta\right\|^2
+\end{align*}$$
+
+Understand that our augmented matrices are
+$$X^* = \begin{bmatrix}X \\ \sqrt{\lambda}\,I_p\end{bmatrix}, \qquad Y^* = \begin{bmatrix}Y \\ 0_p\end{bmatrix}$$
+So we can see that the ridge regression is like adding $p$ "phantom observations" with outcome 0 and weight $\sqrt{\lambda}$, where one is in each predictor direction. These pull the coefficients toward zero.
+
+Because we have this formulation, we can now also use the standard `lm` regression command from the `stats` library to calculate the ridge solution, if we provide the augmented design matrix $X$ and outcome vector $y$. 
+
+### How to do it
+
+Let's work through implementing ridge regression in R. We'll start with loading in the `glmnet` package for our regression commands and the `hdi` package for our dataset.
+```{r}
+#| label: setup
+#| message: false
+
+library(glmnet)
+library(hdi)
+
+data(riboflavin)
+X <- riboflavin$x   # 71 x 4088 matrix
+y <- riboflavin$y   # length 71 vector
+
+```
+
+Let's observe how we can get the same coefficients with `glmnet` and our augmented OLS approach using the `lm` from `stats`.
+
+```{r}
+#| cache: true
+
+# Standardize predictors
+Xs <- scale(X)
+ys <- scale(y)
+n <- nrow(X)
+p <- ncol(X)
+
+lambda_val <- 50
+
+# Ridge with glmnet (standardize = FALSE since we already standardized)
+# (alpha = 0) is the parameter that indicates Ridge to glmnet
+r1 <- glmnet(Xs, ys, alpha = 0, lambda = lambda_val/n, standardize = FALSE, intercept = FALSE)
+beta_r1 <- coef(r1)
+
+# Augmented OLS Approach
+# 1. Construct augmented data
+X_aug <- rbind(Xs, sqrt(lambda_val)*diag(p))
+y_aug <- c(y, rep(0, p))
+# 2. OLS on augmented data (no intercept)
+r2 <- lm(y_aug ~ X_aug-1)
+beta_r2 <- coef(r2) |> unname()
+
+```
+
+```{r}
+
+b2 <- beta_r2 |> head(5)
+b1 <- beta_r1 |> head(6)
+
+data.frame(Predictor = c("AADK_at", "AAPA_at", "ABFA_at", "ABH_at", "ABNA_at"),
+glmnet = round(b1[-1], 4),
+augmented_OLS = round(b2, 4))
+
+```
+
+Well, the coefficients are supposed to match here, and I think it's probably just because they're so small and 4000 of them were fit in this model that they don't line up perfectly. But we demonstrated the concept in the code above!
+
+So in that statement, we actually just motivated our next method, which is Lasso. Instead of having all 4000+ predictors in our model and pushing them all toward zero, but never quite zero so we retain them all, let's consider another approach where we actually allow some of those predictors to become zero. In this we'll have a form of variable selection in addition to the shrinkage of the coefficients.
+
+## Lasso
+
+### The math
+
+We've seen the objective functions a few times now, so we'll jump straight in to the lasso (Least Absolute Shrinkage and Selection Operator) here. Instead of the $L_2$ penalty we saw in ridge regression, we now have an $L_1$ penalty
+$$\hat{\beta}_{\text{lasso}} = \underset{\beta}{\arg\min}\  \|Y - X\beta\|_2^2 + \lambda\|\beta\|_1$$
+where $\|\beta\|_1 = \sum_j |\beta_j|$ is the $L_1$ norm.
+
+The key differences between these two approaches are
+
+1. **Ridge** is smooth and shrinks all coefficients toward zero, but never actually equal to zero. 
+- No variable selection happens here. 
+- The $L_2$ penalty is the sum of squared $\beta$'s.
+
+2. **Lasso** is nondifferentiable at 0, so some coefficients are actually zero.
+- Variable selection is performed.
+- No closed form solution. Instead, iterative updates by one coefficient at a time, cycling through predictors until convergence.
+
+### How to do it
+
+As we don't have a closed form solution for this, our best approach is with `glmnet` in R. The funciton applies coordinate descent for us. Let's just drop in our data and see what happens. 
+
+```{r}
+
+# Lasso with glmnet
+# (alpha = 1) is the parameter that indicates Lasso to glmnet
+lasso_fit <- glmnet(X, y, alpha = 1, lambda = lambda_val/n, intercept = FALSE)
+
+b1 <- beta_r1 |> head(6)
+b3 <- lasso_fit |> coef() |> as.matrix() |> head(6)
+
+data.frame(Predictor = c("AADK_at", "AAPA_at", "ABFA_at", "ABH_at", "ABNA_at"),
+glmnet_ridge = round(b1[-1], 4),
+glmnet_lasso = round(b3[-1], 4))
+
+n_selected <- sum(coef(lasso_fit) != 0) - 1  # subtract intercept
+c(`Non-zero gene expression features of 4,088 ` = n_selected)
+```
+
+Check that out, lasso dropped all but 4 predictors! Why? Well let's start by investigating our parameters. First look at what our `lambda_val` has been set to for these examples.
+
+```{r}
+
+paste0("What is lambda? ", round(lambda_val/n, 4))
+
+```
+
+We just arbitrarily set that earlier in our example, but how do we know that's a good value to use? It's our penalty value after all, so we probably want to be a little bit more intentional with selecting it.
+
+### Cross validation for selecting $\lambda$
+
+As we've discussed previously, cross validation is a method for we can use to assist with selecting a hyperparameter that minimizes our error. In this case, we're going to select a $\lambda$ that minimizes prediction error on new data.
+
+This method returns many different $\lambda$ values to choose from, but two of interest are
+
+1. $\lambda_{min}$: the value with the lowest average CV-MSE
+2. $\lambda_{1se}$: the largest value within one standard error of the minimum.
+
+The second option is going to be our default, because it provides a simpler model whose error is close enough to the minimum.
+
+We can see a quick visual of this below with our lasso method
+
+```{r}
+cv_lasso <- cv.glmnet(X, y, alpha = 1, nfolds = 10)
+plot(cv_lasso)
+
+c(`lambda.min` = round(cv_lasso$lambda.min, 4))
+
+c(`lambda.1se` = round(cv_lasso$lambda.1se, 4))
+```
+
+In the visual and the values of our two $\lambda$ options, you can see what we described above. And then below, we see the difference in the number of retained predictors.
+
+```{r}
+n_selected <- sum(coef(cv_lasso, s = "lambda.min") != 0) - 1  # subtract intercept
+c(`Non-zero gene expression features of 4,088 at lambda.min` = n_selected)
+
+n_selected <- sum(coef(cv_lasso, s = "lambda.1se") != 0) - 1  # subtract intercept
+c(`Non-zero gene expression features of 4,088 at lambda.1se` = n_selected)
+
+```
+
+In recap, we've gone from over 4000 coefficients with Ridge regression to just 24 coefficients with Lasso. These are the features that are most predictive in our model.
+
+Now because we are good Master's and PhD students, we're not satisfied with the idea of "let's just proceed with fewer predictors". You're already asking
+
+1. How do we know these coefficients that didn't go to zero are good?
+2. How do we know the right features were retained?
+3. Are there some other methods that build on or blend the perks of these two approaches?
+
+Great questions, and the answers lie in two extensions. **Relaxed Lasso** and **Elastic Net**.
+
+### Relaxed Lasso
+
+The relaxed lasso is a two step version of our Lasso procedure, which gets at the question regarding whether our $\beta$ coefficient values that were all pushed toward zero, but stayed in the model, are actually good values to use moving forward. 
+
+In more math terms, the variable selection and coefficient shrinkgate in lasso are working at the same time and according to the same $\lambda$. So, our surviving coefficients may be shrunk toward zero more than necessary. 
+
+To estimate the coefficients better, we'll use OLS for estimation after we use the Lasso to select them.
+
+In the refitting step with OLS, we have two options
+
+1. Apply a less strict penalty
+2. Apply no penalty at all
+
+The second option is called the **fully relaxed lasso**.
+
+Generally, the relaxed lasso coefficients are larger in magnitude than the lasso coefficients, because the refit is not constrained to shrink toward zero. 3 good reasons to do relaxed lasso are
+
+1. Less bias on the surviving coefficients
+2. Better prediction 
+3. Interpretibility
+
+Interpretability is a very convincing reason here, because the final model is an ordinary linear model on a small set of predictors, which is familiar to most practitioners and explainable to customers.
+
+## Elastic Net
+
+To answer the additional concerns we raised after lasso and ridge, we're going to look at Elastic Net. Also, if you noticed that $\alpha$ parameter we kept setting in the `glmnet` function call, good eye, we're going to explain that here.
+
+The Elastic Net is a weighted average of the Lasso and Ridge. It blends the two functions and their relative contribution is controlled by the parameter $\alpha$.
+
+Here's the objective function
+$$\hat{\beta}_{\text{en}} = \underset{\beta}{\arg\min}\  \|\mathbf{Y} - X\beta\|_2^2 + \lambda\left[\,\alpha\|\beta\|_1 + (1-\alpha)\|\beta\|_2^2\,\right]$$
+where $\alpha \in [0, 1]$ corresponds to
+
+- $\alpha = 0$: pure ridge (seen in code above)
+- $\alpha = 1$: pure lasso (seen in code above)
+- $\alpha \in (0, 1)$: elastic net - some variable selection from the $L_1$ term, plus a **grouping effect** from the $L_2$ term
+
+New definition! What is this grouping effect?
+
+(to be continued...)

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>13&nbsp; Explainer: Regularization – DS6400 Portfolio</title>
+<title>13&nbsp; Explainer for Regularization – DS6400 Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,6 +71,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./06_Explainer_claude.html" rel="next">
 <link href="./06_Paper.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -151,7 +152,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_Homework.html">06: Regularization</a></li><li class="breadcrumb-item"><a href="./06_Explainer.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_Homework.html">06: Regularization</a></li><li class="breadcrumb-item"><a href="./06_Explainer.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer for Regularization</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -321,7 +322,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06_Explainer.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer for Regularization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Explainer_claude.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Claude’s Explainer</span></span></a>
   </div>
 </li>
       </ul>
@@ -336,47 +343,29 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#why-regularize-at-all" id="toc-why-regularize-at-all" class="nav-link active" data-scroll-target="#why-regularize-at-all"><span class="header-section-number">13.1</span> Why regularize at all?</a>
+  <li><a href="#why-do-we-do-it" id="toc-why-do-we-do-it" class="nav-link active" data-scroll-target="#why-do-we-do-it"><span class="header-section-number">13.1</span> Why do we do it?</a></li>
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression"><span class="header-section-number">13.2</span> Ridge Regression</a>
   <ul class="collapse">
-  <li><a href="#the-general-recipe" id="toc-the-general-recipe" class="nav-link" data-scroll-target="#the-general-recipe"><span class="header-section-number">13.1.1</span> The general recipe</a></li>
-  <li><a href="#two-housekeeping-rules-standardize-and-center" id="toc-two-housekeeping-rules-standardize-and-center" class="nav-link" data-scroll-target="#two-housekeeping-rules-standardize-and-center"><span class="header-section-number">13.1.2</span> Two housekeeping rules: standardize and center</a></li>
+  <li><a href="#the-math" id="toc-the-math" class="nav-link" data-scroll-target="#the-math"><span class="header-section-number">13.2.1</span> The math</a></li>
+  <li><a href="#how-to-do-it" id="toc-how-to-do-it" class="nav-link" data-scroll-target="#how-to-do-it"><span class="header-section-number">13.2.2</span> How to do it</a></li>
   </ul></li>
-  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data"><span class="header-section-number">13.2</span> The data</a></li>
-  <li><a href="#ridge-regression-ell_2-penalty" id="toc-ridge-regression-ell_2-penalty" class="nav-link" data-scroll-target="#ridge-regression-ell_2-penalty"><span class="header-section-number">13.3</span> Ridge regression (<span class="math inline">\(\ell_2\)</span> penalty)</a>
+  <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"><span class="header-section-number">13.3</span> Lasso</a>
   <ul class="collapse">
-  <li><a href="#the-math" id="toc-the-math" class="nav-link" data-scroll-target="#the-math"><span class="header-section-number">13.3.1</span> The math</a></li>
-  <li><a href="#implementation-from-scratch" id="toc-implementation-from-scratch" class="nav-link" data-scroll-target="#implementation-from-scratch"><span class="header-section-number">13.3.2</span> Implementation from scratch</a></li>
-  <li><a href="#implementation-with-glmnet" id="toc-implementation-with-glmnet" class="nav-link" data-scroll-target="#implementation-with-glmnet"><span class="header-section-number">13.3.3</span> Implementation with <code>glmnet</code></a></li>
+  <li><a href="#the-math-1" id="toc-the-math-1" class="nav-link" data-scroll-target="#the-math-1"><span class="header-section-number">13.3.1</span> The math</a></li>
+  <li><a href="#how-to-do-it-1" id="toc-how-to-do-it-1" class="nav-link" data-scroll-target="#how-to-do-it-1"><span class="header-section-number">13.3.2</span> How to do it</a></li>
+  <li><a href="#cross-validation-for-selecting-lambda" id="toc-cross-validation-for-selecting-lambda" class="nav-link" data-scroll-target="#cross-validation-for-selecting-lambda"><span class="header-section-number">13.3.3</span> Cross validation for selecting <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#relaxed-lasso" id="toc-relaxed-lasso" class="nav-link" data-scroll-target="#relaxed-lasso"><span class="header-section-number">13.3.4</span> Relaxed Lasso</a></li>
   </ul></li>
-  <li><a href="#the-lasso-ell_1-penalty" id="toc-the-lasso-ell_1-penalty" class="nav-link" data-scroll-target="#the-lasso-ell_1-penalty"><span class="header-section-number">13.4</span> The lasso (<span class="math inline">\(\ell_1\)</span> penalty)</a>
-  <ul class="collapse">
-  <li><a href="#the-math-1" id="toc-the-math-1" class="nav-link" data-scroll-target="#the-math-1"><span class="header-section-number">13.4.1</span> The math</a></li>
-  <li><a href="#implementation-from-scratch-coordinate-descent" id="toc-implementation-from-scratch-coordinate-descent" class="nav-link" data-scroll-target="#implementation-from-scratch-coordinate-descent"><span class="header-section-number">13.4.2</span> Implementation from scratch: coordinate descent</a></li>
-  <li><a href="#the-lasso-path-and-choosing-lambda" id="toc-the-lasso-path-and-choosing-lambda" class="nav-link" data-scroll-target="#the-lasso-path-and-choosing-lambda"><span class="header-section-number">13.4.3</span> The lasso path and choosing <span class="math inline">\(\lambda\)</span></a></li>
-  </ul></li>
-  <li><a href="#elastic-net-a-mix-of-ell_1-and-ell_2" id="toc-elastic-net-a-mix-of-ell_1-and-ell_2" class="nav-link" data-scroll-target="#elastic-net-a-mix-of-ell_1-and-ell_2"><span class="header-section-number">13.5</span> Elastic net (a mix of <span class="math inline">\(\ell_1\)</span> and <span class="math inline">\(\ell_2\)</span>)</a>
-  <ul class="collapse">
-  <li><a href="#the-math-2" id="toc-the-math-2" class="nav-link" data-scroll-target="#the-math-2"><span class="header-section-number">13.5.1</span> The math</a></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">13.5.2</span> Implementation</a></li>
-  </ul></li>
-  <li><a href="#principal-component-regression-pcr" id="toc-principal-component-regression-pcr" class="nav-link" data-scroll-target="#principal-component-regression-pcr"><span class="header-section-number">13.6</span> Principal component regression (PCR)</a>
-  <ul class="collapse">
-  <li><a href="#the-math-3" id="toc-the-math-3" class="nav-link" data-scroll-target="#the-math-3"><span class="header-section-number">13.6.1</span> The math</a></li>
-  <li><a href="#implementation-from-scratch-1" id="toc-implementation-from-scratch-1" class="nav-link" data-scroll-target="#implementation-from-scratch-1"><span class="header-section-number">13.6.2</span> Implementation from scratch</a></li>
-  <li><a href="#implementation-with-pls" id="toc-implementation-with-pls" class="nav-link" data-scroll-target="#implementation-with-pls"><span class="header-section-number">13.6.3</span> Implementation with <code>pls</code></a></li>
-  </ul></li>
-  <li><a href="#putting-it-together-test-set-comparison-on-the-diabetes-data" id="toc-putting-it-together-test-set-comparison-on-the-diabetes-data" class="nav-link" data-scroll-target="#putting-it-together-test-set-comparison-on-the-diabetes-data"><span class="header-section-number">13.7</span> Putting it together: test-set comparison on the diabetes data</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">13.8</span> Summary</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">13.9</span> References</a></li>
+  <li><a href="#elastic-net" id="toc-elastic-net" class="nav-link" data-scroll-target="#elastic-net"><span class="header-section-number">13.4</span> Elastic Net</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_Homework.html">06: Regularization</a></li><li class="breadcrumb-item"><a href="./06_Explainer.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_Homework.html">06: Regularization</a></li><li class="breadcrumb-item"><a href="./06_Explainer.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer for Regularization</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer: Regularization</span></h1>
+<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer for Regularization</span></h1>
 </div>
 
 
@@ -393,907 +382,251 @@ window.Quarto = {
 </header>
 
 
-<p><strong>Audience:</strong> first-year Master’s and PhD students who know linear regression and some matrix algebra.</p>
-<p><strong>Goal:</strong> For each of the four approaches in this module (ridge, lasso, elastic net, and principal component regression), we</p>
+<section id="why-do-we-do-it" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="why-do-we-do-it"><span class="header-section-number">13.1</span> Why do we do it?</h2>
+<p>Recall the OLS estimator from the previous module, which we’ve been using to estimate what our <span class="math inline">\(\hat{\mathbf{\beta}}\)</span> coefficients should be.</p>
+<p><span class="math display">\[\hat{\mathbf{\beta}} = (X^\top X)^{-1} X^\top \mathbf{Y}\]</span></p>
+<p>We’ve said that <span class="math inline">\(X^\top X\)</span> must be invertible in order to get a solution here.</p>
+<p>We also discussed using external knowledge or prior beliefs to put some kind of constraints on the <span class="math inline">\(\hat{\mathbf{\beta}}\)</span> coefficient vector.</p>
+<p>In this module, we’re going to talk about 2 ways that our OLS method breaks, and introduce some fixes.</p>
 <ol type="1">
-<li>explain the math,</li>
-<li>implement it on example data (first by hand where that’s practical, then with the standard R package), and</li>
-<li>walk through the key lines of code.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)  <span class="co"># ridge, lasso, elastic net (coordinate descent)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pls)     <span class="co"># principal component regression</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lars)    <span class="co"># the diabetes data from Efron et al. (2004)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6400</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<section id="why-regularize-at-all" class="level2" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="why-regularize-at-all"><span class="header-section-number">13.1</span> Why regularize at all?</h2>
-<p>Recall the linear model from the last explainer:</p>
-<p><span class="math display">\[
-Y = X\beta + \varepsilon, \qquad \varepsilon \sim \text{Normal}(\mathbf{0}_n, \sigma^2 I_n).
-\]</span></p>
-<p>Ordinary least squares (OLS) chooses <span class="math inline">\(\beta\)</span> to minimize the residual sum of squares,</p>
-<p><span class="math display">\[
-\hat\beta^{\text{OLS}} = \arg\min_\beta \lVert Y - X\beta \rVert_2^2 = (X^\top X)^{-1}X^\top Y .
-\]</span></p>
-<p>That formula requires <span class="math inline">\(X^\top X\)</span> to be invertible, and in practice it breaks down in two ways:</p>
-<ol type="1">
-<li><strong><span class="math inline">\(p \ge n\)</span></strong> (more predictors than observations, as in the riboflavin homework). <span class="math inline">\(X^\top X\)</span> is singular, so infinitely many <span class="math inline">\(\beta\)</span> fit the training data perfectly.</li>
-<li><strong>Collinearity.</strong> <span class="math inline">\(X^\top X\)</span> is technically invertible but <em>nearly</em> singular. Its smallest eigenvalues are close to 0, and since <span class="math inline">\(\text{Var}(\hat\beta^{\text{OLS}}) = \sigma^2 (X^\top X)^{-1}\)</span>, the coefficient variances blow up.</li>
-</ol>
-<p>Even when OLS works, it is <em>unbiased</em> but can have high <em>variance</em>. Expected prediction error at a new point <span class="math inline">\(x_0\)</span> splits into</p>
-<p><span class="math display">\[
-E\big[(Y_0 - \hat f(x_0))^2\big] = \sigma^2 + \text{Bias}^2\big(\hat f(x_0)\big) + \text{Var}\big(\hat f(x_0)\big).
-\]</span></p>
-<p><strong>Regularization deliberately adds a little bias to remove a lot of variance.</strong> Every method below does this by restricting how large or how complex <span class="math inline">\(\beta\)</span> can be.</p>
-<section id="the-general-recipe" class="level3" data-number="13.1.1">
-<h3 data-number="13.1.1" class="anchored" data-anchor-id="the-general-recipe"><span class="header-section-number">13.1.1</span> The general recipe</h3>
-<p>Ridge, lasso, and elastic net all solve a <em>penalized</em> least-squares problem:</p>
-<p><span class="math display">\[
-\hat\beta(\lambda) = \arg\min_\beta \underbrace{\lVert Y - X\beta\rVert_2^2}_{\text{fit the data}} + \underbrace{\lambda \, P(\beta)}_{\text{keep } \beta \text{ small}} .
-\]</span></p>
+<li><strong>P&gt;N:</strong> If the number of predictors is greater than the sample size <span class="math inline">\((p&gt;n)\)</span>, then this means our design matrix <span class="math inline">\(X\)</span> has more columns (<span class="math inline">\(p\)</span>) than rows (<span class="math inline">\(n\)</span>), and therefor <span class="math inline">\(X^\top X\)</span> is singular, and the inverse does not exist. The issue arises then that OLS has infinitely many solutions.
 <ul>
-<li><span class="math inline">\(P(\beta)\)</span> is the <strong>penalty</strong>, which decides <em>how</em> “small” is measured.</li>
-<li><span class="math inline">\(\lambda \ge 0\)</span> is a <strong>tuning parameter</strong>. <span class="math inline">\(\lambda = 0\)</span> gives back OLS, and <span class="math inline">\(\lambda \to \infty\)</span> forces <span class="math inline">\(\beta \to 0\)</span>. We choose <span class="math inline">\(\lambda\)</span> by cross-validation.</li>
-</ul>
-<p>Each penalized problem has an equivalent <strong>constrained</strong> form, <span class="math inline">\(\min_\beta \lVert Y - X\beta\rVert_2^2\)</span> subject to <span class="math inline">\(P(\beta) \le t\)</span>, where each <span class="math inline">\(\lambda\)</span> corresponds to some budget <span class="math inline">\(t\)</span>. The constrained form makes the geometry easy to see.</p>
-</section>
-<section id="two-housekeeping-rules-standardize-and-center" class="level3" data-number="13.1.2">
-<h3 data-number="13.1.2" class="anchored" data-anchor-id="two-housekeeping-rules-standardize-and-center"><span class="header-section-number">13.1.2</span> Two housekeeping rules: standardize and center</h3>
-<ol type="1">
-<li><strong>Standardize the predictors.</strong> The penalty treats all coefficients the same, but a coefficient’s size depends on its predictor’s units. (Measuring height in mm instead of m would shrink its <span class="math inline">\(\beta\)</span> by 1000 and make it almost free to keep.) So we rescale each column of <span class="math inline">\(X\)</span> to mean 0 and variance 1 before penalizing.</li>
-<li><strong>Don’t penalize the intercept.</strong> Shrinking <span class="math inline">\(\beta_0\)</span> toward 0 would just bias predictions toward 0. If we center <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span>, the intercept drops out (it equals <span class="math inline">\(\bar y\)</span>).</li>
-</ol>
-<p>From here on, unless stated otherwise, <span class="math inline">\(X\)</span> is standardized and <span class="math inline">\(Y\)</span> is centered.</p>
-</section>
-</section>
-<section id="the-data" class="level2" data-number="13.2">
-<h2 data-number="13.2" class="anchored" data-anchor-id="the-data"><span class="header-section-number">13.2</span> The data</h2>
-<p>We use two datasets.</p>
-<p><strong>Simulated data, where we know the truth.</strong> This is adapted from Example 1 of Tibshirani (1996): <span class="math inline">\(p = 8\)</span> predictors with correlation <span class="math inline">\(\text{Cor}(x_j, x_k) = 0.5^{|j - k|}\)</span> and a <em>sparse</em> true coefficient vector,</p>
-<p><span class="math display">\[
-\beta = (3,\ 1.5,\ 0,\ 0,\ 2,\ 0,\ 0,\ 0), \qquad \sigma = 3 .
-\]</span></p>
-<p>Only predictors 1, 2, and 5 matter. Because we know this, we can check which methods find them.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>n_sim  <span class="ot">&lt;-</span> <span class="dv">60</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>p_sim  <span class="ot">&lt;-</span> <span class="dv">8</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>beta_true <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="fl">1.5</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fl">0.5</span><span class="sc">^</span><span class="fu">abs</span>(<span class="fu">outer</span>(<span class="dv">1</span><span class="sc">:</span>p_sim, <span class="dv">1</span><span class="sc">:</span>p_sim, <span class="st">"-"</span>))     <span class="co"># AR(1) correlation matrix</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>Z     <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n_sim <span class="sc">*</span> p_sim), n_sim, p_sim)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>X_sim <span class="ot">&lt;-</span> Z <span class="sc">%*%</span> <span class="fu">chol</span>(Sigma)                          <span class="co"># correlated predictors</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(X_sim) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="dv">1</span><span class="sc">:</span>p_sim)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>y_sim <span class="ot">&lt;-</span> <span class="fu">drop</span>(X_sim <span class="sc">%*%</span> beta_true <span class="sc">+</span> <span class="fu">rnorm</span>(n_sim, <span class="at">sd =</span> <span class="dv">3</span>))</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># standardize X (using the 1/n variance, to match glmnet) and center y</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>sd_n <span class="ot">&lt;-</span> <span class="cf">function</span>(v) <span class="fu">sqrt</span>(<span class="fu">mean</span>((v <span class="sc">-</span> <span class="fu">mean</span>(v))<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>Xs   <span class="ot">&lt;-</span> <span class="fu">scale</span>(X_sim, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="fu">apply</span>(X_sim, <span class="dv">2</span>, sd_n))</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>yc   <span class="ot">&lt;-</span> y_sim <span class="sc">-</span> <span class="fu">mean</span>(y_sim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p><strong>Code notes:</strong></p>
+<li>We can calculate a genralized inverse through various methods which return some minimized solution, but they aren’t guaranteed to give us good predictive performance. Regularization gives us control over which solution we select!</li>
+</ul></li>
+<li><strong>Multicollinearity:</strong> Even if <span class="math inline">\(p&lt;n\)</span>, collinearity can exist, which leads to numerical instability and <span class="math inline">\(\hat{\mathbf{\beta}}\)</span> coefficients that are not interpetable.
 <ul>
-<li><code>outer(1:p, 1:p, "-")</code> builds the matrix of <span class="math inline">\(j - k\)</span>, so <code>0.5^abs(...)</code> is the AR(1) correlation matrix <span class="math inline">\(\Sigma\)</span>.</li>
-<li>If <span class="math inline">\(Z\)</span> has iid <span class="math inline">\(N(0,1)\)</span> entries and <span class="math inline">\(\Sigma = R^\top R\)</span> (Cholesky), then the rows of <span class="math inline">\(ZR\)</span> have covariance <span class="math inline">\(R^\top R = \Sigma\)</span>. That is why we multiply by <code>chol(Sigma)</code>.</li>
-<li>We standardize with the <span class="math inline">\(1/n\)</span> standard deviation (not R’s default <span class="math inline">\(1/(n-1)\)</span>) so that each column satisfies <span class="math inline">\(\frac1n\sum_i x_{ij}^2 = 1\)</span> exactly. This makes the formulas below cleaner and lets our hand-coded results match <code>glmnet</code> to many decimal places.</li>
+<li>The instability is a computational problem, but the predictions are not necessarily bad. However, if our goal is inference, or understanding individual predictor effects, then we’ll have real issues. Regularization addresses the computational complexity issue!</li>
+</ul></li>
+</ol>
+</section>
+<section id="ridge-regression" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="ridge-regression"><span class="header-section-number">13.2</span> Ridge Regression</h2>
+<section id="the-math" class="level3" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="the-math"><span class="header-section-number">13.2.1</span> The math</h3>
+<p>Recall our OLS objective function, where we’re minimizing the residual sum of squares.</p>
+<p><span class="math display">\[\hat{\beta}_{\text{OLS}} = \underset{\beta}{\arg\min}\ \|Y - X\beta\|_2^2\]</span></p>
+<p>With Ridge Regression, we’re going to modify the OLS by adding a penalty on the size of the coefficient vector. Our new objective function is seen below.</p>
+<p><span class="math display">\[\hat{\beta}_{\text{ridge}} = \underset{\beta}{\arg\min}\ \|Y - X\beta\|_2^2 + \lambda\|\beta\|_2^2\]</span></p>
+<p><span class="math inline">\(\lambda \ge 0\)</span> is the tuning parameter for the penalty, and it penalizes large coefficients.</p>
+<ul>
+<li>As <span class="math inline">\(\lambda -&gt; 0, \hat{\beta}_{\text{ridge}} -&gt; \hat{\beta}_{\text{OLS}}\)</span></li>
+<li>As <span class="math inline">\(\lambda -&gt; \infty, \hat{\beta}_{\text{ridge}} -&gt; \textbf{0}_p\)</span></li>
 </ul>
-<p><strong>Real data: diabetes progression.</strong> This is the dataset Efron, Hastie, Johnstone &amp; Tibshirani (2004) used to introduce LARS. There are 442 patients, and the outcome is a measure of disease progression one year after baseline. We use the expanded version <code>x2</code>, which has the 10 baseline variables (age, sex, BMI, blood pressure, six blood serum measures) plus their squares and pairwise interactions, for <strong>64 predictors</strong>. Many of them are strongly correlated, which is a natural setting for regularization.</p>
+<p>We can think of this penalty as “pushing” our solutions toward the zero vector with increasing <span class="math inline">\(\lambda\)</span> values.</p>
+<p>Note that the <span class="math inline">\(L_2\)</span> norm is used here, which is the usual Euclidean distance: <span class="math display">\[\|x\| = x^tx = \sqrt{x_1^2 + x^2_2 + \dots + x^2_d}\]</span> Also note, that the intercept is not penalized, it is estimated separately (or the outcome and predictors are centered first).</p>
+<p>The new ridge estimator we are using can be written <span class="math display">\[\hat{\mathbf{\beta}} = (X^\top X +\lambda I)^{-1} X^\top \mathbf{Y}\]</span> This restores invertibility, because adding the <span class="math inline">\(\lambda I\)</span> shifts all eigenvalues up by <span class="math inline">\(\lambda\)</span>. That may become more apparent if we rewrite <span class="math inline">\(X^\top X = V\Lambda V^\top\)</span>, which is the eigenvalue decomposition, and then: <span class="math display">\[X^\top X + \lambda I = V(\Lambda + \lambda I)V^\top\]</span> has eigenvalues of <span class="math inline">\(\lambda_j + \lambda &gt; 0\)</span> for all <span class="math inline">\(j\)</span> when <span class="math inline">\(\lambda &gt; 0\)</span>. The matrix is always invertible for any <span class="math inline">\(\lambda &gt; 0\)</span>, so we have resolbed both the <span class="math inline">\(n&lt;p\)</span> and the near-zero eigen value problem from multicollinearity. Our two issues pointed out at the beginning of the module are resolved by this regularization technique; great success!</p>
+<p><strong>Bias and Variance Note:</strong> The ridge solution introduces bias, because <span class="math inline">\(\hat{\beta}_{\text{ridge}}\)</span> is not centered on the true <span class="math inline">\(\beta\)</span>, but it reduces variance. For prediciton, this trade-off is usually worthwhile, and typically reduces MSE.</p>
+<p><strong>One more math note:</strong> The derivation below demonstrates that Ridge Regression can be formulated as an augmented OLS. If we begin with our new objective function defined previously, we can see that we arrive at a form of our original OLS objective function.</p>
+<p><span class="math display">\[\begin{align*}
+\|Y - X\beta\|^2 + \lambda\|\beta\|^2
+&amp;= \|\mathbf{Y} - X\beta\|^2 + \|0_p - \sqrt{\lambda}\,I_p\beta\|^2 \\
+&amp;= \left\|\begin{bmatrix}\mathbf{Y} \\ \mathbf{0}_p\end{bmatrix} - \begin{bmatrix}X \\ \sqrt{\lambda}\,I_p\end{bmatrix}\beta\right\|^2\\
+&amp;= \left\|\mathbf{Y}^* - X^*\beta\right\|^2
+\end{align*}\]</span></p>
+<p>Understand that our augmented matrices are <span class="math display">\[X^* = \begin{bmatrix}X \\ \sqrt{\lambda}\,I_p\end{bmatrix}, \qquad Y^* = \begin{bmatrix}Y \\ 0_p\end{bmatrix}\]</span> So we can see that the ridge regression is like adding <span class="math inline">\(p\)</span> “phantom observations” with outcome 0 and weight <span class="math inline">\(\sqrt{\lambda}\)</span>, where one is in each predictor direction. These pull the coefficients toward zero.</p>
+<p>Because we have this formulation, we can now also use the standard <code>lm</code> regression command from the <code>stats</code> library to calculate the ridge solution, if we provide the augmented design matrix <span class="math inline">\(X\)</span> and outcome vector <span class="math inline">\(y\)</span>.</p>
+</section>
+<section id="how-to-do-it" class="level3" data-number="13.2.2">
+<h3 data-number="13.2.2" class="anchored" data-anchor-id="how-to-do-it"><span class="header-section-number">13.2.2</span> How to do it</h3>
+<p>Let’s work through implementing ridge regression in R. We’ll start with loading in the <code>glmnet</code> package for our regression commands and the <code>hdi</code> package for our dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(diabetes)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X_db <span class="ot">&lt;-</span> <span class="fu">unclass</span>(diabetes<span class="sc">$</span>x2)       <span class="co"># 442 x 64 matrix</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y_db <span class="ot">&lt;-</span> diabetes<span class="sc">$</span>y</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(X_db)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdi)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(riboflavin)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> riboflavin<span class="sc">$</span>x   <span class="co"># 71 x 4088 matrix</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> riboflavin<span class="sc">$</span>y   <span class="co"># length 71 vector</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s observe how we can get the same coefficients with <code>glmnet</code> and our augmented OLS approach using the <code>lm</code> from <code>stats</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize predictors</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Xs <span class="ot">&lt;-</span> <span class="fu">scale</span>(X)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ys <span class="ot">&lt;-</span> <span class="fu">scale</span>(y)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>lambda_val <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Ridge with glmnet (standardize = FALSE since we already standardized)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># (alpha = 0) is the parameter that indicates Ridge to glmnet</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(Xs, ys, <span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> lambda_val<span class="sc">/</span>n, <span class="at">standardize =</span> <span class="cn">FALSE</span>, <span class="at">intercept =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>beta_r1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(r1)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Augmented OLS Approach</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Construct augmented data</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>X_aug <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Xs, <span class="fu">sqrt</span>(lambda_val)<span class="sc">*</span><span class="fu">diag</span>(p))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>y_aug <span class="ot">&lt;-</span> <span class="fu">c</span>(y, <span class="fu">rep</span>(<span class="dv">0</span>, p))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. OLS on augmented data (no intercept)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_aug <span class="sc">~</span> X_aug<span class="dv">-1</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>beta_r2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(r2) <span class="sc">|&gt;</span> <span class="fu">unname</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> beta_r2 <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> beta_r1 <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">6</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">Predictor =</span> <span class="fu">c</span>(<span class="st">"AADK_at"</span>, <span class="st">"AAPA_at"</span>, <span class="st">"ABFA_at"</span>, <span class="st">"ABH_at"</span>, <span class="st">"ABNA_at"</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">glmnet =</span> <span class="fu">round</span>(b1[<span class="sc">-</span><span class="dv">1</span>], <span class="dv">4</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">augmented_OLS =</span> <span class="fu">round</span>(b2, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 442  64</code></pre>
+<pre><code>  Predictor  glmnet augmented_OLS
+1   AADK_at  0.0017        0.0026
+2   AAPA_at -0.0020       -0.0011
+3   ABFA_at  0.0010        0.0006
+4    ABH_at  0.0039        0.0028
+5   ABNA_at  0.0012        0.0016</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(X_db), <span class="dv">342</span>)   <span class="co"># hold out 100 patients for testing</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>X_tr <span class="ot">&lt;-</span> X_db[train, ];  y_tr <span class="ot">&lt;-</span> y_db[train]</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>X_te <span class="ot">&lt;-</span> X_db[<span class="sc">-</span>train, ]; y_te <span class="ot">&lt;-</span> y_db[<span class="sc">-</span>train]</span>
+</div>
+<p>Well, the coefficients are supposed to match here, and I think it’s probably just because they’re so small and 4000 of them were fit in this model that they don’t line up perfectly. But we demonstrated the concept in the code above!</p>
+<p>So in that statement, we actually just motivated our next method, which is Lasso. Instead of having all 4000+ predictors in our model and pushing them all toward zero, but never quite zero so we retain them all, let’s consider another approach where we actually allow some of those predictors to become zero. In this we’ll have a form of variable selection in addition to the shrinkage of the coefficients.</p>
+</section>
+</section>
+<section id="lasso" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="lasso"><span class="header-section-number">13.3</span> Lasso</h2>
+<section id="the-math-1" class="level3" data-number="13.3.1">
+<h3 data-number="13.3.1" class="anchored" data-anchor-id="the-math-1"><span class="header-section-number">13.3.1</span> The math</h3>
+<p>We’ve seen the objective functions a few times now, so we’ll jump straight in to the lasso (Least Absolute Shrinkage and Selection Operator) here. Instead of the <span class="math inline">\(L_2\)</span> penalty we saw in ridge regression, we now have an <span class="math inline">\(L_1\)</span> penalty <span class="math display">\[\hat{\beta}_{\text{lasso}} = \underset{\beta}{\arg\min}\  \|Y - X\beta\|_2^2 + \lambda\|\beta\|_1\]</span> where <span class="math inline">\(\|\beta\|_1 = \sum_j |\beta_j|\)</span> is the <span class="math inline">\(L_1\)</span> norm.</p>
+<p>The key differences between these two approaches are</p>
+<ol type="1">
+<li><strong>Ridge</strong> is smooth and shrinks all coefficients toward zero, but never actually equal to zero.</li>
+</ol>
+<ul>
+<li>No variable selection happens here.</li>
+<li>The <span class="math inline">\(L_2\)</span> penalty is the sum of squared <span class="math inline">\(\beta\)</span>’s.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Lasso</strong> is nondifferentiable at 0, so some coefficients are actually zero.</li>
+</ol>
+<ul>
+<li>Variable selection is performed.</li>
+<li>No closed form solution. Instead, iterative updates by one coefficient at a time, cycling through predictors until convergence.</li>
+</ul>
+</section>
+<section id="how-to-do-it-1" class="level3" data-number="13.3.2">
+<h3 data-number="13.3.2" class="anchored" data-anchor-id="how-to-do-it-1"><span class="header-section-number">13.3.2</span> How to do it</h3>
+<p>As we don’t have a closed form solution for this, our best approach is with <code>glmnet</code> in R. The funciton applies coordinate descent for us. Let’s just drop in our data and see what happens.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lasso with glmnet</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (alpha = 1) is the parameter that indicates Lasso to glmnet</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>lasso_fit <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(X, y, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> lambda_val<span class="sc">/</span>n, <span class="at">intercept =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># how collinear is this design?</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">kappa</span>(<span class="fu">scale</span>(X_tr), <span class="at">exact =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> beta_r1 <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">6</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>b3 <span class="ot">&lt;-</span> lasso_fit <span class="sc">|&gt;</span> <span class="fu">coef</span>() <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">6</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">Predictor =</span> <span class="fu">c</span>(<span class="st">"AADK_at"</span>, <span class="st">"AAPA_at"</span>, <span class="st">"ABFA_at"</span>, <span class="st">"ABH_at"</span>, <span class="st">"ABNA_at"</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">glmnet_ridge =</span> <span class="fu">round</span>(b1[<span class="sc">-</span><span class="dv">1</span>], <span class="dv">4</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">glmnet_lasso =</span> <span class="fu">round</span>(b3[<span class="sc">-</span><span class="dv">1</span>], <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 15165</code></pre>
+<pre><code>  Predictor glmnet_ridge glmnet_lasso
+1   AADK_at       0.0017            0
+2   AAPA_at      -0.0020            0
+3   ABFA_at       0.0010            0
+4    ABH_at       0.0039            0
+5   ABNA_at       0.0012            0</code></pre>
 </div>
-</div>
-<p>The condition number <span class="math inline">\(\kappa = \sigma_{\max}/\sigma_{\min}\)</span> of the standardized training design is very large, so OLS coefficients here will be unstable.</p>
-</section>
-<section id="ridge-regression-ell_2-penalty" class="level2" data-number="13.3">
-<h2 data-number="13.3" class="anchored" data-anchor-id="ridge-regression-ell_2-penalty"><span class="header-section-number">13.3</span> Ridge regression (<span class="math inline">\(\ell_2\)</span> penalty)</h2>
-<section id="the-math" class="level3" data-number="13.3.1">
-<h3 data-number="13.3.1" class="anchored" data-anchor-id="the-math"><span class="header-section-number">13.3.1</span> The math</h3>
-<p>Ridge regression (Hoerl &amp; Kennard, 1970) uses the squared <span class="math inline">\(\ell_2\)</span> norm as its penalty:</p>
-<p><span class="math display">\[
-\hat\beta^{\text{ridge}} = \arg\min_\beta \lVert Y - X\beta\rVert_2^2 + \lambda \sum_{j=1}^p \beta_j^2 .
-\]</span></p>
-<p>This objective is a smooth quadratic, so we can set its gradient to zero:</p>
-<p><span class="math display">\[
--2X^\top(Y - X\beta) + 2\lambda\beta = 0 \;\;\Longrightarrow\;\; \boxed{\hat\beta^{\text{ridge}} = (X^\top X + \lambda I_p)^{-1} X^\top Y.}
-\]</span></p>
-<p>Adding <span class="math inline">\(\lambda I_p\)</span> moves every eigenvalue of <span class="math inline">\(X^\top X\)</span> up by <span class="math inline">\(\lambda\)</span>. For any <span class="math inline">\(\lambda &gt; 0\)</span> the matrix is therefore invertible, <strong>even when <span class="math inline">\(p &gt; n\)</span></strong>. This “add a ridge to the diagonal” step is where the name comes from.</p>
-<p><strong>How ridge shrinks, through the SVD.</strong> Write <span class="math inline">\(X = UDV^\top\)</span> with singular values <span class="math inline">\(d_1 \ge \cdots \ge d_p\)</span>. The ridge fitted values are</p>
-<p><span class="math display">\[
-\hat Y^{\text{ridge}} = X\hat\beta^{\text{ridge}} = \sum_{j=1}^p u_j \, \frac{d_j^2}{d_j^2 + \lambda} \, u_j^\top Y .
-\]</span></p>
-<p>OLS would use a factor of 1 for every direction. Ridge multiplies the projection onto each principal direction <span class="math inline">\(u_j\)</span> by <span class="math inline">\(d_j^2 / (d_j^2 + \lambda)\)</span>, which is less than 1. <strong>Directions with small <span class="math inline">\(d_j\)</span> (low variance, where collinearity lives) are shrunk the most.</strong> The <em>effective degrees of freedom</em> are <span class="math inline">\(\text{df}(\lambda) = \sum_j d_j^2/(d_j^2+\lambda)\)</span>, which falls smoothly from <span class="math inline">\(p\)</span> at <span class="math inline">\(\lambda = 0\)</span> toward 0.</p>
-<p><strong>Ridge as augmented OLS.</strong> Ridge is exactly OLS on a padded dataset: append <span class="math inline">\(p\)</span> fake observations with <span class="math inline">\(X\)</span>-rows <span class="math inline">\(\sqrt\lambda\, I_p\)</span> and response 0:</p>
-<p><span class="math display">\[
-\tilde X = \begin{bmatrix} X \\ \sqrt\lambda\, I_p \end{bmatrix}, \quad
-\tilde Y = \begin{bmatrix} Y \\ \mathbf 0_p \end{bmatrix}
-\;\;\Longrightarrow\;\;
-\tilde X^\top\tilde X = X^\top X + \lambda I, \quad \tilde X^\top \tilde Y = X^\top Y .
-\]</span></p>
-<p>The fake observations each say “this coefficient is 0”, which pulls the estimates toward zero.</p>
-<p><strong>Bayesian view.</strong> Ridge is the posterior mean (and mode) under independent priors <span class="math inline">\(\beta_j \sim N(0, \tau^2)\)</span>, with <span class="math inline">\(\lambda = \sigma^2/\tau^2\)</span>.</p>
-</section>
-<section id="implementation-from-scratch" class="level3" data-number="13.3.2">
-<h3 data-number="13.3.2" class="anchored" data-anchor-id="implementation-from-scratch"><span class="header-section-number">13.3.2</span> Implementation from scratch</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ridge_closed <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">diag</span>(p), <span class="fu">crossprod</span>(X, y))</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># check against OLS on the augmented data, for one lambda</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>lam  <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>X_aug <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Xs, <span class="fu">sqrt</span>(lam) <span class="sc">*</span> <span class="fu">diag</span>(p_sim))</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>y_aug <span class="ot">&lt;-</span> <span class="fu">c</span>(yc, <span class="fu">rep</span>(<span class="dv">0</span>, p_sim))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">closed_form =</span> <span class="fu">drop</span>(<span class="fu">ridge_closed</span>(Xs, yc, lam)),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">augmented   =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y_aug <span class="sc">~</span> X_aug <span class="sc">-</span> <span class="dv">1</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n_selected <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">coef</span>(lasso_fit) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">-</span> <span class="dv">1</span>  <span class="co"># subtract intercept</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">`</span><span class="at">Non-zero gene expression features of 4,088 </span><span class="st">`</span> <span class="ot">=</span> n_selected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   closed_form   augmented
-x1  1.58410686  1.58410686
-x2  0.89708971  0.89708971
-x3  0.17378740  0.17378740
-x4  0.41941820  0.41941820
-x5  1.14121834  1.14121834
-x6 -0.32424379 -0.32424379
-x7  0.08301728  0.08301728
-x8  0.30371878  0.30371878</code></pre>
+<pre><code>Non-zero gene expression features of 4,088  
+                                          4 </code></pre>
 </div>
 </div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>crossprod(X)</code> computes <span class="math inline">\(X^\top X\)</span> and <code>crossprod(X, y)</code> computes <span class="math inline">\(X^\top Y\)</span>. They are faster and more numerically careful than <code>t(X) %*% X</code>.</li>
-<li><code>solve(A, b)</code> solves the linear system <span class="math inline">\(A\beta = b\)</span> directly. It is better than <code>solve(A) %*% b</code>, which forms the inverse explicitly. We never need <span class="math inline">\((X^\top X + \lambda I)^{-1}\)</span> itself.</li>
-<li><code>lm(y_aug ~ X_aug - 1)</code> fits OLS with no intercept on the padded data. The two columns agree, which confirms the augmented-data identity.</li>
-</ul>
-<p>Now we compute the full <strong>coefficient path</strong> by solving for <span class="math inline">\(\hat\beta\)</span> over a grid of <span class="math inline">\(\lambda\)</span> values:</p>
+<p>Check that out, lasso dropped all but 4 predictors! Why? Well let’s start by investigating our parameters. First look at what our <code>lambda_val</code> has been set to for these examples.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lambdas <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>B_ridge <span class="ot">&lt;-</span> <span class="fu">sapply</span>(lambdas, <span class="cf">function</span>(l) <span class="fu">ridge_closed</span>(Xs, yc, l))   <span class="co"># p x 100</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>d   <span class="ot">&lt;-</span> <span class="fu">svd</span>(Xs)<span class="sc">$</span>d</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>dfs <span class="ot">&lt;-</span> <span class="fu">sapply</span>(lambdas, <span class="cf">function</span>(l) <span class="fu">sum</span>(d<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (d<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> l)))           <span class="co"># effective df</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="fu">log10</span>(lambdas), <span class="fu">t</span>(B_ridge), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">2</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">ifelse</span>(beta_true <span class="sc">!=</span> <span class="dv">0</span>, <span class="st">"firebrick"</span>, <span class="st">"grey60"</span>),</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="fu">expression</span>(log[<span class="dv">10</span>](lambda)), <span class="at">ylab =</span> <span class="st">"Coefficient"</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">3</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">3</span>, <span class="at">at =</span> <span class="fu">log10</span>(lambdas)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">40</span>, <span class="dv">60</span>, <span class="dv">75</span>, <span class="dv">90</span>)],</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">round</span>(dfs[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">40</span>, <span class="dv">60</span>, <span class="dv">75</span>, <span class="dv">90</span>)], <span class="dv">1</span>))</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"effective degrees of freedom"</span>, <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="dv">2</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="fu">c</span>(<span class="st">"true signal (x1, x2, x5)"</span>, <span class="st">"true zero"</span>),</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"firebrick"</span>, <span class="st">"grey60"</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div id="fig-ridge-path" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-ridge-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-ridge-path-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ridge-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.1: Ridge coefficient path on the simulated data, computed with the closed-form solution. Every coefficient shrinks smoothly toward zero, but none reaches exactly zero.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>sapply(lambdas, function(l) ...)</code> returns one column per <span class="math inline">\(\lambda\)</span>, giving a <span class="math inline">\(p \times 100\)</span> matrix. <code>matplot(..., t(B_ridge))</code> draws one line per coefficient.</li>
-<li>The top axis converts <span class="math inline">\(\lambda\)</span> to effective df using the singular values from <code>svd()</code>. This is the SVD shrinkage formula above, coded directly.</li>
-<li>Coloring by <code>beta_true != 0</code> lets us see that the true signals (red) stay large longest. The noise coefficients (grey) shrink, but they <strong>never become exactly 0</strong>. Ridge <em>shrinks</em> but does not <em>select</em>.</li>
-</ul>
-</section>
-<section id="implementation-with-glmnet" class="level3" data-number="13.3.3">
-<h3 data-number="13.3.3" class="anchored" data-anchor-id="implementation-with-glmnet"><span class="header-section-number">13.3.3</span> Implementation with <code>glmnet</code></h3>
-<p>In practice we use <code>glmnet</code>, which also handles cross-validation. Its objective is scaled slightly differently from ours:</p>
-<p><span class="math display">\[
-\text{glmnet:}\quad \frac{1}{2n}\lVert Y - X\beta\rVert_2^2 + \lambda_{\text{glmnet}} \cdot \frac{1}{2}\lVert\beta\rVert_2^2 .
-\]</span></p>
-<p>Multiply through by <span class="math inline">\(2n\)</span> and you get our objective with <span class="math inline">\(\lambda = n\lambda_{\text{glmnet}}\)</span>. There is one more catch. For the Gaussian family, <code>glmnet</code> internally standardizes <span class="math inline">\(Y\)</span> to unit variance before fitting, so the <span class="math inline">\(\lambda\)</span> it reports corresponds to <span class="math inline">\(\lambda = n\lambda_{\text{glmnet}}/\text{sd}(Y)\)</span>. We check this:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lam_glmnet <span class="ot">&lt;-</span> lam <span class="sc">*</span> <span class="fu">sd_n</span>(yc) <span class="sc">/</span> n_sim</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fit_r <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(Xs, yc, <span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> lam_glmnet,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">standardize =</span> <span class="cn">FALSE</span>, <span class="at">intercept =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">control =</span> <span class="fu">list</span>(<span class="at">thresh =</span> <span class="fl">1e-16</span>))</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">closed_form =</span> <span class="fu">drop</span>(<span class="fu">ridge_closed</span>(Xs, yc, lam)),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">glmnet      =</span> <span class="fu">as.numeric</span>(<span class="fu">coef</span>(fit_r))[<span class="sc">-</span><span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"What is lambda? "</span>, <span class="fu">round</span>(lambda_val<span class="sc">/</span>n, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   closed_form      glmnet
-x1  1.58410686  1.58410686
-x2  0.89708971  0.89708972
-x3  0.17378740  0.17378740
-x4  0.41941820  0.41941819
-x5  1.14121834  1.14121834
-x6 -0.32424379 -0.32424379
-x7  0.08301728  0.08301728
-x8  0.30371878  0.30371878</code></pre>
+<pre><code>[1] "What is lambda? 0.7042"</code></pre>
 </div>
 </div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>alpha = 0</code> tells <code>glmnet</code> to use the pure ridge penalty (more on <code>alpha</code> in the elastic net section).</li>
-<li>We set <code>standardize = FALSE</code> and <code>intercept = FALSE</code> only because we already standardized and centered the data ourselves. With raw data, leave both at their defaults (<code>TRUE</code>). <code>glmnet</code> will then standardize internally and <strong>report coefficients on the original scale</strong>.</li>
-<li><code>control = list(thresh = ...)</code> tightens the convergence tolerance so the match goes to many decimal places.</li>
-<li>The takeaway: <strong><span class="math inline">\(\lambda\)</span> values are not comparable across software.</strong> Don’t copy a <span class="math inline">\(\lambda\)</span> from <code>glmnet</code> into another package, or into a formula, without checking how each one scales the objective.</li>
-</ul>
+<p>We just arbitrarily set that earlier in our example, but how do we know that’s a good value to use? It’s our penalty value after all, so we probably want to be a little bit more intentional with selecting it.</p>
 </section>
-</section>
-<section id="the-lasso-ell_1-penalty" class="level2" data-number="13.4">
-<h2 data-number="13.4" class="anchored" data-anchor-id="the-lasso-ell_1-penalty"><span class="header-section-number">13.4</span> The lasso (<span class="math inline">\(\ell_1\)</span> penalty)</h2>
-<section id="the-math-1" class="level3" data-number="13.4.1">
-<h3 data-number="13.4.1" class="anchored" data-anchor-id="the-math-1"><span class="header-section-number">13.4.1</span> The math</h3>
-<p>The lasso (Tibshirani, 1996) replaces the squared penalty with absolute values:</p>
-<p><span class="math display">\[
-\hat\beta^{\text{lasso}} = \arg\min_\beta \frac{1}{2n}\lVert Y - X\beta\rVert_2^2 + \lambda \sum_{j=1}^p |\beta_j| .
-\]</span></p>
-<p>(Here we use <code>glmnet</code>’s <span class="math inline">\(\frac{1}{2n}\)</span> scaling from the start. It only rescales <span class="math inline">\(\lambda\)</span>.)</p>
-<p>This small change has a large effect: <strong>the lasso sets some coefficients exactly to zero</strong>, so it performs variable selection as well as shrinkage. There are two ways to see why.</p>
-<p><strong>1. Geometry.</strong> In the constrained form, we look for the point in the region <span class="math inline">\(\sum_j|\beta_j| \le t\)</span> that has the smallest RSS. The RSS contours are ellipses centered at <span class="math inline">\(\hat\beta^{\text{OLS}}\)</span>. We expand the ellipses until they first touch the region. The <span class="math inline">\(\ell_1\)</span> region is a diamond with <strong>corners on the axes</strong>, and an ellipse usually first touches a diamond at a corner, where some <span class="math inline">\(\beta_j = 0\)</span>. The <span class="math inline">\(\ell_2\)</span> region (a circle) has no corners, so the contact point almost never lies on an axis.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">scale</span>(MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">100</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.6</span>, <span class="fl">0.6</span>, <span class="dv">1</span>), <span class="dv">2</span>)))</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> <span class="fu">drop</span>(X2 <span class="sc">%*%</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="fl">0.6</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>))</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> y2 <span class="sc">-</span> <span class="fu">mean</span>(y2)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>b_ols <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y2 <span class="sc">~</span> X2 <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>rss   <span class="ot">&lt;-</span> <span class="cf">function</span>(b) <span class="fu">sum</span>((y2 <span class="sc">-</span> X2 <span class="sc">%*%</span> b)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RSS on a grid, for the contour plot</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>g  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">2.5</span>, <span class="at">length.out =</span> <span class="dv">200</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>RS <span class="ot">&lt;-</span> <span class="fu">outer</span>(g, g, <span class="fu">Vectorize</span>(<span class="cf">function</span>(a, b) <span class="fu">rss</span>(<span class="fu">c</span>(a, b))))</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># brute-force the constrained solution: minimum RSS on each region's boundary</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>t_budget <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>th <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="dv">20000</span>)</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>diamond <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">cos</span>(th), <span class="fu">sin</span>(th)) <span class="sc">/</span> (<span class="fu">abs</span>(<span class="fu">cos</span>(th)) <span class="sc">+</span> <span class="fu">abs</span>(<span class="fu">sin</span>(th))) <span class="sc">*</span> t_budget</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>circle  <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">cos</span>(th), <span class="fu">sin</span>(th)) <span class="sc">*</span> t_budget</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>b_lasso <span class="ot">&lt;-</span> diamond[<span class="fu">which.min</span>(<span class="fu">apply</span>(diamond, <span class="dv">1</span>, rss)), ]</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>b_ridge <span class="ot">&lt;-</span> circle[<span class="fu">which.min</span>(<span class="fu">apply</span>(circle, <span class="dv">1</span>, rss)), ]</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">contour</span>(g, g, RS, <span class="at">levels =</span> <span class="fu">rss</span>(b_ols) <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">170</span>, <span class="dv">260</span>, <span class="dv">370</span>),</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">drawlabels =</span> <span class="cn">FALSE</span>, <span class="at">col =</span> <span class="st">"grey55"</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="fu">expression</span>(beta[<span class="dv">1</span>]), <span class="at">ylab =</span> <span class="fu">expression</span>(beta[<span class="dv">2</span>]))</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">v =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey85"</span>)</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(diamond, <span class="at">border =</span> <span class="st">"firebrick"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">adjustcolor</span>(<span class="st">"firebrick"</span>, <span class="fl">0.08</span>))</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(circle,  <span class="at">border =</span> <span class="st">"steelblue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">adjustcolor</span>(<span class="st">"steelblue"</span>, <span class="fl">0.08</span>))</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(b_ols[<span class="dv">1</span>], b_ols[<span class="dv">2</span>], <span class="at">pch =</span> <span class="dv">19</span>)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(b_lasso[<span class="dv">1</span>], b_lasso[<span class="dv">2</span>], <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"firebrick"</span>, <span class="at">cex =</span> <span class="fl">1.4</span>)</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(b_ridge[<span class="dv">1</span>], b_ridge[<span class="dv">2</span>], <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">cex =</span> <span class="fl">1.4</span>)</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(b_ols[<span class="dv">1</span>], b_ols[<span class="dv">2</span>], <span class="st">"OLS"</span>, <span class="at">pos =</span> <span class="dv">4</span>)</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"lasso: |b1| + |b2| &lt;= 1"</span>, <span class="st">"ridge: b1^2 + b2^2 &lt;= 1"</span>),</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"firebrick"</span>, <span class="st">"steelblue"</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div id="fig-geometry" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-geometry-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-geometry-1.png" class="img-fluid figure-img" width="576">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-geometry-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.2: Constrained-form geometry with two correlated predictors. RSS contours (ellipses) are centered at the OLS estimate. The lasso solution (red) lands on a corner of the diamond, so beta_2 = 0 exactly. The ridge solution (blue) lands on a smooth part of the circle, where both coefficients are nonzero.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>outer(g, g, Vectorize(...))</code> evaluates the RSS at every <span class="math inline">\((\beta_1, \beta_2)\)</span> grid point, and <code>contour()</code> draws the level sets.</li>
-<li>The OLS estimate lies outside both regions, so each constrained solution is on the region’s <em>boundary</em>. That means we can find it by brute force: trace 20,000 points around each boundary and keep the one with the smallest RSS (<code>which.min</code>). Dividing the unit circle by <span class="math inline">\(|\cos\theta| + |\sin\theta|\)</span> turns it into the <span class="math inline">\(\ell_1\)</span> diamond.</li>
-<li>Brute force is fine for a 2-D picture. It is not how the lasso is actually computed, which comes next.</li>
-</ul>
-<p><strong>2. Soft-thresholding.</strong> Consider the lasso problem for one standardized predictor (or, equivalently, an orthonormal design). Let <span class="math inline">\(z = \frac1n x^\top Y\)</span> be the least-squares coefficient. Because <span class="math inline">\(|\beta|\)</span> has a kink at 0, we use the subgradient: the optimality condition is <span class="math inline">\(0 \in \beta - z + \lambda\,\partial|\beta|\)</span>, where <span class="math inline">\(\partial|\beta| = \text{sign}(\beta)\)</span> if <span class="math inline">\(\beta \ne 0\)</span> and <span class="math inline">\(\partial|\beta| = [-1, 1]\)</span> if <span class="math inline">\(\beta = 0\)</span>. Solving it gives the <strong>soft-thresholding operator</strong>:</p>
-<p><span class="math display">\[
-\hat\beta = S(z, \lambda) = \text{sign}(z)\,(|z| - \lambda)_+ =
-\begin{cases}
-z - \lambda &amp; z &gt; \lambda \\
-0 &amp; |z| \le \lambda \\
-z + \lambda &amp; z &lt; -\lambda
-\end{cases}
-\]</span></p>
-<p>If the least-squares coefficient is smaller than <span class="math inline">\(\lambda\)</span> in absolute value, the lasso sets it to <strong>exactly zero</strong>. Otherwise it subtracts <span class="math inline">\(\lambda\)</span> from it (shrinkage). Compare the other methods under the same orthonormal design:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Method</th>
-<th style="text-align: left;">Estimate as a function of the OLS estimate <span class="math inline">\(z\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Ridge</td>
-<td style="text-align: left;"><span class="math inline">\(z / (1 + \lambda)\)</span> (proportional shrinkage, never 0)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Lasso</td>
-<td style="text-align: left;"><span class="math inline">\(\text{sign}(z)(|z| - \lambda)_+\)</span> (soft threshold)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Best subset</td>
-<td style="text-align: left;"><span class="math inline">\(z \cdot \mathbb 1(|z| &gt; \lambda)\)</span> (hard threshold: keep or kill)</td>
-</tr>
-</tbody>
-</table>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out =</span> <span class="dv">601</span>); l <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(z, z, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"grey50"</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"OLS estimate z"</span>, <span class="at">ylab =</span> <span class="st">"regularized estimate"</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(z, z <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> l), <span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(z, <span class="fu">sign</span>(z) <span class="sc">*</span> <span class="fu">pmax</span>(<span class="fu">abs</span>(z) <span class="sc">-</span> l, <span class="dv">0</span>), <span class="at">col =</span> <span class="st">"firebrick"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(z, z <span class="sc">*</span> (<span class="fu">abs</span>(z) <span class="sc">&gt;</span> l), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="st">"no shrinkage (OLS)"</span>, <span class="st">"ridge"</span>, <span class="st">"lasso (soft)"</span>, <span class="st">"best subset (hard)"</span>),</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"grey50"</span>, <span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>, <span class="st">"darkgreen"</span>),</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div id="fig-thresholds" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-thresholds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-thresholds-1.png" class="img-fluid figure-img" width="576">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-thresholds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.3: How each method maps the OLS estimate z to a regularized estimate (orthonormal design, lambda = 1). Ridge scales everything down, the lasso zeroes small values and shifts large ones, and best subset keeps or kills.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p><strong>Bayesian view.</strong> The lasso estimate is the posterior <em>mode</em> (MAP) under independent Laplace priors <span class="math inline">\(p(\beta_j) \propto e^{-|\beta_j|/b}\)</span>. The Laplace density has a sharp peak at 0, the probability version of the diamond’s corner. Note that the posterior <em>mean</em> under this prior (the “Bayesian lasso” of Park &amp; Casella, 2008) is <strong>not</strong> sparse. See the Paper chapter for the debate about this.</p>
-</section>
-<section id="implementation-from-scratch-coordinate-descent" class="level3" data-number="13.4.2">
-<h3 data-number="13.4.2" class="anchored" data-anchor-id="implementation-from-scratch-coordinate-descent"><span class="header-section-number">13.4.2</span> Implementation from scratch: coordinate descent</h3>
-<p>The lasso has no closed form when <span class="math inline">\(p &gt; 1\)</span>, but the one-dimensional soft-thresholding solution leads to a very simple algorithm. <strong>Coordinate descent</strong> cycles through the coefficients and, holding all the others fixed, updates each one with its exact one-dimensional solution:</p>
+<section id="cross-validation-for-selecting-lambda" class="level3" data-number="13.3.3">
+<h3 data-number="13.3.3" class="anchored" data-anchor-id="cross-validation-for-selecting-lambda"><span class="header-section-number">13.3.3</span> Cross validation for selecting <span class="math inline">\(\lambda\)</span></h3>
+<p>As we’ve discussed previously, cross validation is a method for we can use to assist with selecting a hyperparameter that minimizes our error. In this case, we’re going to select a <span class="math inline">\(\lambda\)</span> that minimizes prediction error on new data.</p>
+<p>This method returns many different <span class="math inline">\(\lambda\)</span> values to choose from, but two of interest are</p>
 <ol type="1">
-<li>Compute the <strong>partial residual</strong> without predictor <span class="math inline">\(j\)</span>: <span class="math inline">\(r^{(j)} = Y - \sum_{k \ne j} x_k\beta_k\)</span>.</li>
-<li>Find the least-squares coefficient of <span class="math inline">\(r^{(j)}\)</span> on <span class="math inline">\(x_j\)</span>: <span class="math inline">\(z_j = \frac1n x_j^\top r^{(j)}\)</span>.</li>
-<li>Soft-threshold it: <span class="math inline">\(\beta_j \leftarrow S(z_j, \lambda)\, /\, \big(\tfrac1n x_j^\top x_j\big)\)</span>. The denominator is 1 for standardized predictors.</li>
-<li>Repeat over all <span class="math inline">\(j\)</span> until the coefficients stop changing.</li>
+<li><span class="math inline">\(\lambda_{min}\)</span>: the value with the lowest average CV-MSE</li>
+<li><span class="math inline">\(\lambda_{1se}\)</span>: the largest value within one standard error of the minimum.</li>
 </ol>
-<p>The objective is convex, and the non-smooth part (<span class="math inline">\(\lambda\sum|\beta_j|\)</span>) splits into separate terms for each coordinate, so this procedure converges to the global minimum (Tseng, 2001). This is the algorithm inside <code>glmnet</code> (Friedman, Hastie &amp; Tibshirani, 2010).</p>
+<p>The second option is going to be our default, because it provides a simpler model whose error is close enough to the minimum.</p>
+<p>We can see a quick visual of this below with our lasso method</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>soft_threshold <span class="ot">&lt;-</span> <span class="cf">function</span>(z, gamma) <span class="fu">sign</span>(z) <span class="sc">*</span> <span class="fu">pmax</span>(<span class="fu">abs</span>(z) <span class="sc">-</span> gamma, <span class="dv">0</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>lasso_cd <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda, <span class="at">beta =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X)),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">tol =</span> <span class="fl">1e-10</span>, <span class="at">max_iter =</span> <span class="dv">10000</span>) {</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  n  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  xx <span class="ot">&lt;-</span> <span class="fu">colSums</span>(X<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> n            <span class="co"># (1/n) x_j'x_j; equals 1 if standardized</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  r  <span class="ot">&lt;-</span> <span class="fu">drop</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> beta)        <span class="co"># current full residual</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="fu">seq_len</span>(max_iter)) {</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    beta_old <span class="ot">&lt;-</span> beta</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(beta)) {</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      r       <span class="ot">&lt;-</span> r <span class="sc">+</span> X[, j] <span class="sc">*</span> beta[j]                 <span class="co"># step 1: partial residual</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      z_j     <span class="ot">&lt;-</span> <span class="fu">sum</span>(X[, j] <span class="sc">*</span> r) <span class="sc">/</span> n                  <span class="co"># step 2: simple LS coef</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>      beta[j] <span class="ot">&lt;-</span> <span class="fu">soft_threshold</span>(z_j, lambda) <span class="sc">/</span> xx[j]  <span class="co"># step 3: soft-threshold</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      r       <span class="ot">&lt;-</span> r <span class="sc">-</span> X[, j] <span class="sc">*</span> beta[j]                 <span class="co"># put updated fit back</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta <span class="sc">-</span> beta_old)) <span class="sc">&lt;</span> tol) <span class="cf">break</span>        <span class="co"># step 4: converged?</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  beta</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>lam_l <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>fit_l <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(Xs, yc, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> lam_l,</span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">standardize =</span> <span class="cn">FALSE</span>, <span class="at">intercept =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">control =</span> <span class="fu">list</span>(<span class="at">thresh =</span> <span class="fl">1e-16</span>))</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">truth       =</span> beta_true,</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">scratch_cd  =</span> <span class="fu">round</span>(<span class="fu">lasso_cd</span>(Xs, yc, lam_l), <span class="dv">5</span>),</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">glmnet      =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(<span class="fu">coef</span>(fit_l))[<span class="sc">-</span><span class="dv">1</span>], <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     truth scratch_cd  glmnet
-[1,]   3.0    1.86128 1.86128
-[2,]   1.5    0.96766 0.96766
-[3,]   0.0    0.00000 0.00000
-[4,]   0.0    0.07911 0.07911
-[5,]   2.0    1.17824 1.17824
-[6,]   0.0    0.00000 0.00000
-[7,]   0.0    0.00000 0.00000
-[8,]   0.0    0.00000 0.00000</code></pre>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><strong>The residual trick.</strong> Recomputing <span class="math inline">\(r^{(j)} = Y - \sum_{k\ne j}x_k\beta_k\)</span> from scratch would cost <span class="math inline">\(O(np)\)</span> per coordinate. Instead we keep the <em>full</em> residual <code>r</code>, add back predictor <span class="math inline">\(j\)</span>’s contribution (adding <code>X[, j] * beta[j]</code> to <code>r</code>), update <span class="math inline">\(\beta_j\)</span>, and subtract the new contribution. Each update then costs only <span class="math inline">\(O(n)\)</span>.</li>
-<li><strong>Sparsity makes it fast.</strong> When <code>beta[j]</code> is 0 and stays 0, the residual doesn’t change. <code>glmnet</code> goes further with “active set” iterations that skip predictors that keep coming out zero.</li>
-<li><code>soft_threshold</code> is the boxed formula above, vectorized with <code>pmax</code>.</li>
-<li>No <code>glmnet</code> adjustment is needed this time. Its lasso objective is exactly <span class="math inline">\(\frac{1}{2n}\text{RSS} + \lambda\lVert\beta\rVert_1\)</span>, so the two columns match. (The lasso solution scales linearly with <span class="math inline">\(Y\)</span>, so the internal <span class="math inline">\(Y\)</span>-standardization cancels. That is why the sd(Y) issue only showed up for ridge.)</li>
-<li>Compare with <code>truth</code>: the noise coefficients are mostly <em>exactly</em> 0, and the true signals are nonzero but <strong>shrunk toward zero</strong>. That shrinkage is the lasso’s bias.</li>
-</ul>
-</section>
-<section id="the-lasso-path-and-choosing-lambda" class="level3" data-number="13.4.3">
-<h3 data-number="13.4.3" class="anchored" data-anchor-id="the-lasso-path-and-choosing-lambda"><span class="header-section-number">13.4.3</span> The lasso path and choosing <span class="math inline">\(\lambda\)</span></h3>
-<p><strong>Warm starts.</strong> To compute the whole path, we start at <span class="math inline">\(\lambda_{\max} = \max_j |\tfrac1n x_j^\top Y|\)</span>, the smallest <span class="math inline">\(\lambda\)</span> at which <em>every</em> coefficient is 0. We then decrease <span class="math inline">\(\lambda\)</span> step by step and initialize each fit at the previous solution. Neighboring solutions are close, so each fit takes only a few iterations.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lambda_max <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">abs</span>(<span class="fu">crossprod</span>(Xs, yc))) <span class="sc">/</span> n_sim</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>lam_grid   <span class="ot">&lt;-</span> lambda_max <span class="sc">*</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="fl">2.5</span>, <span class="at">length.out =</span> <span class="dv">60</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>B_lasso <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, p_sim, <span class="fu">length</span>(lam_grid))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, p_sim)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_along</span>(lam_grid)) {</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> <span class="fu">lasso_cd</span>(Xs, yc, lam_grid[k], <span class="at">beta =</span> b)    <span class="co"># warm start from previous b</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  B_lasso[, k] <span class="ot">&lt;-</span> b</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>fit_path <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(Xs, yc, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> lam_grid,</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">standardize =</span> <span class="cn">FALSE</span>, <span class="at">intercept =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(beta_true <span class="sc">!=</span> <span class="dv">0</span>, <span class="st">"firebrick"</span>, <span class="st">"grey60"</span>)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="fu">log</span>(lam_grid), <span class="fu">t</span>(B_lasso), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> cols,</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="fu">expression</span>(<span class="fu">log</span>(lambda)), <span class="at">ylab =</span> <span class="st">"Coefficient"</span>)</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="fu">matpoints</span>(<span class="fu">log</span>(lam_grid)[<span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">60</span>, <span class="dv">4</span>)], <span class="fu">t</span>(<span class="fu">as.matrix</span>(fit_path<span class="sc">$</span>beta))[<span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">60</span>, <span class="dv">4</span>), ],</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">pch =</span> <span class="dv">1</span>, <span class="at">col =</span> cols, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">3</span>)</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">min</span>(<span class="fu">log</span>(lam_grid)), B_lasso[, <span class="dv">60</span>], <span class="fu">colnames</span>(Xs), <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cv_lasso <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(X, y, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">nfolds =</span> <span class="dv">10</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_lasso)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-lasso-path" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-lasso-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-lasso-path-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lasso-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.4: Lasso path on the simulated data. Solid lines are our coordinate-descent implementation and points are glmnet. Coefficients enter the model one at a time as lambda decreases, and the true signals (red) enter first.
-</figcaption>
+<div>
+<figure class="figure">
+<p><img src="06_Explainer_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>b &lt;- lasso_cd(..., beta = b)</code> is the warm start: each fit starts from the previous solution instead of from zero.</li>
-<li>Large <span class="math inline">\(\lambda\)</span> is on the right. Moving left, coefficients “enter” one at a time. The path is piecewise linear in <span class="math inline">\(\lambda\)</span>, which is what the LARS algorithm exploits. Unlike ridge, the curves sit <strong>exactly on zero</strong> until the coefficient enters.</li>
-</ul>
-<p><strong>Cross-validation.</strong> To choose <span class="math inline">\(\lambda\)</span> we use <span class="math inline">\(K\)</span>-fold CV. <code>cv.glmnet</code> reports two values:</p>
-<ul>
-<li><span class="math inline">\(\lambda_{\min}\)</span>: the value with the lowest mean CV error.</li>
-<li><span class="math inline">\(\lambda_{1\text{se}}\)</span>: the <em>largest</em> <span class="math inline">\(\lambda\)</span> (so the sparsest model) whose CV error is within one standard error of the minimum. This “one-standard-error rule” prefers simpler models when the data can’t tell the two apart.</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cv_l <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(X_sim, y_sim, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">nfolds =</span> <span class="dv">10</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_l)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>coef_1se <span class="ot">&lt;-</span> <span class="fu">coef</span>(cv_l, <span class="at">s =</span> <span class="st">"lambda.1se"</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">truth =</span> <span class="fu">c</span>(<span class="cn">NA</span>, beta_true), <span class="at">lasso_1se =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(coef_1se), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">`</span><span class="at">lambda.min</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(cv_lasso<span class="sc">$</span>lambda.min, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      truth lasso_1se
- [1,]    NA    -0.072
- [2,]   3.0     1.601
- [3,]   1.5     0.860
- [4,]   0.0     0.000
- [5,]   0.0     0.000
- [6,]   2.0     0.844
- [7,]   0.0     0.000
- [8,]   0.0     0.000
- [9,]   0.0     0.000</code></pre>
+<pre><code>lambda.min 
+    0.0289 </code></pre>
 </div>
-<div class="cell-output-display">
-<div id="fig-lasso-cv" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-lasso-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-lasso-cv-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lasso-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.5: 10-fold CV for the lasso on the simulated data. The numbers on top are the count of nonzero coefficients.
-</figcaption>
-</figure>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">`</span><span class="at">lambda.1se</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(cv_lasso<span class="sc">$</span>lambda<span class="fl">.1</span>se, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lambda.1se 
+    0.0636 </code></pre>
 </div>
 </div>
+<p>In the visual and the values of our two <span class="math inline">\(\lambda\)</span> options, you can see what we described above. And then below, we see the difference in the number of retained predictors.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n_selected <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">coef</span>(cv_lasso, <span class="at">s =</span> <span class="st">"lambda.min"</span>) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">-</span> <span class="dv">1</span>  <span class="co"># subtract intercept</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">`</span><span class="at">Non-zero gene expression features of 4,088 at lambda.min</span><span class="st">`</span> <span class="ot">=</span> n_selected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Non-zero gene expression features of 4,088 at lambda.min 
+                                                      40 </code></pre>
 </div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li>Here we pass the <strong>raw</strong> <code>X_sim</code> and <code>y_sim</code>. With the default <code>standardize = TRUE</code>, <code>cv.glmnet</code> standardizes internally, fits an unpenalized intercept, and returns coefficients on the original scale. This is the normal way to use it.</li>
-<li><code>coef(cv_l, s = "lambda.1se")</code> extracts the coefficients at the chosen <span class="math inline">\(\lambda\)</span>. The first row is the intercept.</li>
-</ul>
-</section>
-</section>
-<section id="elastic-net-a-mix-of-ell_1-and-ell_2" class="level2" data-number="13.5">
-<h2 data-number="13.5" class="anchored" data-anchor-id="elastic-net-a-mix-of-ell_1-and-ell_2"><span class="header-section-number">13.5</span> Elastic net (a mix of <span class="math inline">\(\ell_1\)</span> and <span class="math inline">\(\ell_2\)</span>)</h2>
-<section id="the-math-2" class="level3" data-number="13.5.1">
-<h3 data-number="13.5.1" class="anchored" data-anchor-id="the-math-2"><span class="header-section-number">13.5.1</span> The math</h3>
-<p>The lasso has two weaknesses that Zou &amp; Hastie (2005) pointed out:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>n_selected <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">coef</span>(cv_lasso, <span class="at">s =</span> <span class="st">"lambda.1se"</span>) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">-</span> <span class="dv">1</span>  <span class="co"># subtract intercept</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">`</span><span class="at">Non-zero gene expression features of 4,088 at lambda.1se</span><span class="st">`</span> <span class="ot">=</span> n_selected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Non-zero gene expression features of 4,088 at lambda.1se 
+                                                      32 </code></pre>
+</div>
+</div>
+<p>In recap, we’ve gone from over 4000 coefficients with Ridge regression to just 24 coefficients with Lasso. These are the features that are most predictive in our model.</p>
+<p>Now because we are good Master’s and PhD students, we’re not satisfied with the idea of “let’s just proceed with fewer predictors”. You’re already asking</p>
 <ol type="1">
-<li>When <span class="math inline">\(p &gt; n\)</span>, the lasso can select <strong>at most <span class="math inline">\(n\)</span></strong> variables.</li>
-<li>Given a group of <strong>highly correlated</strong> predictors, the lasso tends to pick one more or less arbitrarily and set the rest to zero. Which one it picks can change from sample to sample.</li>
+<li>How do we know these coefficients that didn’t go to zero are good?</li>
+<li>How do we know the right features were retained?</li>
+<li>Are there some other methods that build on or blend the perks of these two approaches?</li>
 </ol>
-<p>Ridge has neither problem: correlated predictors get similar coefficients (the “grouping effect”). But ridge never selects. The <strong>elastic net</strong> combines the two penalties. In <code>glmnet</code>’s parameterization:</p>
-<p><span class="math display">\[
-\hat\beta^{\text{EN}} = \arg\min_\beta \frac{1}{2n}\lVert Y - X\beta\rVert_2^2 + \lambda\Big[\alpha\lVert\beta\rVert_1 + \frac{1-\alpha}{2}\lVert\beta\rVert_2^2\Big], \qquad 0 \le \alpha \le 1 .
-\]</span></p>
-<ul>
-<li><span class="math inline">\(\alpha = 1\)</span> gives the lasso and <span class="math inline">\(\alpha = 0\)</span> gives ridge. This is why we passed <code>alpha = 0</code> and <code>alpha = 1</code> above.</li>
-<li>For <span class="math inline">\(0 &lt; \alpha &lt; 1\)</span> the penalty region has corners on the axes (so selection still happens) and curved edges (so correlated predictors share weight).</li>
-<li>The coordinate-descent update needs only one change. The ridge part adds to the denominator: <span class="math display">\[\beta_j \leftarrow \frac{S(z_j, \lambda\alpha)}{\tfrac1n x_j^\top x_j + \lambda(1-\alpha)} .\]</span></li>
-</ul>
-<p>(The original Zou &amp; Hastie paper writes the penalty as <span class="math inline">\(\lambda_1\lVert\beta\rVert_1 + \lambda_2\lVert\beta\rVert_2^2\)</span> and recommends rescaling the result by <span class="math inline">\((1+\lambda_2)\)</span>. That “corrected” elastic net differs from what <code>glmnet</code> computes by exactly that factor.)</p>
+<p>Great questions, and the answers lie in two extensions. <strong>Relaxed Lasso</strong> and <strong>Elastic Net</strong>.</p>
 </section>
-<section id="implementation" class="level3" data-number="13.5.2">
-<h3 data-number="13.5.2" class="anchored" data-anchor-id="implementation"><span class="header-section-number">13.5.2</span> Implementation</h3>
-<p>Extending our coordinate descent is a one-line change:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>enet_cd <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, lambda, alpha, <span class="at">tol =</span> <span class="fl">1e-10</span>, <span class="at">max_iter =</span> <span class="dv">10000</span>) {</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X); beta <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  xx <span class="ot">&lt;-</span> <span class="fu">colSums</span>(X<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> n</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  r  <span class="ot">&lt;-</span> y</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (iter <span class="cf">in</span> <span class="fu">seq_len</span>(max_iter)) {</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    beta_old <span class="ot">&lt;-</span> beta</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(beta)) {</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      r       <span class="ot">&lt;-</span> r <span class="sc">+</span> X[, j] <span class="sc">*</span> beta[j]</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>      z_j     <span class="ot">&lt;-</span> <span class="fu">sum</span>(X[, j] <span class="sc">*</span> r) <span class="sc">/</span> n</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      beta[j] <span class="ot">&lt;-</span> <span class="fu">soft_threshold</span>(z_j, lambda <span class="sc">*</span> alpha) <span class="sc">/</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                 (xx[j] <span class="sc">+</span> lambda <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> alpha))          <span class="co"># &lt;- the only change</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>      r       <span class="ot">&lt;-</span> r <span class="sc">-</span> X[, j] <span class="sc">*</span> beta[j]</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(beta <span class="sc">-</span> beta_old)) <span class="sc">&lt;</span> tol) <span class="cf">break</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  beta</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>ys <span class="ot">&lt;-</span> yc <span class="sc">/</span> <span class="fu">sd_n</span>(yc)            <span class="co"># unit-variance y, so glmnet's internal y-scaling is a no-op</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>fit_en <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(Xs, ys, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="fl">0.2</span>, <span class="at">standardize =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">intercept =</span> <span class="cn">FALSE</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">thresh =</span> <span class="fl">1e-16</span>))</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">scratch =</span> <span class="fu">round</span>(<span class="fu">enet_cd</span>(Xs, ys, <span class="at">lambda =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>), <span class="dv">5</span>),</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">glmnet  =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(<span class="fu">coef</span>(fit_en))[<span class="sc">-</span><span class="dv">1</span>], <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     scratch  glmnet
-[1,] 0.36778 0.36778
-[2,] 0.20477 0.20477
-[3,] 0.00000 0.00000
-[4,] 0.03543 0.03543
-[5,] 0.22859 0.22859
-[6,] 0.00000 0.00000
-[7,] 0.00000 0.00000
-[8,] 0.00000 0.00000</code></pre>
-</div>
-</div>
-<p><strong>Code notes:</strong> we compare on <code>ys</code>, a version of <span class="math inline">\(Y\)</span> scaled to unit variance. The reason is the <span class="math inline">\(Y\)</span>-scaling issue from the ridge section. The <span class="math inline">\(\ell_1\)</span> part of <code>glmnet</code>’s penalty is unaffected by its internal standardization of <span class="math inline">\(Y\)</span>, but the <span class="math inline">\(\ell_2\)</span> part effectively becomes <span class="math inline">\(\lambda(1-\alpha)/\text{sd}(Y)\)</span>. With <span class="math inline">\(\text{sd}(Y) = 1\)</span> the two formulations are identical, and the columns match.</p>
-<p><strong>Choosing <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\lambda\)</span> together.</strong> We cross-validate over a small grid of <span class="math inline">\(\alpha\)</span>. To compare <span class="math inline">\(\alpha\)</span> values fairly, we use the <strong>same fold assignment</strong> for every one, otherwise differences could just reflect different random splits. We do this on the diabetes data, which has strongly correlated predictors:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>foldid <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">length.out =</span> <span class="fu">nrow</span>(X_tr)))   <span class="co"># same folds for every alpha</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>alphas <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>cv_fits <span class="ot">&lt;-</span> <span class="fu">lapply</span>(alphas, <span class="cf">function</span>(a)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cv.glmnet</span>(X_tr, y_tr, <span class="at">alpha =</span> a, <span class="at">foldid =</span> foldid))</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha      =</span> alphas,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda_min =</span> <span class="fu">signif</span>(<span class="fu">sapply</span>(cv_fits, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"lambda.min"</span>), <span class="dv">3</span>),</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cv_mse_min =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(cv_fits, <span class="cf">function</span>(f) <span class="fu">min</span>(f<span class="sc">$</span>cvm))),</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">nonzero_1se =</span> <span class="fu">sapply</span>(cv_fits, <span class="cf">function</span>(f)</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">coef</span>(f, <span class="at">s =</span> <span class="st">"lambda.1se"</span>)[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">!=</span> <span class="dv">0</span>))</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  alpha lambda_min cv_mse_min nonzero_1se
-1  0.00      17.80       3074          64
-2  0.25       8.99       2924          13
-3  0.50       4.94       2916          10
-4  0.75       3.61       2916           9
-5  1.00       2.71       2916           9</code></pre>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>sample(rep(1:10, length.out = n))</code> gives each training row a random fold label from 1 to 10. Passing it as <code>foldid</code> makes all five <code>cv.glmnet</code> calls use the same split.</li>
-<li><code>sapply(cv_fits,</code>[[<code>, "lambda.min")</code> pulls one element out of each fitted object in the list.</li>
-<li><strong>Reading the table:</strong> the CV error is usually similar across <span class="math inline">\(\alpha &gt; 0\)</span>, but the number of nonzero coefficients changes a lot. Smaller <span class="math inline">\(\alpha\)</span> keeps more correlated predictors together, and <span class="math inline">\(\alpha = 0\)</span> (ridge) keeps all 64. If several <span class="math inline">\(\alpha\)</span> values have about the same CV error, base the choice on what you need: sparsity and interpretability (larger <span class="math inline">\(\alpha\)</span>) or stability under correlation (smaller <span class="math inline">\(\alpha\)</span>).</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (a <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="dv">1</span>)) {</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="fu">glmnet</span>(X_tr, y_tr, <span class="at">alpha =</span> a), <span class="at">xvar =</span> <span class="st">"lambda"</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="st">"#00000040"</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"alpha ="</span>, a), <span class="at">font.main =</span> <span class="dv">1</span>)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div id="fig-enet-paths" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-enet-paths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-enet-paths-1.png" class="img-fluid figure-img" width="864">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-enet-paths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.6: Coefficient paths on the diabetes data for ridge, elastic net (alpha = 0.5), and lasso. Moving from left to right, more coefficients sit exactly at zero over more of the path.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="principal-component-regression-pcr" class="level2" data-number="13.6">
-<h2 data-number="13.6" class="anchored" data-anchor-id="principal-component-regression-pcr"><span class="header-section-number">13.6</span> Principal component regression (PCR)</h2>
-<section id="the-math-3" class="level3" data-number="13.6.1">
-<h3 data-number="13.6.1" class="anchored" data-anchor-id="the-math-3"><span class="header-section-number">13.6.1</span> The math</h3>
-<p>PCR (Massy, 1965) regularizes differently. Instead of penalizing <span class="math inline">\(\beta\)</span>, it <strong>throws away low-variance directions of <span class="math inline">\(X\)</span></strong> before regressing.</p>
+<section id="relaxed-lasso" class="level3" data-number="13.3.4">
+<h3 data-number="13.3.4" class="anchored" data-anchor-id="relaxed-lasso"><span class="header-section-number">13.3.4</span> Relaxed Lasso</h3>
+<p>The relaxed lasso is a two step version of our Lasso procedure, which gets at the question regarding whether our <span class="math inline">\(\beta\)</span> coefficient values that were all pushed toward zero, but stayed in the model, are actually good values to use moving forward.</p>
+<p>In more math terms, the variable selection and coefficient shrinkgate in lasso are working at the same time and according to the same <span class="math inline">\(\lambda\)</span>. So, our surviving coefficients may be shrunk toward zero more than necessary.</p>
+<p>To estimate the coefficients better, we’ll use OLS for estimation after we use the Lasso to select them.</p>
+<p>In the refitting step with OLS, we have two options</p>
 <ol type="1">
-<li>Center (and usually standardize) <span class="math inline">\(X\)</span> and take its SVD: <span class="math inline">\(X = UDV^\top\)</span>. The columns of <span class="math inline">\(V\)</span> are the principal-component loadings, and the <strong>principal components</strong> are <span class="math inline">\(Z = XV = UD\)</span>. They are uncorrelated, and <span class="math inline">\(z_j\)</span> has variance <span class="math inline">\(d_j^2/n\)</span>.</li>
-<li>Keep the first <span class="math inline">\(k &lt; p\)</span> components <span class="math inline">\(Z_k = XV_k\)</span> and regress <span class="math inline">\(Y\)</span> on them by OLS. Because the <span class="math inline">\(z_j\)</span> are orthogonal, this is just <span class="math inline">\(p\)</span> separate simple regressions: <span class="math inline">\(\hat\theta_j = z_j^\top Y / d_j^2\)</span>.</li>
-<li><strong>Back-transform</strong> to the original predictors: <span class="math inline">\(X\beta = Z_k\theta = XV_k\theta\)</span>, so <span class="math inline">\(\hat\beta^{\text{PCR}} = V_k\hat\theta\)</span>.</li>
+<li>Apply a less strict penalty</li>
+<li>Apply no penalty at all</li>
 </ol>
-<p><strong>PCR vs.&nbsp;ridge in one line each.</strong> Using the SVD shrinkage factors:</p>
-<p><span class="math display">\[
-\hat Y^{\text{ridge}} = \sum_{j=1}^p u_j\,\frac{d_j^2}{d_j^2+\lambda}\,u_j^\top Y, \qquad
-\hat Y^{\text{PCR}} = \sum_{j=1}^p u_j\,\mathbb 1(j \le k)\,u_j^\top Y .
-\]</span></p>
-<p>Ridge shrinks low-variance directions <strong>smoothly</strong>. PCR keeps the top <span class="math inline">\(k\)</span> directions completely and drops the rest (<strong>hard thresholding on the components</strong>). Both target the same thing, the near-collinear directions where OLS variance is large, but neither does variable selection. <span class="math inline">\(\hat\beta^{\text{PCR}}\)</span> is generally nonzero for <em>every</em> original predictor, because each component is a mix of all of them.</p>
-<p>The main caveat is that PCR picks components by how much <strong>variance in <span class="math inline">\(X\)</span></strong> they explain, without looking at <span class="math inline">\(Y\)</span>. Nothing guarantees that the high-variance directions are the ones that predict <span class="math inline">\(Y\)</span>. (Partial least squares, <code>pls::plsr</code>, is the variant that does use <span class="math inline">\(Y\)</span>.)</p>
-</section>
-<section id="implementation-from-scratch-1" class="level3" data-number="13.6.2">
-<h3 data-number="13.6.2" class="anchored" data-anchor-id="implementation-from-scratch-1"><span class="header-section-number">13.6.2</span> Implementation from scratch</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pcr_scratch <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y, k) {</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(X)                                   <span class="co"># X = U D V'</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  Zk <span class="ot">&lt;-</span> X <span class="sc">%*%</span> sv<span class="sc">$</span>v[, <span class="dv">1</span><span class="sc">:</span>k, drop <span class="ot">=</span> <span class="cn">FALSE</span>]          <span class="co"># first k PC scores</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(Zk, y) <span class="sc">/</span> sv<span class="sc">$</span>d[<span class="dv">1</span><span class="sc">:</span>k]<span class="sc">^</span><span class="dv">2</span>        <span class="co"># orthogonal =&gt; separate regressions</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  sv<span class="sc">$</span>v[, <span class="dv">1</span><span class="sc">:</span>k, drop <span class="ot">=</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> theta            <span class="co"># back-transform: beta = V_k theta</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># variance explained by each component of the simulated X</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>pve <span class="ot">&lt;-</span> <span class="fu">svd</span>(Xs)<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">svd</span>(Xs)<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cumsum</span>(pve), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.360 0.554 0.718 0.812 0.877 0.935 0.975 1.000</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="at">truth =</span> beta_true,</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">pcr_k3 =</span> <span class="fu">round</span>(<span class="fu">drop</span>(<span class="fu">pcr_scratch</span>(Xs, yc, <span class="dv">3</span>)), <span class="dv">3</span>),</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">pcr_k8 =</span> <span class="fu">round</span>(<span class="fu">drop</span>(<span class="fu">pcr_scratch</span>(Xs, yc, <span class="dv">8</span>)), <span class="dv">3</span>),</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">ols    =</span> <span class="fu">round</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(yc <span class="sc">~</span> Xs <span class="sc">-</span> <span class="dv">1</span>)), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     truth pcr_k3 pcr_k8    ols
-Xsx1   3.0  0.920  2.267  2.267
-Xsx2   1.5  1.159  0.846  0.846
-Xsx3   0.0  0.840  0.222  0.222
-Xsx4   0.0  0.593  0.302  0.302
-Xsx5   2.0 -0.039  2.118  2.118
-Xsx6   0.0 -0.099 -1.059 -1.059
-Xsx7   0.0  0.378  0.186  0.186
-Xsx8   0.0  0.545  0.314  0.314</code></pre>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>svd(X)</code> returns a list with <code>u</code>, <code>d</code> (the singular values as a vector), and <code>v</code>. The PC scores are <code>X %*% V_k</code>.</li>
-<li>Since the components are orthogonal, <span class="math inline">\(Z_k^\top Z_k = \text{diag}(d_1^2, \ldots, d_k^2)\)</span>, so the OLS fit on the components is <code>crossprod(Zk, y) / d^2</code> and no matrix inverse is needed.</li>
-<li><code>drop = FALSE</code> keeps a one-column result as a matrix when <code>k = 1</code>, so <code>%*%</code> still works.</li>
-<li><strong>Sanity check:</strong> with <span class="math inline">\(k = p = 8\)</span> we keep every direction, and PCR gives exactly the OLS coefficients. With <span class="math inline">\(k = 3\)</span>, every coefficient is still nonzero. That is the “no selection” point. Also look at <code>x5</code>: it is a true signal (<span class="math inline">\(\beta_5 = 2\)</span>), but with <span class="math inline">\(k = 3\)</span> PCR estimates it near 0, while giving sizable weight to the noise predictors <code>x3</code> and <code>x8</code>. The top three components were chosen to explain variance in <span class="math inline">\(X\)</span>, not to predict <span class="math inline">\(Y\)</span>, so they happen to miss the direction that <code>x5</code> contributes.</li>
-</ul>
-</section>
-<section id="implementation-with-pls" class="level3" data-number="13.6.3">
-<h3 data-number="13.6.3" class="anchored" data-anchor-id="implementation-with-pls"><span class="header-section-number">13.6.3</span> Implementation with <code>pls</code></h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pcr_fit <span class="ot">&lt;-</span> <span class="fu">pcr</span>(y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y_tr, <span class="at">X =</span> <span class="fu">I</span>(X_tr)),</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">scale =</span> <span class="cn">TRUE</span>, <span class="at">validation =</span> <span class="st">"CV"</span>,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">segments =</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="cf">function</span>(f) <span class="fu">which</span>(foldid <span class="sc">==</span> f)))</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">validationplot</span>(pcr_fit, <span class="at">val.type =</span> <span class="st">"RMSEP"</span>, <span class="at">main =</span> <span class="st">""</span>, <span class="at">legendpos =</span> <span class="st">"topright"</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>cv_rmsep <span class="ot">&lt;-</span> <span class="fu">RMSEP</span>(pcr_fit, <span class="at">estimate =</span> <span class="st">"CV"</span>)<span class="sc">$</span>val[<span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>]   <span class="co"># drop the 0-component entry</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>k_best   <span class="ot">&lt;-</span> <span class="fu">which.min</span>(cv_rmsep)</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>k_best</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>35 comps 
-      35 </code></pre>
-</div>
-<div class="cell-output-display">
-<div id="fig-pcr-cv" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pcr-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06_Explainer_files/figure-html/fig-pcr-cv-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pcr-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13.7: 10-fold CV error (RMSEP) for PCR on the diabetes training data, as a function of the number of components.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
-<ul>
-<li><code>pcr(y ~ X, data = data.frame(y = y_tr, X = I(X_tr)))</code>: wrapping the matrix in <code>I()</code> stores it as a <em>single</em> matrix column named <code>X</code>, so the formula <code>y ~ X</code> uses all 64 predictors.</li>
-<li><code>scale = TRUE</code> standardizes the predictors before the SVD. This matters for PCR, since otherwise high-variance <em>units</em> would dominate the components.</li>
-<li><code>segments = ...</code> reuses the elastic-net fold assignment so the comparison below is fair.</li>
-<li><code>RMSEP(...)$val</code> is a 3-D array (estimate, response, number of components). The first entry is the intercept-only model, so we drop it with <code>-1</code> before <code>which.min</code>.</li>
-</ul>
+<p>The second option is called the <strong>fully relaxed lasso</strong>.</p>
+<p>Generally, the relaxed lasso coefficients are larger in magnitude than the lasso coefficients, because the refit is not constrained to shrink toward zero. 3 good reasons to do relaxed lasso are</p>
+<ol type="1">
+<li>Less bias on the surviving coefficients</li>
+<li>Better prediction</li>
+<li>Interpretibility</li>
+</ol>
+<p>Interpretability is a very convincing reason here, because the final model is an ordinary linear model on a small set of predictors, which is familiar to most practitioners and explainable to customers.</p>
 </section>
 </section>
-<section id="putting-it-together-test-set-comparison-on-the-diabetes-data" class="level2" data-number="13.7">
-<h2 data-number="13.7" class="anchored" data-anchor-id="putting-it-together-test-set-comparison-on-the-diabetes-data"><span class="header-section-number">13.7</span> Putting it together: test-set comparison on the diabetes data</h2>
-<p>We fit every method on the 342 training patients, choose tuning parameters by 10-fold CV with the same folds throughout, and evaluate on the 100 held-out patients.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>test_mse <span class="ot">&lt;-</span> <span class="cf">function</span>(pred) <span class="fu">mean</span>((y_te <span class="sc">-</span> pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>ols_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y_tr, X_tr))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>ols_mse <span class="ot">&lt;-</span> <span class="fu">test_mse</span>(<span class="fu">predict</span>(ols_fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(X_te)))</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>glm_row <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, s, label) {</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">method   =</span> label,</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">test_mse =</span> <span class="fu">round</span>(<span class="fu">test_mse</span>(<span class="fu">predict</span>(fit, X_te, <span class="at">s =</span> s))),</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">nonzero  =</span> <span class="fu">sum</span>(<span class="fu">coef</span>(fit, <span class="at">s =</span> s)[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">!=</span> <span class="dv">0</span>))</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">method =</span> <span class="st">"OLS"</span>, <span class="at">test_mse =</span> <span class="fu">round</span>(ols_mse), <span class="at">nonzero =</span> <span class="fu">ncol</span>(X_tr)),</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm_row</span>(cv_fits[[<span class="dv">1</span>]], <span class="st">"lambda.min"</span>, <span class="st">"Ridge (alpha = 0)"</span>),</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm_row</span>(cv_fits[[<span class="dv">3</span>]], <span class="st">"lambda.min"</span>, <span class="st">"Elastic net (alpha = 0.5)"</span>),</span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm_row</span>(cv_fits[[<span class="dv">5</span>]], <span class="st">"lambda.min"</span>, <span class="st">"Lasso (lambda.min)"</span>),</span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm_row</span>(cv_fits[[<span class="dv">5</span>]], <span class="st">"lambda.1se"</span>, <span class="st">"Lasso (lambda.1se)"</span>),</span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">method   =</span> <span class="fu">paste0</span>(<span class="st">"PCR (k = "</span>, k_best, <span class="st">")"</span>),</span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">test_mse =</span> <span class="fu">round</span>(<span class="fu">test_mse</span>(<span class="fu">drop</span>(<span class="fu">predict</span>(pcr_fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">X =</span> <span class="fu">I</span>(X_te)),</span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">ncomp =</span> k_best)))),</span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">nonzero  =</span> <span class="fu">ncol</span>(X_tr))</span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">as.data.frame</span>(res), <span class="at">align =</span> <span class="st">"lrr"</span>,</span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Method"</span>, <span class="st">"Test MSE"</span>, <span class="st">"# nonzero coefficients"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Method</th>
-<th style="text-align: right;">Test MSE</th>
-<th style="text-align: right;"># nonzero coefficients</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">OLS</td>
-<td style="text-align: right;">7728</td>
-<td style="text-align: right;">64</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ridge (alpha = 0)</td>
-<td style="text-align: right;">3537</td>
-<td style="text-align: right;">64</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Elastic net (alpha = 0.5)</td>
-<td style="text-align: right;">3276</td>
-<td style="text-align: right;">18</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Lasso (lambda.min)</td>
-<td style="text-align: right;">3280</td>
-<td style="text-align: right;">17</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Lasso (lambda.1se)</td>
-<td style="text-align: right;">3427</td>
-<td style="text-align: right;">9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">PCR (k = 35)</td>
-<td style="text-align: right;">3797</td>
-<td style="text-align: right;">64</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><strong>Code notes:</strong></p>
+<section id="elastic-net" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="elastic-net"><span class="header-section-number">13.4</span> Elastic Net</h2>
+<p>To answer the additional concerns we raised after lasso and ridge, we’re going to look at Elastic Net. Also, if you noticed that <span class="math inline">\(\alpha\)</span> parameter we kept setting in the <code>glmnet</code> function call, good eye, we’re going to explain that here.</p>
+<p>The Elastic Net is a weighted average of the Lasso and Ridge. It blends the two functions and their relative contribution is controlled by the parameter <span class="math inline">\(\alpha\)</span>.</p>
+<p>Here’s the objective function <span class="math display">\[\hat{\beta}_{\text{en}} = \underset{\beta}{\arg\min}\  \|\mathbf{Y} - X\beta\|_2^2 + \lambda\left[\,\alpha\|\beta\|_1 + (1-\alpha)\|\beta\|_2^2\,\right]\]</span> where <span class="math inline">\(\alpha \in [0, 1]\)</span> corresponds to</p>
 <ul>
-<li><code>predict(fit, X_te, s = s)</code> on a <code>cv.glmnet</code> object predicts at the chosen <span class="math inline">\(\lambda\)</span> (<code>"lambda.min"</code> or <code>"lambda.1se"</code>). <code>glmnet</code> applies its internal standardization automatically.</li>
-<li><code>cv_fits[[1]]</code>, <code>[[3]]</code>, and <code>[[5]]</code> are the <span class="math inline">\(\alpha = 0, 0.5, 1\)</span> fits from the elastic-net section, so all methods share one set of CV folds.</li>
-<li>The <code>nonzero</code> column shows the selection behavior: OLS, ridge, and PCR use all 64 predictors, while the lasso and elastic net use only some of them.</li>
+<li><span class="math inline">\(\alpha = 0\)</span>: pure ridge (seen in code above)</li>
+<li><span class="math inline">\(\alpha = 1\)</span>: pure lasso (seen in code above)</li>
+<li><span class="math inline">\(\alpha \in (0, 1)\)</span>: elastic net - some variable selection from the <span class="math inline">\(L_1\)</span> term, plus a <strong>grouping effect</strong> from the <span class="math inline">\(L_2\)</span> term</li>
 </ul>
-<p><strong>How to read the results.</strong> With only 100 test patients, differences of a few hundred in MSE are within noise. (Try a different <code>set.seed</code> and the ranking may change.) The pattern that holds up is:</p>
-<ul>
-<li>Every regularized method <strong>beats or matches OLS</strong>. OLS spends 64 degrees of freedom on a design with an enormous condition number, and its variance shows up in the test error.</li>
-<li>The lasso and elastic net get similar accuracy to ridge with <strong>far fewer predictors</strong>, which is what we want when interpretability matters.</li>
-<li>PCR is competitive but usually slightly worse, since it picks directions without looking at <span class="math inline">\(y\)</span>.</li>
-</ul>
-</section>
-<section id="summary" class="level2" data-number="13.8">
-<h2 data-number="13.8" class="anchored" data-anchor-id="summary"><span class="header-section-number">13.8</span> Summary</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">Ridge</th>
-<th style="text-align: left;">Lasso</th>
-<th style="text-align: left;">Elastic net</th>
-<th style="text-align: left;">PCR</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>Penalty / constraint</strong></td>
-<td style="text-align: left;"><span class="math inline">\(\lambda\lVert\beta\rVert_2^2\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\lambda\lVert\beta\rVert_1\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\lambda[\alpha\lVert\beta\rVert_1 + \tfrac{1-\alpha}{2}\lVert\beta\rVert_2^2]\)</span></td>
-<td style="text-align: left;">keep top <span class="math inline">\(k\)</span> PCs of <span class="math inline">\(X\)</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Shrinkage pattern</strong></td>
-<td style="text-align: left;">smooth: <span class="math inline">\(\frac{d_j^2}{d_j^2+\lambda}\)</span> per PC direction</td>
-<td style="text-align: left;">soft threshold per coefficient</td>
-<td style="text-align: left;">soft threshold + proportional</td>
-<td style="text-align: left;">hard threshold per PC direction</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Exact zeros (selection)?</strong></td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;"><strong>yes</strong></td>
-<td style="text-align: left;"><strong>yes</strong></td>
-<td style="text-align: left;">no</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Closed form?</strong></td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">no (coordinate descent / LARS)</td>
-<td style="text-align: left;">no (coordinate descent)</td>
-<td style="text-align: left;">yes (SVD)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Works for <span class="math inline">\(p &gt; n\)</span>?</strong></td>
-<td style="text-align: left;">yes</td>
-<td style="text-align: left;">yes, but selects <span class="math inline">\(\le n\)</span></td>
-<td style="text-align: left;">yes, can select <span class="math inline">\(&gt; n\)</span></td>
-<td style="text-align: left;">yes (<span class="math inline">\(k &lt; n\)</span>)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Correlated predictors</strong></td>
-<td style="text-align: left;">shares weight (grouping)</td>
-<td style="text-align: left;">picks one, often unstable</td>
-<td style="text-align: left;">shares weight <em>and</em> selects</td>
-<td style="text-align: left;">combines them into PCs</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Bayesian analogue</strong></td>
-<td style="text-align: left;">Normal prior (posterior mean = mode)</td>
-<td style="text-align: left;">Laplace prior (posterior mode)</td>
-<td style="text-align: left;">Normal × Laplace prior</td>
-<td style="text-align: left;">—</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Tuning</strong></td>
-<td style="text-align: left;"><span class="math inline">\(\lambda\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\lambda\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\lambda\)</span>, <span class="math inline">\(\alpha\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(k\)</span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>R</strong></td>
-<td style="text-align: left;"><code>glmnet(alpha = 0)</code></td>
-<td style="text-align: left;"><code>glmnet(alpha = 1)</code></td>
-<td style="text-align: left;"><code>glmnet(alpha = a)</code></td>
-<td style="text-align: left;"><code>pls::pcr()</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rules of thumb:</strong></p>
-<ul>
-<li>Expect <strong>many small effects</strong>? Ridge usually predicts best.</li>
-<li>Expect <strong>a few large effects</strong> and want an interpretable model? Use the lasso, and treat its selected set as a <em>screen</em>, not a final answer (see the Bühlmann discussion in the Paper chapter).</li>
-<li><strong>Groups of correlated predictors</strong>, or <span class="math inline">\(p \gg n\)</span> where you want more than <span class="math inline">\(n\)</span> variables? Use the elastic net.</li>
-<li>Predictors are <strong>noisy measurements of a few underlying factors</strong>? PCR (or PLS) matches that structure.</li>
-<li>Whatever you choose: <strong>standardize, don’t penalize the intercept, tune by CV with fixed folds, and evaluate on held-out data.</strong></li>
-</ul>
-</section>
-<section id="references" class="level2" data-number="13.9">
-<h2 data-number="13.9" class="anchored" data-anchor-id="references"><span class="header-section-number">13.9</span> References</h2>
-<ul>
-<li>Efron, B., Hastie, T., Johnstone, I. &amp; Tibshirani, R. (2004). Least angle regression. <em>Annals of Statistics</em>, 32, 407–499.</li>
-<li>Friedman, J., Hastie, T. &amp; Tibshirani, R. (2010). Regularization paths for generalized linear models via coordinate descent. <em>Journal of Statistical Software</em>, 33(1).</li>
-<li>Hastie, T., Tibshirani, R. &amp; Friedman, J. (2009). <em>The Elements of Statistical Learning</em> (2nd ed.), Ch. 3. Springer.</li>
-<li>Hoerl, A. E. &amp; Kennard, R. W. (1970). Ridge regression: biased estimation for nonorthogonal problems. <em>Technometrics</em>, 12, 55–67.</li>
-<li>Massy, W. F. (1965). Principal components regression in exploratory statistical research. <em>JASA</em>, 60, 234–256.</li>
-<li>Park, T. &amp; Casella, G. (2008). The Bayesian lasso. <em>JASA</em>, 103, 681–686.</li>
-<li>Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. <em>JRSS-B</em>, 58, 267–288.</li>
-<li>Tibshirani, R. (2011). Regression shrinkage and selection via the lasso: a retrospective. <em>JRSS-B</em>, 73, 273–282.</li>
-<li>Tseng, P. (2001). Convergence of a block coordinate descent method for nonsmooth separable minimization. <em>J. Optimization Theory and Applications</em>, 109, 475–494.</li>
-<li>Zou, H. &amp; Hastie, T. (2005). Regularization and variable selection via the elastic net. <em>JRSS-B</em>, 67, 301–320.</li>
-</ul>
+<p>New definition! What is this grouping effect?</p>
+<p>(to be continued…)</p>
 
 
 </section>
@@ -1706,6 +1039,9 @@ Figure&nbsp;13.7: 10-fold CV error (RMSEP) for PCR on the diabetes training data
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./06_Explainer_claude.html" class="pagination-link" aria-label="Claude's Explainer">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Claude’s Explainer</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

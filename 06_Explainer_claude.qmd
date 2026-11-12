@@ -1,4 +1,4 @@
-# Explainer: Regularization
+# Claude's Explainer
 
 **Audience:** first-year Master's and PhD students who know linear regression and some matrix algebra.
 
