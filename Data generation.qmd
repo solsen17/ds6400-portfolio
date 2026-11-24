@@ -69,3 +69,34 @@ plot(Y ~ X_2, data = sample_data, xlab = 'X_2', ylab = '', ylim = yl)
 plot(Y ~ X_3, data = sample_data, xlab = 'X_3', ylab = '', ylim = yl)
 
 ```
+
+What happens if we just threw the linear model at this?
+
+```{r}
+
+lm1 <- lm(Y ~ X_1 + X_2 + X_3, data = sample_data)
+summary(lm1)
+
+```
+
+We got a result! But what does that mean? What did we actually provide it? Is this useful to us at all?
+
+What we expected to provide was some version of 
+
+$$E[y|X] = B1*X1 + B2*X2 + B3*X3$$, but what really happened was categorical variables rather than continuous variables.
+
+This was an additive model with no interaction terms. Under the hood, R made a design matrix $X$. Check out what it looks like below:
+
+```{r}
+
+model.matrix(Y ~ X_1 + X_2 + X_3, data = sample_data) |> head()
+
+```
+
+You can see that for each group, R dropped the first level to serve as the reference category. The intercept represents the predicted mean of Y when all three variables are at there respective reference levels simultaneously. This is often referred to as the reference cell parameterization. So each parameter we see in the output is actually a difference from the reference level.
+
+If we'd prefer to use a cell means, unweighted average deviaiton, or weighted average deviaiton, then we could adjust our function call to use one of these instead.
+
+We want to be deliberate in our selection of which parameterization to use as we proceed forward.
+
+

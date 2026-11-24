@@ -1,0 +1,142 @@
+---
+title: "Categorical Parameterization Styles in R Linear Models"
+format: html
+execute:
+  eval: false
+---
+
+When fitting linear models with categorical predictors in R using `lm()`, the model matrix can be parameterized in several mathematically equivalent ways. Although every parameterization yields the exact same predicted values ($\hat{Y}$), residuals, and overall model fit ($R^2$ and $F$-statistics), the **meaning of the intercept and slope coefficients** changes depending on the contrast scheme you choose.
+
+Using a three-factor additive model (`Y ~ X_1 + X_2 + X_3`) as our working example, this chapter covers the four primary parameterization styles in R.
+
+## Summary Comparison
+
+| Parameterization | Intercept Meaning | Slope Coefficient Meaning | Constraint | R Syntax |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Reference Cell** *(Default)* | Mean of baseline group combination ($\mu_{111}$) | Difference between level $i$ and the reference level | $\alpha_1 = 0$ | `contr.treatment` *(default)* |
+| **2. Cell Means** | *No intercept* | Direct mean of each cell or baseline-adjusted level | None ($\beta_0$ omitted) | `Y ~ ... - 1` or `0 +` |
+| **3. Unweighted Average Deviation** | Unweighted grand mean across all group means | Deviation of level $i$ from the unweighted grand mean | $\sum \alpha_i = 0$ | `contr.sum` |
+| **4. Weighted Average Deviation** | Sample-size-weighted grand mean ($\bar{Y}$) | Deviation of level $i$ from the overall sample mean | $\sum n_i \alpha_i = 0$ | `wec::contr.wec()` |
+
+---
+
+## 1. Reference Cell Parameterization (`contr.treatment`)
+
+By default, R uses **reference cell coding** (also known as **treatment contrasts**).
+
+* **How R Encodes It:** R converts character vectors or factors into binary (`0`/`1`) dummy variables. For each categorical predictor with $k$ levels, R creates $k - 1$ indicator variables and drops the first level (sorted alphabetically by default) to act as the reference baseline.
+* **Parameter Interpretation:**
+  * **Intercept ($\beta_0$):** The expected value of $Y$ when **all three predictors are at their baseline levels simultaneously**.
+  * **Slope Coefficients ($\alpha_i, \beta_j, \gamma_k$):** The average difference in $Y$ between a specific category and that variable's reference baseline, holding the other predictors constant.
+
+```r
+# Default behavior in R (explicitly shown)
+lm_ref <- lm(
+  Y ~ X_1 + X_2 + X_3,
+  data = sample_data,
+  contrasts = list(
+    X_1 = contr.treatment,
+    X_2 = contr.treatment,
+    X_3 = contr.treatment
+  )
+)
+
+summary(lm_ref)
+```
+
+::: {.callout-tip}
+## Changing the Reference Baseline
+To change which category serves as the baseline level without changing the parameterization style, use `relevel()` on your factor prior to fitting the model:
+```r
+sample_data$X_1 <- relevel(factor(sample_data$X_1), ref = "desired_baseline")
+```
+:::
+
+---
+
+## 2. Cell Means Parameterization (`- 1` or `0 +`)
+
+**Cell means coding** removes the intercept so that coefficients estimate group means directly rather than offsets from a reference category.
+
+* **How R Encodes It:** Adding `- 1` or `0 +` to the model formula suppresses $\beta_0$.
+* **Parameter Interpretation:**
+  * **Single-Factor Models (`Y ~ X_1 - 1`):** Every coefficient is the exact sample mean of $Y$ for that level of `X_1`.
+  * **Additive Multi-Factor Models (`Y ~ X_1 + X_2 + X_3 - 1`):** To avoid perfect multicollinearity, R estimates direct cell means **only for the first variable (`X_1`)** (evaluated at the baseline levels of `X_2` and `X_3`), while `X_2` and `X_3` remain reference-cell offsets.
+  * **Full Interaction Models (`Y ~ X_1:X_2:X_3 - 1`):** Every coefficient estimates the direct cell mean for a specific combination of levels across all three factors.
+
+```r
+# Additive model without intercept (X_1 gets cell means; X_2 and X_3 remain offsets)
+lm_cell_add <- lm(Y ~ X_1 + X_2 + X_3 - 1, data = sample_data)
+
+# Full cell-means parameterization across all three factors
+lm_cell_full <- lm(Y ~ X_1:X_2:X_3 - 1, data = sample_data)
+```
+
+---
+
+## 3. Unweighted Average Deviation (`contr.sum`)
+
+Often called **effects coding** or **deviation coding** in traditional ANOVA textbooks, **unweighted average deviation** expresses each level relative to an equally weighted grand mean.
+
+* **How R Encodes It:** Using `contr.sum`, R codes the first $k - 1$ levels with `1` for their respective column and codes the omitted last level as `-1` across all columns for that factor. This imposes the zero-sum constraint $\sum_{i=1}^{k} \alpha_i = 0$.
+* **Parameter Interpretation:**
+  * **Intercept ($\beta_0$):** The **unweighted grand mean** (the simple average of all category means, giving every group equal weight regardless of sample size).
+  * **Slope Coefficients ($\alpha_i$):** The deviation of level $i$'s mean from the unweighted grand mean.
+  * **Recovering the Omitted Level:** R omits the final level from the regression table; its deviation equals the negative sum of the printed coefficients for that variable ($\alpha_k = -\sum_{i=1}^{k-1} \alpha_i$).
+
+```r
+lm_unweighted <- lm(
+  Y ~ X_1 + X_2 + X_3,
+  data = sample_data,
+  contrasts = list(
+    X_1 = contr.sum,
+    X_2 = contr.sum,
+    X_3 = contr.sum
+  )
+)
+
+summary(lm_unweighted)
+```
+
+::: {.callout-note}
+## Why Use `contr.sum` for ANOVA?
+When testing interaction terms with Type III Sums of Squares (`car::Anova(model, type = "III")`), `contr.sum` ensures that main-effect tests represent unweighted average effects across levels rather than simple effects evaluated solely at one reference category.
+:::
+
+---
+
+## 4. Weighted Average Deviation (`wec::contr.wec`)
+
+When sample sizes across categories are **unbalanced**, unweighted `contr.sum` shifts the intercept away from the overall sample mean of $Y$. **Weighted effect coding** adjusts the constraint so that deviations are weighted by group sample sizes ($\sum_{i=1}^{k} n_i \alpha_i = 0$).
+
+* **How R Encodes It:** Base R does not include a built-in contrast function for weighted deviations. Instead of coding the omitted level as `-1`, the omitted category receives weights equal to $-n_i / n_{	ext{omitted}}$. The `wec` package automates this setup.
+* **Parameter Interpretation:**
+  * **Intercept ($\beta_0$):** Equals the **overall sample mean** ($\bar{Y}$) of the dataset.
+  * **Slope Coefficients ($\alpha_i$):** The difference between category $i$'s mean and the sample-weighted grand mean.
+
+```r
+# Requires the 'wec' package: install.packages("wec")
+library(wec)
+
+# Ensure predictors are factors before generating weighted contrasts
+sample_data$X_1 <- factor(sample_data$X_1)
+sample_data$X_2 <- factor(sample_data$X_2)
+sample_data$X_3 <- factor(sample_data$X_3)
+
+contrasts(sample_data$X_1) <- contr.wec(sample_data$X_1, omitted = levels(sample_data$X_1)[nlevels(sample_data$X_1)])
+contrasts(sample_data$X_2) <- contr.wec(sample_data$X_2, omitted = levels(sample_data$X_2)[nlevels(sample_data$X_2)])
+contrasts(sample_data$X_3) <- contr.wec(sample_data$X_3, omitted = levels(sample_data$X_3)[nlevels(sample_data$X_3)])
+
+lm_weighted <- lm(Y ~ X_1 + X_2 + X_3, data = sample_data)
+summary(lm_weighted)
+```
+
+---
+
+## Inspecting Any Design Matrix
+
+Whenever you switch parameterization styles, you can verify how R has encoded your categorical predictors by inspecting the underlying model matrix:
+
+```r
+head(model.matrix(lm_ref))
+```

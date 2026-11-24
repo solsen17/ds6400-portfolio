@@ -50,6 +50,7 @@ book:
     - part: "Supplemental"
       chapters:
       - "parameterization-shrinkage-sparsity.qmd"
+      - "r-categorical-parameterization.qmd"
 
 
 
