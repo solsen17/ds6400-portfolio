@@ -503,5 +503,137 @@
       "06: Regularization",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Claude's Explainer</span>"
     ]
+  },
+  {
+    "objectID": "07_Homework.html",
+    "href": "07_Homework.html",
+    "title": "15  Interactions",
+    "section": "",
+    "text": "15.0.1 Two motivating questions:\nNotes and Homework from https://tgstewart.cloud/ipm/interactions.html",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Homework.html#working-example",
+    "href": "07_Homework.html#working-example",
+    "title": "15  Interactions",
+    "section": "15.1 Working example:",
+    "text": "15.1 Working example:\nNHANES Data\n\nOutcome:\n\nBPSysAve: average systolic blood pressure\n\nPredictors:\n\nAge\nWeight\nBMI\nHeight\nGender: Male, Female (near even split)\nRace1: Black, Hispanid, Mexican, White, Other (not even splits, heavily represented by white)\n\n\n\n# Load in packages\nlibrary(NHANES)\nlibrary(rms)\nlibrary(dplyr)\nlibrary(glmnet)\nlibrary(plotly)\nlibrary(knitr)\nlibrary(ggplot2)\n\noptions(prType = \"html\")\n\n# Load data and select variables of interest\ndata(NHANES)\nnhanes &lt;- NHANES |&gt;\n  select(BPSysAve, Age, Weight, BMI, Height, Gender, Race1) |&gt;\n  na.omit() |&gt;\n  as.data.frame()\n\ndd_nhanes &lt;- datadist(nhanes)\noptions(datadist = \"dd_nhanes\")\n\n## View distribution s of the data\nHmisc::describe(nhanes[, c(\"BPSysAve\", \"Age\", \"BMI\", \"Gender\", \"Race1\")])\n\n\n\n\n\nnhanes[, c(\"BPSysAve\", \"Age\", \"BMI\", \"Gender\", \"Race1\")] Descriptives\nnhanes[, c(\"BPSysAve\", \"Age\", \"BMI\", \"Gender\", \"Race1\")]  5  Variables   8487  Observations\n\nBPSysAve\n\n \n nmissingdistinctInfoMeanpMedianGmd.05.10.25.50.75.90.95\n 848701251118.111718.64 95 99106116127140148\n \n\nlowest :  76  78  79  80  81 ,  highest: 210 212 217 221 226\n\nAge\n\n \n nmissingdistinctInfoMeanpMedianGmd.05.10.25.50.75.90.95\n 8487073140.9440.523.1711142440567077\n \n\nlowest :  8  9 10 11 12 ,  highest: 76 77 78 79 80\n\nBMI\n\n \n nmissingdistinctInfoMeanpMedianGmd.05.10.25.50.75.90.95\n 848701902127.6227.117.59818.0519.6022.7626.6531.4036.5440.49\n \n\nlowest : 12.89 12.9  13.3  13.35 13.5  ,  highest: 67.83 68.63 69    80.6  81.25\n\nGender\n\n \n nmissingdistinct\n 848702\n \n\n Value      female   male\n Frequency    4270   4217\n Proportion  0.503  0.497 \n\n\nRace1\n\n \n nmissingdistinct\n 848705\n \n\n Value         Black Hispanic  Mexican    White    Other\n Frequency       987      498      808     5545      649\n Proportion    0.116    0.059    0.095    0.653    0.076",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Homework.html#group-specific-non-linear-relationships",
+    "href": "07_Homework.html#group-specific-non-linear-relationships",
+    "title": "15  Interactions",
+    "section": "15.2 Group specific non-linear relationships",
+    "text": "15.2 Group specific non-linear relationships",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Homework.html#fully-shared-one-curve-for-everyone",
+    "href": "07_Homework.html#fully-shared-one-curve-for-everyone",
+    "title": "15  Interactions",
+    "section": "15.3 Fully shared: one curve for everyone",
+    "text": "15.3 Fully shared: one curve for everyone\nIf we predict BPSysAve based only on Age, but we allow the relationship to be nonlinear, we can apply a restricted cubic spline for an example model.\nThe model looks like this:\n\\[\\begin{align*}\nE[\\text{BPSysAve}\\mid \\text{age}] & = \\beta_0 + \\beta_1\\,\\text{age} + \\beta_2\\,\\text{age}^{\\prime} + \\beta_3\\,\\text{age}^{\\prime\\prime} \\\\\nE[\\text{BPSysAve}\\mid \\text{age}] & = \\sigma^2\n\\end{align*}\\]\n\nage_knots &lt;- attr(rcs(nhanes$Age, 4), \"parms\")\n\nfit_shared &lt;- ols(BPSysAve ~ rcs(Age, age_knots), data = nhanes)\nprint(fit_shared)\n\nLinear Regression Model\n\nols(formula = BPSysAve ~ rcs(Age, age_knots), data = nhanes)\n\n\n\n\n\n\n\n\n\n\n\n\nModel Likelihood\nRatio Test\nDiscrimination\nIndexes\n\n\n\n\nObs 8487\nLR χ2 2671.35\nR2 0.270\n\n\nσ 14.7020\nd.f. 3\nR2adj 0.270\n\n\nd.f. 8483\nPr(&gt;χ2) 0.0000\ng 10.097\n\n\n\n\n\n\nResiduals\n\n     Min       1Q   Median       3Q      Max \n-55.1911  -9.1037  -0.8884   7.9396 103.4044 \n\n\n\n\n\n\n\n\nβ\nS.E.\nt\nPr(&gt;|t|)\n\n\n\n\nIntercept\n 96.0693\n 0.8221\n116.86\n&lt;0.0001\n\n\nAge\n  0.6932\n 0.0410\n16.92\n&lt;0.0001\n\n\nAge'\n -1.1749\n 0.1545\n-7.61\n&lt;0.0001\n\n\nAge''\n  3.1931\n 0.4004\n7.98\n&lt;0.0001\n\n\n\n\nggplot(Predict(fit_shared, Age))\n\n\n\n\n\n\n\n# pred_shared &lt;- as.data.frame(Predict(fit_shared, Age))\n# ggplot() +\n#   geom_point(data = nhanes, aes(Age, BPSysAve), alpha = 0.1, size = 0.8) +\n#   geom_ribbon(data = pred_shared, aes(Age, ymin = lower, ymax = upper), alpha = 0.3) +\n#   geom_line(data = pred_shared, aes(Age, yhat), linewidth = 1)\n\nHere the cubic spline knots are fixed once so we will reuse them latter throughout the exploration. The only thing changing will be the coefficients.",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Homework.html#partial-sharing-shared-shape-shifted",
+    "href": "07_Homework.html#partial-sharing-shared-shape-shifted",
+    "title": "15  Interactions",
+    "section": "15.4 Partial sharing: shared shape, shifted",
+    "text": "15.4 Partial sharing: shared shape, shifted\nIf we add in Gender to the model as a main effect with no interaction, then the two groups (male and female) can have different baselines while maintaining the same shape from the Age. Here’s what the new model looks like under that situation:\n\\[\\begin{align*}\nE[\\text{BPSysAve}\\mid \\text{age}, \\text{gender}] & = \\beta_0 + \\beta_1\\,\\text{age} + \\beta_2\\,\\text{age}^{\\prime} + \\beta_3\\,\\text{age}^{\\prime\\prime} + \\beta_4\\,I(\\text{male})  \\\\\nV[\\text{BPSysAve}\\mid \\text{age}, \\text{gender}] & = \\sigma^2\n\\end{align*}\\]\nYou can see the extra term just tacked on to the end, and the new coefficients below.\n\nfit_offset &lt;- ols(BPSysAve ~ rcs(Age, age_knots) + Gender, data = nhanes)\nprint(fit_offset)\n\nLinear Regression Model\n\nols(formula = BPSysAve ~ rcs(Age, age_knots) + Gender, data = nhanes)\n\n\n\n\n\n\n\n\n\n\n\n\nModel Likelihood\nRatio Test\nDiscrimination\nIndexes\n\n\n\n\nObs 8487\nLR χ2 2868.37\nR2 0.287\n\n\nσ 14.5332\nd.f. 4\nR2adj 0.286\n\n\nd.f. 8482\nPr(&gt;χ2) 0.0000\ng 10.427\n\n\n\n\n\n\nResiduals\n\n    Min      1Q  Median      3Q     Max \n-57.808  -8.764  -1.109   7.649 105.692 \n\n\n\n\n\n\n\n\nβ\nS.E.\nt\nPr(&gt;|t|)\n\n\n\n\nIntercept\n 93.7855\n 0.8286\n113.19\n&lt;0.0001\n\n\nAge\n  0.6957\n 0.0405\n17.18\n&lt;0.0001\n\n\nAge'\n -1.2026\n 0.1527\n-7.87\n&lt;0.0001\n\n\nAge''\n  3.3054\n 0.3959\n8.35\n&lt;0.0001\n\n\nGender=male\n  4.4622\n 0.3162\n14.11\n&lt;0.0001\n\n\n\n\nggplot(Predict(fit_offset, Age, Gender))\n\n\n\n\n\n\n\n# pred_offset &lt;- as.data.frame(Predict(fit_offset, Age, Gender))\n# ggplot() +\n#   geom_point(data = nhanes, aes(Age, BPSysAve, color = Gender), alpha = 0.1, size = 0.8) +\n#   geom_ribbon(data = pred_offset, aes(Age, ymin = lower, ymax = upper, fill = Gender), alpha = 0.3) +\n#   geom_line(data = pred_offset, aes(Age, yhat, color = Gender), linewidth = 1)",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Homework.html#full-interaction-shape-differs-by-group",
+    "href": "07_Homework.html#full-interaction-shape-differs-by-group",
+    "title": "15  Interactions",
+    "section": "15.5 Full interaction: shape differs by group",
+    "text": "15.5 Full interaction: shape differs by group\nOur next evolution of the model is below, where the Gender term is now interacting with every term that we originally had from the nonlinear Age model. Now the shape of the curve can be different for each gender group.\n\\[\\begin{align*}\nE[\\text{BPSysAve}\\mid \\text{age}, \\text{gender}] & = \\beta_0 + \\beta_1\\,\\text{age} + \\beta_2\\,\\text{age}^{\\prime} + \\beta_3\\,\\text{age}^{\\prime\\prime} + \\beta_4\\,I(\\text{male}) + \\beta_5\\,\\text{age}\\cdot I(\\text{male}) + \\beta_6\\,\\text{age}^{\\prime}\\cdot I(\\text{male}) + \\beta_7\\,\\text{age}^{\\prime\\prime}\\cdot I(\\text{male})  \\\\\nV[\\text{BPSysAve}\\mid \\text{age}, \\text{gender}] & = \\sigma^2\n\\end{align*}\\]\n\nfit_int_gender &lt;- ols(BPSysAve ~ rcs(Age, age_knots) * Gender, data = nhanes)\nprint(fit_int_gender)\n\nLinear Regression Model\n\nols(formula = BPSysAve ~ rcs(Age, age_knots) * Gender, data = nhanes)\n\n\n\n\n\n\n\n\n\n\n\n\nModel Likelihood\nRatio Test\nDiscrimination\nIndexes\n\n\n\n\nObs 8487\nLR χ2 3039.62\nR2 0.301\n\n\nσ 14.3899\nd.f. 7\nR2adj 0.300\n\n\nd.f. 8479\nPr(&gt;χ2) 0.0000\ng 10.741\n\n\n\n\n\n\nResiduals\n\n     Min       1Q   Median       3Q      Max \n-53.2109  -8.7501  -0.9886   7.6196 104.7109 \n\n\n\n\n\n\n\n\nβ\nS.E.\nt\nPr(&gt;|t|)\n\n\n\n\nIntercept\n 98.2025\n 1.1420\n86.00\n&lt;0.0001\n\n\nAge\n  0.4004\n 0.0569\n7.03\n&lt;0.0001\n\n\nAge'\n -0.1072\n 0.2140\n-0.50\n0.6164\n\n\nAge''\n  0.8919\n 0.5521\n1.62\n0.1062\n\n\nGender=male\n -4.0016\n 1.6096\n-2.49\n0.0129\n\n\nAge × Gender=male\n  0.5655\n 0.0802\n7.05\n&lt;0.0001\n\n\nAge' × Gender=male\n -2.0509\n 0.3027\n-6.78\n&lt;0.0001\n\n\nAge'' × Gender=male\n  4.3539\n 0.7852\n5.55\n&lt;0.0001\n\n\n\n\nggplot(Predict(fit_int_gender, Age, Gender))\n\n\n\n\n\n\n\n# pred_int_gender &lt;- as.data.frame(Predict(fit_int_gender, Age, Gender))\n# ggplot() +\n#   geom_point(data = nhanes, aes(Age, BPSysAve, color = Gender), alpha = 0.1, size = 0.8) +\n#   geom_ribbon(data = pred_int_gender, aes(Age, ymin = lower, ymax = upper, fill = Gender), alpha = 0.3) +\n#   geom_line(data = pred_int_gender, aes(Age, yhat, color = Gender), linewidth = 1) +\n#   facet_wrap(~ Gender)",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Homework.html#no-sharing-fully-separate-models",
+    "href": "07_Homework.html#no-sharing-fully-separate-models",
+    "title": "15  Interactions",
+    "section": "15.6 No sharing: fully separate models",
+    "text": "15.6 No sharing: fully separate models\nIn all of these stages, we’ve been fitting one model and sharing information between the groups of Gender, but an alternative approach would be fitting two completely separate models. The model statements would be separated as below.\n\\[\\begin{align*}\nE[\\text{BPSysAve}\\mid \\text{age}, \\text{sex}=\\text{male}] & = \\beta^{(m)}_0 + \\beta^{(m)}_1\\,\\text{age} + \\beta^{(m)}_2\\,\\text{age}^{\\prime} + \\beta^{(m)}_3\\,\\text{age}^{\\prime\\prime}  \\\\\nV[\\text{BPSysAve}\\mid \\text{age}, \\text{sex}=\\text{male}] & = {\\sigma^{2}}^{(m)}\n\\ \\\\\nE[\\text{BPSysAve}\\mid \\text{age}, \\text{sex}=\\text{female}] & = \\beta^{(f)}_0 + \\beta^{(f)}_1\\,\\text{age} + \\beta^{(f)}_2\\,\\text{age}^{\\prime} + \\beta^{(f)}_3\\,\\text{age}^{\\prime\\prime}  \\\\\nV[\\text{BPSysAve}\\mid \\text{age}, \\text{sex}=\\text{female}] & = {\\sigma^{2}}^{(f)}\n\\end{align*}\\]\n\n# Filter the data to create two separate models\nfit_male   &lt;- ols(BPSysAve ~ rcs(Age, age_knots), data = nhanes |&gt; filter(Gender == \"male\"))\nfit_female &lt;- ols(BPSysAve ~ rcs(Age, age_knots), data = nhanes |&gt; filter(Gender == \"female\"))\n\nprint(fit_male)\n\nLinear Regression Model\n\nols(formula = BPSysAve ~ rcs(Age, age_knots), data = filter(nhanes, \n    Gender == \"male\"))\n\n\n\n\n\n\n\n\n\n\n\n\nModel Likelihood\nRatio Test\nDiscrimination\nIndexes\n\n\n\n\nObs 4217\nLR χ2 1036.97\nR2 0.218\n\n\nσ 14.5168\nd.f. 3\nR2adj 0.217\n\n\nd.f. 4213\nPr(&gt;χ2) 0.0000\ng 8.368\n\n\n\n\n\n\nResiduals\n\n    Min      1Q  Median      3Q     Max \n-53.211  -8.825  -1.088   7.702  98.260 \n\n\n\n\n\n\n\n\nβ\nS.E.\nt\nPr(&gt;|t|)\n\n\n\n\nIntercept\n 94.2009\n 1.1444\n82.32\n&lt;0.0001\n\n\nAge\n  0.9659\n 0.0570\n16.93\n&lt;0.0001\n\n\nAge'\n -2.1580\n 0.2160\n-9.99\n&lt;0.0001\n\n\nAge''\n  5.2458\n 0.5633\n9.31\n&lt;0.0001\n\n\n\n\nprint(fit_female)\n\nLinear Regression Model\n\nols(formula = BPSysAve ~ rcs(Age, age_knots), data = filter(nhanes, \n    Gender == \"female\"))\n\n\n\n\n\n\n\n\n\n\n\n\nModel Likelihood\nRatio Test\nDiscrimination\nIndexes\n\n\n\n\nObs 4270\nLR χ2 1878.25\nR2 0.356\n\n\nσ 14.2634\nd.f. 3\nR2adj 0.355\n\n\nd.f. 4266\nPr(&gt;χ2) 0.0000\ng 11.904\n\n\n\n\n\n\nResiduals\n\n     Min       1Q   Median       3Q      Max \n-51.9085  -8.5291  -0.8779   7.4119 104.7109 \n\n\n\n\n\n\n\n\nβ\nS.E.\nt\nPr(&gt;|t|)\n\n\n\n\nIntercept\n 98.2025\n 1.1319\n86.76\n&lt;0.0001\n\n\nAge\n  0.4004\n 0.0564\n7.10\n&lt;0.0001\n\n\nAge'\n -0.1072\n 0.2121\n-0.51\n0.6133\n\n\nAge''\n  0.8919\n 0.5472\n1.63\n0.1032\n\n\n\n\n# Observe that the variances are different\nc(sigma_male = fit_male$stats[\"Sigma\"], sigma_female = fit_female$stats[\"Sigma\"])\n\n  sigma_male.Sigma sigma_female.Sigma \n          14.51683           14.26335 \n\n\nNow check out what happens when we compare the predictions between the fully separate model and the full interaction model.\n\npred_separate &lt;- ifelse(nhanes$Gender == \"male\",\n                         predict(fit_male,   nhanes),\n                         predict(fit_female, nhanes))\npred_interaction &lt;- predict(fit_int_gender, nhanes)\n\nall.equal(as.numeric(pred_separate), as.numeric(pred_interaction))\n\n[1] TRUE\n\n\nIf there are exactly two groups, then “no sharing” (fully separate models) and “full interaction on shape” are the same mean model. Since full interactino gives every group its own spline coefficients and intercept, thats also what fitting two regressions does. The only differnce is the variance term, where now we have one for each group.\nThe full interaction model will be different if we regularize the interaction terms (seen later) or move to more than two groups, because there are partial sharing opportunities.",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "07_Explainer.html",
+    "href": "07_Explainer.html",
+    "title": "16  Motivation and Review",
+    "section": "",
+    "text": "Let’s simply recall everything from the prior module and the related resource https://tgstewart.cloud/ipm/interactions.html, which gives us reasoning for pursuing this. We’ll continue working with the NHANES data and the same variables of interest. Toward the end of the module we observed two things:\n\nLasso zeroes out individual coefficients, so a group can end up “partially pooled”, for example, the race group of ‘Hispanic’ could end up with 2/4 deviation terms. That doesn’t have a clean meaning when we’re working with the coefficients, so we’d prefer to have a “group lasso” penalty that could zero things out altogether!\nIf we have more than 2 groups, there’s a lot of possible sharing structures between full sharing (all one model) and no sharing (all separate models). Shrinking toward the average doesn’t reveal a potential structure like for the race group like ‘Hispanic and Mexican share a curve’, but “fusion” can do this!\n\nSo let’s explore both of these methods.\n\n17 Group Lasso\nLet’s start with recalling the lasso formula\n\\[\\hat{\\beta}_{\\text{lasso}} = \\underset{\\beta}{\\arg\\min}\\  \\|Y - X\\beta\\|_2^2 + \\lambda\\|\\beta\\|_1\\] where \\(\\|\\beta\\|_1 = \\sum_j |\\beta_j|\\) is the \\(L_1\\) norm.\nA key attribute of the lasso is that some coefficients are exactly zero, so variable selection is performed.\nPreviously, we were cool with that in general, but now we have blown up our model with interaction terms and groups and we want to be a little bit more strategic about which terms we drop. For example, if we’re going to drop the terms for \\(Age*I(hispanic)\\) and \\(Age^2 * I(hispanic)\\), then we may want to just drop all the terms associated with \\(I(hispanic)\\) from the model, or remove the group. An example full interaction model with Race1 like the one described is shown below:\n\\[\\begin{align*}\nE[\\text{BPSysAve}\\mid \\text{age}, \\text{race}] & = \\beta_0 + \\beta_1\\,\\text{age} + \\beta_2\\,\\text{age}^{\\prime} + \\beta_3\\,\\text{age}^{\\prime\\prime}\\\\\n&+ \\beta_4\\,I(\\text{hispanic}) + \\beta_5\\,\\text{age}\\cdot I(\\text{hispanic}) + \\beta_6\\,\\text{age}^{\\prime}\\cdot I(\\text{hispanic}) + \\beta_7\\,\\text{age}^{\\prime\\prime}\\cdot I(\\text{hispanic})  \\\\\n&+ \\beta_8\\,I(\\text{mexican}) + \\beta_9\\,\\text{age}\\cdot I(\\text{mexican}) + \\beta_{10}\\,\\text{age}^{\\prime}\\cdot I(\\text{mexican}) + \\beta_{11}\\,\\text{age}^{\\prime\\prime}\\cdot I(\\text{mexican})  \\\\\n&+ \\beta_{12}\\,I(\\text{white}) + \\beta_{13}\\,\\text{age}\\cdot I(\\text{white}) + \\beta_{14}\\,\\text{age}^{\\prime}\\cdot I(\\text{white}) + \\beta_{15}\\,\\text{age}^{\\prime\\prime}\\cdot I(\\text{white})  \\\\\n&+ \\beta_{16}\\,I(\\text{other}) + \\beta_{17}\\,\\text{age}\\cdot I(\\text{other}) + \\beta_{18}\\,\\text{age}^{\\prime}\\cdot I(\\text{other}) + \\beta_{19}\\,\\text{age}^{\\prime\\prime}\\cdot I(\\text{other})  \\\\\nV[\\text{BPSysAve}\\mid \\text{age}, \\text{race}] & = \\sigma^2\n\\end{align*}\\]\n\n\n18 Fusion",
+    "crumbs": [
+      "07: Interactions",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Motivation and Review</span>"
+    ]
+  },
+  {
+    "objectID": "Data generation.html",
+    "href": "Data generation.html",
+    "title": "18  Generate some data!",
+    "section": "",
+    "text": "Code\n# Install packages for later use\nlibrary(ggplot2)\nlibrary(dplyr)\nlibrary(tidyr)\n\n# Set a seed for reproducibility\nset.seed(17)\n\n\nHere’s the data generation model from the assignment. It is a standard linear regression model with 3 categorical variables, \\(X_1\\), \\(X_2\\), and \\(X_3\\). We will generate datasets with \\(N=200\\) observations according to the following specifications:\n\n\n\nVariable\nLevels\n\n\n\n\n\\(X_1\\)\n3\n\n\n\\(X_2\\)\n10\n\n\n\\(X_3\\)\n20\n\n\n\n\\[Y = 0.5\\,I_{(X_2 \\in \\{1\\})} + 1\\,I_{(X_2 \\in \\{2,3\\})} +1.75\\,I_{(X_2 \\in \\{4,5,6\\})}+2.75\\,I_{(X_2 \\in \\{7,8,9,10\\})} + \\epsilon\\qquad \\epsilon \\sim N(0,1)\\]\nThe assignment provides no specification for how the samples of each variable should be generated, so we will use a uniform sample.\nBelow, we’ll define a function for generating data, because we’ll want to use that later in our simulation steps.\n\n# Generate data for 'n' observations\ngenerate_data &lt;- function(n = 200){\n\n    # define number of observations to be 200\n    n_obs &lt;- n\n\n    # generate categorical variables for dataset\n    # add prob = c(p, p, p) to adjust group representation\n    X_1 &lt;- factor(sample(1:3, n_obs, replace = TRUE), levels = 1:3)\n    X_2 &lt;- factor(sample(1:10, n_obs, replace = TRUE), levels = 1:10)\n    X_3 &lt;- factor(sample(1:20, n_obs, replace= TRUE), levels = 1:20)\n\n    # generate outcome variable based on X_2 values plus random noise\n    Y &lt;- ifelse(X_2 == 1, 0.5,\n         ifelse(X_2 %in% 2:3, 1,\n         ifelse(X_2 %in% 4:6, 1.75, 2.75))) + rnorm(n_obs)\n\n    # combine data to one data frame and return\n    data.frame(Y, X_1, X_2, X_3)\n}\n\nsample_data &lt;- generate_data()\nhead(sample_data)\n\n          Y X_1 X_2 X_3\n1 4.5895458   2  10  18\n2 4.9853610   1  10   9\n3 0.2124728   2   4   9\n4 1.3505597   3   9  15\n5 2.4881088   3   6  17\n6 3.2758930   3   9  10\n\n\nLet’s do some EDA to check out how our data looks now.\n\nyl &lt;- range(sample_data$Y)\n\npar(mfrow = c(1,3))\nplot(Y ~ X_1, data = sample_data, xlab = 'X_1', ylab = 'Y', ylim = yl)\nplot(Y ~ X_2, data = sample_data, xlab = 'X_2', ylab = '', ylim = yl)\nplot(Y ~ X_3, data = sample_data, xlab = 'X_3', ylab = '', ylim = yl)",
+    "crumbs": [
+      "Final Exam",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Generate some data!</span>"
+    ]
+  },
+  {
+    "objectID": "parameterization-shrinkage-sparsity.html",
+    "href": "parameterization-shrinkage-sparsity.html",
+    "title": "19  Parameterization, Shrinkage, and Sparsity",
+    "section": "",
+    "text": "19.1 How the Three Concepts Fit Together\nParameterization, shrinkage, and sparsity work together as a three-step pipeline to prevent overfitting: you first give a model enough parameters to capture patterns, then shrink those parameters toward zero to keep them from memorizing noise, and optionally use sparsity to eliminate unnecessary parameters altogether.",
+    "crumbs": [
+      "Supplemental",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Parameterization, Shrinkage, and Sparsity</span>"
+    ]
+  },
+  {
+    "objectID": "parameterization-shrinkage-sparsity.html#how-the-three-concepts-fit-together",
+    "href": "parameterization-shrinkage-sparsity.html#how-the-three-concepts-fit-together",
+    "title": "19  Parameterization, Shrinkage, and Sparsity",
+    "section": "",
+    "text": "Table 19.1: Summary of parameterization, shrinkage, and sparsity\n\n\n\n\n\n\n\n\n\n\nConcept\nWhat It Means\nRole in Modeling\n\n\n\n\nParameterization\nThe internal knobs or weights (\\(w_1, w_2, \\dots, w_n\\)) a model learns to map inputs to outputs.\nSets capacity: Too few parameters underfit (miss the pattern); too many overfit (memorize noise).\n\n\nShrinkage (Regularization)\nAdding a penalty to the training loss so the model prefers smaller weight values.\nControls complexity: Dampens extreme weights so the model stays smooth and generalizes well.\n\n\nSparsity\nA specific outcome of shrinkage where weak weights are forced all the way to exact zero.\nPrunes complexity: Turns an over-parameterized model into a compact one using only key features.",
+    "crumbs": [
+      "Supplemental",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Parameterization, Shrinkage, and Sparsity</span>"
+    ]
+  },
+  {
+    "objectID": "parameterization-shrinkage-sparsity.html#the-intuition-behind-the-flow",
+    "href": "parameterization-shrinkage-sparsity.html#the-intuition-behind-the-flow",
+    "title": "19  Parameterization, Shrinkage, and Sparsity",
+    "section": "19.2 The Intuition Behind the Flow",
+    "text": "19.2 The Intuition Behind the Flow\n\nStart with rich parameterization: In practice, you often don’t know upfront which features matter or how complex the underlying relationship is. You intentionally build an over-parameterized model—giving it plenty of features or neural network weights—so it has enough capacity to capture the true signal.\nApply shrinkage to rein it in: Without constraints, an over-parameterized model will twist itself to fit random quirks in your training data. Shrinkage (regularization) acts like a budget on weight sizes: a weight is only allowed to grow large if it meaningfully reduces prediction error.\nChoose between dense shrinkage or sparsity:\n\nDense shrinkage (e.g., Ridge / \\(L_2\\)): Keeps all parameters active, just scaled down via \\(\\lambda \\sum w_i^2\\). Every feature still gets a small vote in the final prediction.\nSparse shrinkage (e.g., Lasso / \\(L_1\\)): Zeros out weak parameters completely via \\(\\lambda \\sum |w_i|\\), effectively re-parameterizing your model into a smaller, simpler one after training.\n\n\n\n\n\n\n\n\nTipA Quick Analogy\n\n\n\nImagine packing for a trip:\n\nParameterization is the size of your suitcase (how many items you could bring).\nShrinkage is a strict airline weight limit that forces you to pack lighter versions of everything.\nSparsity is deciding to leave half your items at home so you only carry the essentials.",
+    "crumbs": [
+      "Supplemental",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Parameterization, Shrinkage, and Sparsity</span>"
+    ]
   }
 ]

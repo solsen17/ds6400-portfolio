@@ -1,0 +1,31 @@
+---
+title: "Parameterization, Shrinkage, and Sparsity"
+---
+
+**Parameterization, shrinkage, and sparsity** work together as a three-step pipeline to prevent overfitting: you first give a model enough parameters to capture patterns, then shrink those parameters toward zero to keep them from memorizing noise, and optionally use sparsity to eliminate unnecessary parameters altogether.
+
+## How the Three Concepts Fit Together
+
+| Concept | What It Means | Role in Modeling |
+| :--- | :--- | :--- |
+| **Parameterization** | The internal knobs or weights ($w_1, w_2, \dots, w_n$) a model learns to map inputs to outputs. | **Sets capacity:** Too few parameters *underfit* (miss the pattern); too many *overfit* (memorize noise). |
+| **Shrinkage (Regularization)** | Adding a penalty to the training loss so the model prefers smaller weight values. | **Controls complexity:** Dampens extreme weights so the model stays smooth and generalizes well. |
+| **Sparsity** | A specific outcome of shrinkage where weak weights are forced all the way to **exact zero**. | **Prunes complexity:** Turns an over-parameterized model into a compact one using only key features. |
+
+: Summary of parameterization, shrinkage, and sparsity {#tbl-regularization-concepts}
+
+## The Intuition Behind the Flow
+
+1. **Start with rich parameterization:** In practice, you often don't know upfront which features matter or how complex the underlying relationship is. You intentionally build an *over-parameterized* model—giving it plenty of features or neural network weights—so it has enough capacity to capture the true signal.
+2. **Apply shrinkage to rein it in:** Without constraints, an over-parameterized model will twist itself to fit random quirks in your training data. **Shrinkage** (regularization) acts like a budget on weight sizes: a weight is only allowed to grow large if it meaningfully reduces prediction error.
+3. **Choose between dense shrinkage or sparsity:**
+   * **Dense shrinkage (e.g., Ridge / $L_2$):** Keeps *all* parameters active, just scaled down via $\lambda \sum w_i^2$. Every feature still gets a small vote in the final prediction.
+   * **Sparse shrinkage (e.g., Lasso / $L_1$):** Zeros out weak parameters completely via $\lambda \sum |w_i|$, effectively *re-parameterizing* your model into a smaller, simpler one after training.
+
+::: {.callout-tip title="A Quick Analogy"}
+Imagine packing for a trip:
+
+* **Parameterization** is the size of your suitcase (how many items you *could* bring).
+* **Shrinkage** is a strict airline weight limit that forces you to pack lighter versions of everything.
+* **Sparsity** is deciding to leave half your items at home so you only carry the essentials.
+:::

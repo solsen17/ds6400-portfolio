@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15&nbsp; Interactions – DS6400 Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./07_Explainer.html" rel="next">
+<link href="./06_Explainer_claude.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07_Homework.html">07: Interactions</a></li><li class="breadcrumb-item"><a href="./07_Homework.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Interactions</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">DS6400 Portfolio</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">01: Performance Measures</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Week 1: Steyerberg et al.&nbsp;(2001)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Performance_Measures_2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Week 2: Efron 1997</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">02: Visualizing the Model</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Visualizing_the_Model_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Visualizing_the_Model_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Partial Dependence Plots (PDP)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">03: 4 models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Model_Notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">In class exploration and discussion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Neural_Net.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Neural Net</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">04: Linear Algebra Review</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_Appendix_A.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Appendix A</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_Appendix_B.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Appendix B</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">05: Nonlinearity</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_Explainer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Explainer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">06: Regularization</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Homework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Regularization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Paper: Lasso’s Victory Lap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Explainer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Explainer for Regularization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Explainer_claude.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Claude’s Explainer</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">07: Interactions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_Homework.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_Explainer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Motivation and Review</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+ <span class="menu-text">Final Exam</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Final Exam.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Final Exam Report</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Data generation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Generate some data!</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">Supplemental</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parameterization-shrinkage-sparsity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Parameterization, Shrinkage, and Sparsity</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#two-motivating-questions" id="toc-two-motivating-questions" class="nav-link active" data-scroll-target="#two-motivating-questions"><span class="header-section-number">15.0.1</span> Two motivating questions:</a></li>
+  <li><a href="#working-example" id="toc-working-example" class="nav-link" data-scroll-target="#working-example"><span class="header-section-number">15.1</span> Working example:</a></li>
+  <li><a href="#group-specific-non-linear-relationships" id="toc-group-specific-non-linear-relationships" class="nav-link" data-scroll-target="#group-specific-non-linear-relationships"><span class="header-section-number">15.2</span> Group specific non-linear relationships</a></li>
+  <li><a href="#fully-shared-one-curve-for-everyone" id="toc-fully-shared-one-curve-for-everyone" class="nav-link" data-scroll-target="#fully-shared-one-curve-for-everyone"><span class="header-section-number">15.3</span> Fully shared: one curve for everyone</a></li>
+  <li><a href="#partial-sharing-shared-shape-shifted" id="toc-partial-sharing-shared-shape-shifted" class="nav-link" data-scroll-target="#partial-sharing-shared-shape-shifted"><span class="header-section-number">15.4</span> Partial sharing: shared shape, shifted</a></li>
+  <li><a href="#full-interaction-shape-differs-by-group" id="toc-full-interaction-shape-differs-by-group" class="nav-link" data-scroll-target="#full-interaction-shape-differs-by-group"><span class="header-section-number">15.5</span> Full interaction: shape differs by group</a></li>
+  <li><a href="#no-sharing-fully-separate-models" id="toc-no-sharing-fully-separate-models" class="nav-link" data-scroll-target="#no-sharing-fully-separate-models"><span class="header-section-number">15.6</span> No sharing: fully separate models</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07_Homework.html">07: Interactions</a></li><li class="breadcrumb-item"><a href="./07_Homework.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Interactions</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Interactions</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Notes and Homework from <a href="https://tgstewart.cloud/ipm/interactions.html">https://tgstewart.cloud/ipm/interactions.html</a></p>
+<section id="two-motivating-questions" class="level3" data-number="15.0.1">
+<h3 data-number="15.0.1" class="anchored" data-anchor-id="two-motivating-questions"><span class="header-section-number">15.0.1</span> Two motivating questions:</h3>
+<ol type="1">
+<li>What happens when the information of relationships is nonlinear?</li>
+<li>Do we have to decide what to do or can regularization do it for us?</li>
+</ol>
+</section>
+<section id="working-example" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="working-example"><span class="header-section-number">15.1</span> Working example:</h2>
+<p>NHANES Data</p>
+<ul>
+<li>Outcome:
+<ul>
+<li><code>BPSysAve</code>: average systolic blood pressure</li>
+</ul></li>
+<li>Predictors:
+<ul>
+<li><code>Age</code></li>
+<li><code>Weight</code></li>
+<li><code>BMI</code></li>
+<li><code>Height</code></li>
+<li><code>Gender</code>: Male, Female (near even split)</li>
+<li><code>Race1</code>: Black, Hispanid, Mexican, White, Other (not even splits, heavily represented by white)</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load in packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NHANES)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">prType =</span> <span class="st">"html"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data and select variables of interest</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(NHANES)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> NHANES <span class="sc">|&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(BPSysAve, Age, Weight, BMI, Height, Gender, Race1) <span class="sc">|&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>dd_nhanes <span class="ot">&lt;-</span> <span class="fu">datadist</span>(nhanes)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist =</span> <span class="st">"dd_nhanes"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">## View distribution s of the data</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>Hmisc<span class="sc">::</span><span class="fu">describe</span>(nhanes[, <span class="fu">c</span>(<span class="st">"BPSysAve"</span>, <span class="st">"Age"</span>, <span class="st">"BMI"</span>, <span class="st">"Gender"</span>, <span class="st">"Race1"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<style>
+.earrows {color:silver;font-size:11px;}
+
+fcap {
+ font-family: Verdana;
+ font-size: 12px;
+ color: MidnightBlue
+ }
+
+smg {
+ font-family: Verdana;
+ font-size: 10px;
+ color: &#808080;
+}
+
+hr.thinhr { margin-top: 0.15em; margin-bottom: 0.15em; }
+
+span.xscript {
+position: relative;
+}
+span.xscript sub {
+position: absolute;
+left: 0.1em;
+bottom: -1ex;
+}
+</style>
+
+<title>nhanes[, c("BPSysAve", "Age", "BMI", "Gender", "Race1")] Descriptives</title>
+<font color="MidnightBlue"><div align="center"><span style="font-weight:bold">nhanes[, c("BPSysAve", "Age", "BMI", "Gender", "Race1")] <br><br> 5  Variables   8487  Observations</span></div></font>
+<hr class="thinhr">
+<span style="font-weight:bold">BPSysAve</span><div style="float: right; text-align: right;"><img src="data:image/png;base64,
+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" alt="image"></div>
+<style>
+ .hmisctable418813 {
+ border: none;
+ font-size: 85%;
+ }
+ .hmisctable418813 td {
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ }
+ .hmisctable418813 th {
+ color: MidnightBlue;
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ font-weight: normal;
+ }
+ </style>
+ <table data-quarto-disable-processing="true" class="hmisctable418813">
+ <tbody><tr><th>n</th><th>missing</th><th>distinct</th><th>Info</th><th>Mean</th><th>pMedian</th><th>Gmd</th><th>.05</th><th>.10</th><th>.25</th><th>.50</th><th>.75</th><th>.90</th><th>.95</th></tr>
+ <tr><td>8487</td><td>0</td><td>125</td><td>1</td><td>118.1</td><td>117</td><td>18.64</td><td> 95</td><td> 99</td><td>106</td><td>116</td><td>127</td><td>140</td><td>148</td></tr>
+ </tbody></table>
+
+<span style="font-size: 85%;"><font color="MidnightBlue">lowest</font>&nbsp;:  76  78  79  80  81 ,  <font color="MidnightBlue">highest</font>: 210 212 217 221 226</span>
+<hr class="thinhr">
+<span style="font-weight:bold">Age</span><div style="float: right; text-align: right;"><img src="data:image/png;base64,
+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" alt="image"></div>
+<style>
+ .hmisctable173794 {
+ border: none;
+ font-size: 85%;
+ }
+ .hmisctable173794 td {
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ }
+ .hmisctable173794 th {
+ color: MidnightBlue;
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ font-weight: normal;
+ }
+ </style>
+ <table data-quarto-disable-processing="true" class="hmisctable173794">
+ <tbody><tr><th>n</th><th>missing</th><th>distinct</th><th>Info</th><th>Mean</th><th>pMedian</th><th>Gmd</th><th>.05</th><th>.10</th><th>.25</th><th>.50</th><th>.75</th><th>.90</th><th>.95</th></tr>
+ <tr><td>8487</td><td>0</td><td>73</td><td>1</td><td>40.94</td><td>40.5</td><td>23.17</td><td>11</td><td>14</td><td>24</td><td>40</td><td>56</td><td>70</td><td>77</td></tr>
+ </tbody></table>
+
+<span style="font-size: 85%;"><font color="MidnightBlue">lowest</font>&nbsp;:  8  9 10 11 12 ,  <font color="MidnightBlue">highest</font>: 76 77 78 79 80</span>
+<hr class="thinhr">
+<span style="font-weight:bold">BMI</span><div style="float: right; text-align: right;"><img src="data:image/png;base64,
+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" alt="image"></div>
+<style>
+ .hmisctable227272 {
+ border: none;
+ font-size: 74%;
+ }
+ .hmisctable227272 td {
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ }
+ .hmisctable227272 th {
+ color: MidnightBlue;
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ font-weight: normal;
+ }
+ </style>
+ <table data-quarto-disable-processing="true" class="hmisctable227272">
+ <tbody><tr><th>n</th><th>missing</th><th>distinct</th><th>Info</th><th>Mean</th><th>pMedian</th><th>Gmd</th><th>.05</th><th>.10</th><th>.25</th><th>.50</th><th>.75</th><th>.90</th><th>.95</th></tr>
+ <tr><td>8487</td><td>0</td><td>1902</td><td>1</td><td>27.62</td><td>27.11</td><td>7.598</td><td>18.05</td><td>19.60</td><td>22.76</td><td>26.65</td><td>31.40</td><td>36.54</td><td>40.49</td></tr>
+ </tbody></table>
+
+<span style="font-size: 85%;"><font color="MidnightBlue">lowest</font>&nbsp;: 12.89 12.9  13.3  13.35 13.5  ,  <font color="MidnightBlue">highest</font>: 67.83 68.63 69    80.6  81.25</span>
+<hr class="thinhr">
+<span style="font-weight:bold">Gender</span>
+<style>
+ .hmisctable184959 {
+ border: none;
+ font-size: 85%;
+ }
+ .hmisctable184959 td {
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ }
+ .hmisctable184959 th {
+ color: MidnightBlue;
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ font-weight: normal;
+ }
+ </style>
+ <table data-quarto-disable-processing="true" class="hmisctable184959">
+ <tbody><tr><th>n</th><th>missing</th><th>distinct</th></tr>
+ <tr><td>8487</td><td>0</td><td>2</td></tr>
+ </tbody></table>
+
+<pre style="font-size:85%;"> Value      female   male
+ Frequency    4270   4217
+ Proportion  0.503  0.497 </pre>
+
+<hr class="thinhr">
+<span style="font-weight:bold">Race1</span><div style="float: right; text-align: right;"><img src="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAABAAAAANCAYAAACgu+4kAAAEDmlDQ1BrQ0dDb2xvclNwYWNlR2VuZXJpY1JHQgAAOI2NVV1oHFUUPpu5syskzoPUpqaSDv41lLRsUtGE2uj+ZbNt3CyTbLRBkMns3Z1pJjPj/KRpKT4UQRDBqOCT4P9bwSchaqvtiy2itFCiBIMo+ND6R6HSFwnruTOzu5O4a73L3PnmnO9+595z7t4LkLgsW5beJQIsGq4t5dPis8fmxMQ6dMF90A190C0rjpUqlSYBG+PCv9rt7yDG3tf2t/f/Z+uuUEcBiN2F2Kw4yiLiZQD+FcWyXYAEQfvICddi+AnEO2ycIOISw7UAVxieD/Cyz5mRMohfRSwoqoz+xNuIB+cj9loEB3Pw2448NaitKSLLRck2q5pOI9O9g/t/tkXda8Tbg0+PszB9FN8DuPaXKnKW4YcQn1Xk3HSIry5ps8UQ/2W5aQnxIwBdu7yFcgrxPsRjVXu8HOh0qao30cArp9SZZxDfg3h1wTzKxu5E/LUxX5wKdX5SnAzmDx4A4OIqLbB69yMesE1pKojLjVdoNsfyiPi45hZmAn3uLWdpOtfQOaVmikEs7ovj8hFWpz7EV6mel0L9Xy23FMYlPYZenAx0yDB1/PX6dledmQjikjkXCxqMJS9WtfFCyH9XtSekEF+2dH+P4tzITduTygGfv58a5VCTH5PtXD7EFZiNyUDBhHnsFTBgE0SQIA9pfFtgo6cKGuhooeilaKH41eDs38Ip+f4At1Rq/sjr6NEwQqb/I/DQqsLvaFUjvAx+eWirddAJZnAj1DFJL0mSg/gcIpPkMBkhoyCSJ8lTZIxk0TpKDjXHliJzZPO50dR5ASNSnzeLvIvod0HG/mdkmOC0z8VKnzcQ2M/Yz2vKldduXjp9bleLu0ZWn7vWc+l0JGcaai10yNrUnXLP/8Jf59ewX+c3Wgz+B34Df+vbVrc16zTMVgp9um9bxEfzPU5kPqUtVWxhs6OiWTVW+gIfywB9uXi7CGcGW/zk98k/kmvJ95IfJn/j3uQ+4c5zn3Kfcd+AyF3gLnJfcl9xH3OfR2rUee80a+6vo7EK5mmXUdyfQlrYLTwoZIU9wsPCZEtP6BWGhAlhL3p2N6sTjRdduwbHsG9kq32sgBepc+xurLPW4T9URpYGJ3ym4+8zA05u44QjST8ZIoVtu3qE7fWmdn5LPdqvgcZz8Ww8BWJ8X3w0PhQ/wnCDGd+LvlHs8dRy6bLLDuKMaZ20tZrqisPJ5ONiCq8yKhYM5cCgKOu66Lsc0aYOtZdo5QCwezI4wm9J/v0X23mlZXOfBjj8Jzv3WrY5D+CsA9D7aMs2gGfjve8ArD6mePZSeCfEYt8CONWDw8FXTxrPqx/r9Vt4biXeANh8vV7/+/16ffMD1N8AuKD/A/8leAvFY9bLAAAAOGVYSWZNTQAqAAAACAABh2kABAAAAAEAAAAaAAAAAAACoAIABAAAAAEAAAAQoAMABAAAAAEAAAANAAAAAI/tAPsAAADGSURBVCgV3ZAxCoQwEEX/xnSCdmLvAQTP4DlyFQ9iY5WriFXwCloo2tiEIKIuCWywcDcL2+2HITO8/xMmj2EYTnypJEnAGENRFDZB4zi2g6shhMD3fVwzxBVy8T+4gLZt61rT8n3fMU0Trhmapqk1uBrP8xBFEa6Z3z9x2zbXwx85CcPQ7HXn4pxD1zsJIUCUUliWxXiqqkKe59ZfliV03anrOmRZBqrhPM8IggBN06Cua4zjaDLruprzNR/HASml4X3fG/YEdVZKKUBEllwAAAAASUVORK5CYII=" alt="image"></div>
+<style>
+ .hmisctable531453 {
+ border: none;
+ font-size: 85%;
+ }
+ .hmisctable531453 td {
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ }
+ .hmisctable531453 th {
+ color: MidnightBlue;
+ text-align: center;
+ padding: 0 1ex 0 1ex;
+ font-weight: normal;
+ }
+ </style>
+ <table data-quarto-disable-processing="true" class="hmisctable531453">
+ <tbody><tr><th>n</th><th>missing</th><th>distinct</th></tr>
+ <tr><td>8487</td><td>0</td><td>5</td></tr>
+ </tbody></table>
+
+<pre style="font-size:85%;"> Value         Black Hispanic  Mexican    White    Other
+ Frequency       987      498      808     5545      649
+ Proportion    0.116    0.059    0.095    0.653    0.076 </pre>
+
+<hr class="thinhr">
+</div>
+</div>
+</section>
+<section id="group-specific-non-linear-relationships" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="group-specific-non-linear-relationships"><span class="header-section-number">15.2</span> Group specific non-linear relationships</h2>
+</section>
+<section id="fully-shared-one-curve-for-everyone" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="fully-shared-one-curve-for-everyone"><span class="header-section-number">15.3</span> Fully shared: one curve for everyone</h2>
+<p>If we predict <code>BPSysAve</code> based only on <code>Age</code>, but we allow the relationship to be nonlinear, we can apply a restricted cubic spline for an example model.</p>
+<p>The model looks like this:</p>
+<p><span class="math display">\[\begin{align*}
+E[\text{BPSysAve}\mid \text{age}] &amp; = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime} \\
+E[\text{BPSysAve}\mid \text{age}] &amp; = \sigma^2
+\end{align*}\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>age_knots <span class="ot">&lt;-</span> <span class="fu">attr</span>(<span class="fu">rcs</span>(nhanes<span class="sc">$</span>Age, <span class="dv">4</span>), <span class="st">"parms"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit_shared <span class="ot">&lt;-</span> <span class="fu">ols</span>(BPSysAve <span class="sc">~</span> <span class="fu">rcs</span>(Age, age_knots), <span class="at">data =</span> nhanes)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_shared)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<p><strong>Linear Regression Model</strong></p>
+
+<pre>ols(formula = BPSysAve ~ rcs(Age, age_knots), data = nhanes)
+</pre>
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Model Likelihood<br>
+Ratio Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Discrimination<br>
+Indexes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">Obs 8487</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">LR χ<sup>2</sup> 2671.35</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup>2</sup> 0.270</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">σ 14.7020</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">d.f. 3</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup><span style="font-size: 70%;">2</span></sup><sub><span style="font-size: 70%;">adj</span></sub> 0.270</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;">d.f. 8483</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;">Pr(&gt;χ<sup>2</sup>) 0.0000</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;"><em>g</em> 10.097</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<p>Residuals</p>
+
+<pre>     Min       1Q   Median       3Q      Max 
+-55.1911  -9.1037  -0.8884   7.9396 103.4044 
+</pre>
+
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; border-bottom: 1px solid grey; border-top: 2px solid grey;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">β</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">S.E.</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;"><em>t</em></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">Pr(&gt;|<em>t</em>|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Intercept</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;96.0693</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.8221</td>
+<td style="text-align: right; min-width: 7em;">116.86</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.6932</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.0410</td>
+<td style="text-align: right; min-width: 7em;">16.92</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Age'</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-1.1749</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.1545</td>
+<td style="text-align: right; min-width: 7em;">-7.61</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em; border-bottom: 2px solid grey;">Age''</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp; 3.1931</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp;0.4004</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">7.98</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&lt;0.0001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(fit_shared, Age))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Homework_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_shared &lt;- as.data.frame(Predict(fit_shared, Age))</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot() +</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(data = nhanes, aes(Age, BPSysAve), alpha = 0.1, size = 0.8) +</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_ribbon(data = pred_shared, aes(Age, ymin = lower, ymax = upper), alpha = 0.3) +</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(data = pred_shared, aes(Age, yhat), linewidth = 1)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Here the cubic spline knots are fixed once so we will reuse them latter throughout the exploration. The only thing changing will be the coefficients.</p>
+</section>
+<section id="partial-sharing-shared-shape-shifted" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="partial-sharing-shared-shape-shifted"><span class="header-section-number">15.4</span> Partial sharing: shared shape, shifted</h2>
+<p>If we add in <code>Gender</code> to the model as a main effect with no interaction, then the two groups (male and female) can have different baselines while maintaining the same shape from the <code>Age</code>. Here’s what the new model looks like under that situation:</p>
+<p><span class="math display">\[\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{gender}] &amp; = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime} + \beta_4\,I(\text{male})  \\
+V[\text{BPSysAve}\mid \text{age}, \text{gender}] &amp; = \sigma^2
+\end{align*}\]</span></p>
+<p>You can see the extra term just tacked on to the end, and the new coefficients below.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_offset <span class="ot">&lt;-</span> <span class="fu">ols</span>(BPSysAve <span class="sc">~</span> <span class="fu">rcs</span>(Age, age_knots) <span class="sc">+</span> Gender, <span class="at">data =</span> nhanes)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_offset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<p><strong>Linear Regression Model</strong></p>
+
+<pre>ols(formula = BPSysAve ~ rcs(Age, age_knots) + Gender, data = nhanes)
+</pre>
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Model Likelihood<br>
+Ratio Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Discrimination<br>
+Indexes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">Obs 8487</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">LR χ<sup>2</sup> 2868.37</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup>2</sup> 0.287</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">σ 14.5332</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">d.f. 4</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup><span style="font-size: 70%;">2</span></sup><sub><span style="font-size: 70%;">adj</span></sub> 0.286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;">d.f. 8482</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;">Pr(&gt;χ<sup>2</sup>) 0.0000</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;"><em>g</em> 10.427</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<p>Residuals</p>
+
+<pre>    Min      1Q  Median      3Q     Max 
+-57.808  -8.764  -1.109   7.649 105.692 
+</pre>
+
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; border-bottom: 1px solid grey; border-top: 2px solid grey;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">β</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">S.E.</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;"><em>t</em></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">Pr(&gt;|<em>t</em>|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Intercept</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;93.7855</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.8286</td>
+<td style="text-align: right; min-width: 7em;">113.19</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.6957</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.0405</td>
+<td style="text-align: right; min-width: 7em;">17.18</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Age'</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-1.2026</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.1527</td>
+<td style="text-align: right; min-width: 7em;">-7.87</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age''</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 3.3054</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.3959</td>
+<td style="text-align: right; min-width: 7em;">8.35</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em; border-bottom: 2px solid grey;">Gender=male</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp; 4.4622</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp;0.3162</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">14.11</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&lt;0.0001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(fit_offset, Age, Gender))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Homework_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_offset &lt;- as.data.frame(Predict(fit_offset, Age, Gender))</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot() +</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(data = nhanes, aes(Age, BPSysAve, color = Gender), alpha = 0.1, size = 0.8) +</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_ribbon(data = pred_offset, aes(Age, ymin = lower, ymax = upper, fill = Gender), alpha = 0.3) +</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(data = pred_offset, aes(Age, yhat, color = Gender), linewidth = 1)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="full-interaction-shape-differs-by-group" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="full-interaction-shape-differs-by-group"><span class="header-section-number">15.5</span> Full interaction: shape differs by group</h2>
+<p>Our next evolution of the model is below, where the <code>Gender</code> term is now interacting with every term that we originally had from the nonlinear <code>Age</code> model. Now the shape of the curve can be different for each gender group.</p>
+<p><span class="math display">\[\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{gender}] &amp; = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime} + \beta_4\,I(\text{male}) + \beta_5\,\text{age}\cdot I(\text{male}) + \beta_6\,\text{age}^{\prime}\cdot I(\text{male}) + \beta_7\,\text{age}^{\prime\prime}\cdot I(\text{male})  \\
+V[\text{BPSysAve}\mid \text{age}, \text{gender}] &amp; = \sigma^2
+\end{align*}\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_int_gender <span class="ot">&lt;-</span> <span class="fu">ols</span>(BPSysAve <span class="sc">~</span> <span class="fu">rcs</span>(Age, age_knots) <span class="sc">*</span> Gender, <span class="at">data =</span> nhanes)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_int_gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<p><strong>Linear Regression Model</strong></p>
+
+<pre>ols(formula = BPSysAve ~ rcs(Age, age_knots) * Gender, data = nhanes)
+</pre>
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Model Likelihood<br>
+Ratio Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Discrimination<br>
+Indexes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">Obs 8487</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">LR χ<sup>2</sup> 3039.62</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup>2</sup> 0.301</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">σ 14.3899</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">d.f. 7</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup><span style="font-size: 70%;">2</span></sup><sub><span style="font-size: 70%;">adj</span></sub> 0.300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;">d.f. 8479</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;">Pr(&gt;χ<sup>2</sup>) 0.0000</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;"><em>g</em> 10.741</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<p>Residuals</p>
+
+<pre>     Min       1Q   Median       3Q      Max 
+-53.2109  -8.7501  -0.9886   7.6196 104.7109 
+</pre>
+
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; border-bottom: 1px solid grey; border-top: 2px solid grey;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">β</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">S.E.</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;"><em>t</em></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">Pr(&gt;|<em>t</em>|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Intercept</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;98.2025</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;1.1420</td>
+<td style="text-align: right; min-width: 7em;">86.00</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.4004</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.0569</td>
+<td style="text-align: right; min-width: 7em;">7.03</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Age'</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-0.1072</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.2140</td>
+<td style="text-align: right; min-width: 7em;">-0.50</td>
+<td style="text-align: right; min-width: 7em;">0.6164</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age''</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.8919</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.5521</td>
+<td style="text-align: right; min-width: 7em;">1.62</td>
+<td style="text-align: right; min-width: 7em;">0.1062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Gender=male</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-4.0016</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;1.6096</td>
+<td style="text-align: right; min-width: 7em;">-2.49</td>
+<td style="text-align: right; min-width: 7em;">0.0129</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age × Gender=male</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.5655</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.0802</td>
+<td style="text-align: right; min-width: 7em;">7.05</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Age' × Gender=male</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-2.0509</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.3027</td>
+<td style="text-align: right; min-width: 7em;">-6.78</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em; border-bottom: 2px solid grey;">Age'' × Gender=male</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp; 4.3539</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp;0.7852</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">5.55</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&lt;0.0001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">Predict</span>(fit_int_gender, Age, Gender))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Homework_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_int_gender &lt;- as.data.frame(Predict(fit_int_gender, Age, Gender))</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot() +</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(data = nhanes, aes(Age, BPSysAve, color = Gender), alpha = 0.1, size = 0.8) +</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_ribbon(data = pred_int_gender, aes(Age, ymin = lower, ymax = upper, fill = Gender), alpha = 0.3) +</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(data = pred_int_gender, aes(Age, yhat, color = Gender), linewidth = 1) +</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   facet_wrap(~ Gender)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="no-sharing-fully-separate-models" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="no-sharing-fully-separate-models"><span class="header-section-number">15.6</span> No sharing: fully separate models</h2>
+<p>In all of these stages, we’ve been fitting one model and sharing information between the groups of <code>Gender</code>, but an alternative approach would be fitting two completely separate models. The model statements would be separated as below.</p>
+<p><span class="math display">\[\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{male}] &amp; = \beta^{(m)}_0 + \beta^{(m)}_1\,\text{age} + \beta^{(m)}_2\,\text{age}^{\prime} + \beta^{(m)}_3\,\text{age}^{\prime\prime}  \\
+V[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{male}] &amp; = {\sigma^{2}}^{(m)}
+\ \\
+E[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{female}] &amp; = \beta^{(f)}_0 + \beta^{(f)}_1\,\text{age} + \beta^{(f)}_2\,\text{age}^{\prime} + \beta^{(f)}_3\,\text{age}^{\prime\prime}  \\
+V[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{female}] &amp; = {\sigma^{2}}^{(f)}
+\end{align*}\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the data to create two separate models</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fit_male   <span class="ot">&lt;-</span> <span class="fu">ols</span>(BPSysAve <span class="sc">~</span> <span class="fu">rcs</span>(Age, age_knots), <span class="at">data =</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(Gender <span class="sc">==</span> <span class="st">"male"</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fit_female <span class="ot">&lt;-</span> <span class="fu">ols</span>(BPSysAve <span class="sc">~</span> <span class="fu">rcs</span>(Age, age_knots), <span class="at">data =</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(Gender <span class="sc">==</span> <span class="st">"female"</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_male)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<p><strong>Linear Regression Model</strong></p>
+
+<pre>ols(formula = BPSysAve ~ rcs(Age, age_knots), data = filter(nhanes, 
+    Gender == "male"))
+</pre>
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Model Likelihood<br>
+Ratio Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Discrimination<br>
+Indexes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">Obs 4217</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">LR χ<sup>2</sup> 1036.97</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup>2</sup> 0.218</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">σ 14.5168</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">d.f. 3</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup><span style="font-size: 70%;">2</span></sup><sub><span style="font-size: 70%;">adj</span></sub> 0.217</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;">d.f. 4213</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;">Pr(&gt;χ<sup>2</sup>) 0.0000</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;"><em>g</em> 8.368</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<p>Residuals</p>
+
+<pre>    Min      1Q  Median      3Q     Max 
+-53.211  -8.825  -1.088   7.702  98.260 
+</pre>
+
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; border-bottom: 1px solid grey; border-top: 2px solid grey;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">β</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">S.E.</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;"><em>t</em></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">Pr(&gt;|<em>t</em>|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Intercept</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;94.2009</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;1.1444</td>
+<td style="text-align: right; min-width: 7em;">82.32</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.9659</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.0570</td>
+<td style="text-align: right; min-width: 7em;">16.93</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Age'</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-2.1580</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.2160</td>
+<td style="text-align: right; min-width: 7em;">-9.99</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em; border-bottom: 2px solid grey;">Age''</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp; 5.2458</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp;0.5633</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">9.31</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&lt;0.0001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_female)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<p><strong>Linear Regression Model</strong></p>
+
+<pre>ols(formula = BPSysAve ~ rcs(Age, age_knots), data = filter(nhanes, 
+    Gender == "female"))
+</pre>
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Model Likelihood<br>
+Ratio Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; border-right: 1px solid black;">Discrimination<br>
+Indexes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">Obs 4270</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">LR χ<sup>2</sup> 1878.25</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup>2</sup> 0.356</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; min-width: 9em; border-left: 1px solid black; border-right: 1px solid black;">σ 14.2634</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;">d.f. 3</td>
+<td style="text-align: center; min-width: 9em; border-right: 1px solid black;"><em>R</em><sup><span style="font-size: 70%;">2</span></sup><sub><span style="font-size: 70%;">adj</span></sub> 0.355</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-left: 1px solid black; border-right: 1px solid black;">d.f. 4266</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;">Pr(&gt;χ<sup>2</sup>) 0.0000</td>
+<td style="text-align: center; min-width: 9em; border-bottom: 2px solid grey; border-right: 1px solid black;"><em>g</em> 11.904</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<p>Residuals</p>
+
+<pre>     Min       1Q   Median       3Q      Max 
+-51.9085  -8.5291  -0.8779   7.4119 104.7109 
+</pre>
+
+
+
+<table class="gmisc_table caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; border-bottom: 1px solid grey; border-top: 2px solid grey;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">β</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">S.E.</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;"><em>t</em></th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey;">Pr(&gt;|<em>t</em>|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Intercept</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;98.2025</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;1.1319</td>
+<td style="text-align: right; min-width: 7em;">86.76</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em;">Age</td>
+<td style="text-align: right; min-width: 7em;">&nbsp; 0.4004</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.0564</td>
+<td style="text-align: right; min-width: 7em;">7.10</td>
+<td style="text-align: right; min-width: 7em;">&lt;0.0001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 7em;">Age'</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;-0.1072</td>
+<td style="text-align: right; min-width: 7em;">&nbsp;0.2121</td>
+<td style="text-align: right; min-width: 7em;">-0.51</td>
+<td style="text-align: right; min-width: 7em;">0.6133</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 7em; border-bottom: 2px solid grey;">Age''</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp; 0.8919</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">&nbsp;0.5472</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">1.63</td>
+<td style="text-align: right; min-width: 7em; border-bottom: 2px solid grey;">0.1032</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Observe that the variances are different</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sigma_male =</span> fit_male<span class="sc">$</span>stats[<span class="st">"Sigma"</span>], <span class="at">sigma_female =</span> fit_female<span class="sc">$</span>stats[<span class="st">"Sigma"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  sigma_male.Sigma sigma_female.Sigma 
+          14.51683           14.26335 </code></pre>
+</div>
+</div>
+<p>Now check out what happens when we compare the predictions between the fully separate model and the full interaction model.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pred_separate <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(nhanes<span class="sc">$</span>Gender <span class="sc">==</span> <span class="st">"male"</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">predict</span>(fit_male,   nhanes),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">predict</span>(fit_female, nhanes))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>pred_interaction <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_int_gender, nhanes)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">as.numeric</span>(pred_separate), <span class="fu">as.numeric</span>(pred_interaction))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>If there are exactly two groups, then “no sharing” (fully separate models) and “full interaction on shape” are the same mean model. Since full interactino gives every group its own spline coefficients and intercept, thats also what fitting two regressions does. The only differnce is the variance term, where now we have one for each group.</p>
+<p>The full interaction model will be different if we regularize the interaction terms (seen later) or move to more than two groups, because there are partial sharing opportunities.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./06_Explainer_claude.html" class="pagination-link" aria-label="Claude's Explainer">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Claude’s Explainer</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./07_Explainer.html" class="pagination-link" aria-label="Motivation and Review">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Motivation and Review</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

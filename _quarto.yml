@@ -5,6 +5,8 @@ book:
   title: "DS6400 Portfolio"
   author: "Stephen Olsen"
   date: ""
+  sidebar:
+    collapse-level: 1
   chapters:
     - index.qmd
     - part: "01: Performance Measures"
@@ -37,6 +39,18 @@ book:
       - "06_Paper.qmd"
       - "06_Explainer.qmd"
       - "06_Explainer_claude.qmd"
+    - part: "07: Interactions"
+      chapters:
+      - "07_Homework.qmd"
+      - "07_Explainer.qmd"
+    - part: "Final Exam"
+      chapters:
+      - "Final Exam.qmd"
+      - "Data generation.qmd"
+    - part: "Supplemental"
+      chapters:
+      - "parameterization-shrinkage-sparsity.qmd"
+
 
 
 bibliography: references.bib

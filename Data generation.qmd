@@ -1,0 +1,71 @@
+# Generate some data!
+
+```{r}
+#| code-fold: true
+#| warning: false
+
+# Install packages for later use
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Set a seed for reproducibility
+set.seed(17)
+
+```
+
+Here's the data generation model from the assignment. It is a standard linear regression model with 3 categorical variables, $X_1$, $X_2$, and $X_3$. We will generate datasets with $N=200$ observations according to the following specifications:
+
+| Variable | Levels |
+|----------|--------|
+| $X_1$    | 3      |
+| $X_2$    | 10     |
+| $X_3$    | 20     |
+
+
+$$Y = 0.5\,I_{(X_2 \in \{1\})} + 1\,I_{(X_2 \in \{2,3\})} +1.75\,I_{(X_2 \in \{4,5,6\})}+2.75\,I_{(X_2 \in \{7,8,9,10\})} + \epsilon\qquad \epsilon \sim N(0,1)$$
+
+The assignment provides no specification for how the samples of each variable should be generated, so we will use a uniform sample.
+
+Below, we'll define a function for generating data, because we'll want to use that later in our simulation steps.
+
+```{r}
+
+# Generate data for 'n' observations
+generate_data <- function(n = 200){
+
+    # define number of observations to be 200
+    n_obs <- n
+
+    # generate categorical variables for dataset
+    # add prob = c(p, p, p) to adjust group representation
+    X_1 <- factor(sample(1:3, n_obs, replace = TRUE), levels = 1:3)
+    X_2 <- factor(sample(1:10, n_obs, replace = TRUE), levels = 1:10)
+    X_3 <- factor(sample(1:20, n_obs, replace= TRUE), levels = 1:20)
+
+    # generate outcome variable based on X_2 values plus random noise
+    Y <- ifelse(X_2 == 1, 0.5,
+         ifelse(X_2 %in% 2:3, 1,
+         ifelse(X_2 %in% 4:6, 1.75, 2.75))) + rnorm(n_obs)
+
+    # combine data to one data frame and return
+    data.frame(Y, X_1, X_2, X_3)
+}
+
+sample_data <- generate_data()
+head(sample_data)
+```
+
+
+Let's do some EDA to check out how our data looks now.
+
+```{r}
+
+yl <- range(sample_data$Y)
+
+par(mfrow = c(1,3))
+plot(Y ~ X_1, data = sample_data, xlab = 'X_1', ylab = 'Y', ylim = yl)
+plot(Y ~ X_2, data = sample_data, xlab = 'X_2', ylab = '', ylim = yl)
+plot(Y ~ X_3, data = sample_data, xlab = 'X_3', ylab = '', ylim = yl)
+
+```

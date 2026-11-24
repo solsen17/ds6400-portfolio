@@ -1,0 +1,171 @@
+# Interactions
+
+Notes and Homework from [https://tgstewart.cloud/ipm/interactions.html](https://tgstewart.cloud/ipm/interactions.html)
+
+### Two motivating questions:
+
+1. What happens when the information of relationships is nonlinear?
+2. Do we have to decide what to do or can regularization do it for us?
+
+## Working example: 
+
+NHANES Data
+
+- Outcome: 
+    - `BPSysAve`: average systolic blood pressure
+- Predictors:
+    - `Age`
+    - `Weight`
+    - `BMI`
+    - `Height`
+    - `Gender`: Male, Female (near even split)
+    - `Race1`: Black, Hispanid, Mexican, White, Other (not even splits, heavily represented by white)
+
+```{r}
+#| message: false
+#| warning: false
+
+# Load in packages
+library(NHANES)
+library(rms)
+library(dplyr)
+library(glmnet)
+library(plotly)
+library(knitr)
+library(ggplot2)
+
+options(prType = "html")
+
+# Load data and select variables of interest
+data(NHANES)
+nhanes <- NHANES |>
+  select(BPSysAve, Age, Weight, BMI, Height, Gender, Race1) |>
+  na.omit() |>
+  as.data.frame()
+
+dd_nhanes <- datadist(nhanes)
+options(datadist = "dd_nhanes")
+
+## View distribution s of the data
+Hmisc::describe(nhanes[, c("BPSysAve", "Age", "BMI", "Gender", "Race1")])
+
+```
+
+## Group specific non-linear relationships
+
+## Fully shared: one curve for everyone
+
+If we predict `BPSysAve` based only on `Age`, but we allow the relationship to be nonlinear, we can apply a restricted cubic spline for an example model.
+
+The model looks like this:
+
+$$\begin{align*}
+E[\text{BPSysAve}\mid \text{age}] & = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime} \\
+E[\text{BPSysAve}\mid \text{age}] & = \sigma^2
+\end{align*}$$
+
+```{r}
+
+age_knots <- attr(rcs(nhanes$Age, 4), "parms")
+
+fit_shared <- ols(BPSysAve ~ rcs(Age, age_knots), data = nhanes)
+print(fit_shared)
+
+ggplot(Predict(fit_shared, Age))
+# pred_shared <- as.data.frame(Predict(fit_shared, Age))
+# ggplot() +
+#   geom_point(data = nhanes, aes(Age, BPSysAve), alpha = 0.1, size = 0.8) +
+#   geom_ribbon(data = pred_shared, aes(Age, ymin = lower, ymax = upper), alpha = 0.3) +
+#   geom_line(data = pred_shared, aes(Age, yhat), linewidth = 1)
+```
+
+Here the cubic spline knots are fixed once so we will reuse them latter throughout the exploration. The only thing changing will be the coefficients.
+
+## Partial sharing: shared shape, shifted
+
+If we add in `Gender` to the model as a main effect with no interaction, then the two groups (male and female) can have different baselines while maintaining the same shape from the `Age`. Here's what the new model looks like under that situation:
+
+$$\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{gender}] & = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime} + \beta_4\,I(\text{male})  \\
+V[\text{BPSysAve}\mid \text{age}, \text{gender}] & = \sigma^2
+\end{align*}$$
+
+
+You can see the extra term just tacked on to the end, and the new coefficients below.
+
+```{r}
+
+fit_offset <- ols(BPSysAve ~ rcs(Age, age_knots) + Gender, data = nhanes)
+print(fit_offset)
+
+ggplot(Predict(fit_offset, Age, Gender))
+# pred_offset <- as.data.frame(Predict(fit_offset, Age, Gender))
+# ggplot() +
+#   geom_point(data = nhanes, aes(Age, BPSysAve, color = Gender), alpha = 0.1, size = 0.8) +
+#   geom_ribbon(data = pred_offset, aes(Age, ymin = lower, ymax = upper, fill = Gender), alpha = 0.3) +
+#   geom_line(data = pred_offset, aes(Age, yhat, color = Gender), linewidth = 1)
+
+```
+
+## Full interaction: shape differs by group
+
+Our next evolution of the model is below, where the `Gender` term is now interacting with every term that we originally had from the nonlinear `Age` model. Now the shape of the curve can be different for each gender group.
+
+$$\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{gender}] & = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime} + \beta_4\,I(\text{male}) + \beta_5\,\text{age}\cdot I(\text{male}) + \beta_6\,\text{age}^{\prime}\cdot I(\text{male}) + \beta_7\,\text{age}^{\prime\prime}\cdot I(\text{male})  \\
+V[\text{BPSysAve}\mid \text{age}, \text{gender}] & = \sigma^2
+\end{align*}$$
+```{r}
+
+fit_int_gender <- ols(BPSysAve ~ rcs(Age, age_knots) * Gender, data = nhanes)
+print(fit_int_gender)
+
+ggplot(Predict(fit_int_gender, Age, Gender))
+# pred_int_gender <- as.data.frame(Predict(fit_int_gender, Age, Gender))
+# ggplot() +
+#   geom_point(data = nhanes, aes(Age, BPSysAve, color = Gender), alpha = 0.1, size = 0.8) +
+#   geom_ribbon(data = pred_int_gender, aes(Age, ymin = lower, ymax = upper, fill = Gender), alpha = 0.3) +
+#   geom_line(data = pred_int_gender, aes(Age, yhat, color = Gender), linewidth = 1) +
+#   facet_wrap(~ Gender)
+
+```
+
+## No sharing: fully separate models
+
+In all of these stages, we've been fitting one model and sharing information between the groups of `Gender`, but an alternative approach would be fitting two completely separate models. The model statements would be separated as below.
+
+$$\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{male}] & = \beta^{(m)}_0 + \beta^{(m)}_1\,\text{age} + \beta^{(m)}_2\,\text{age}^{\prime} + \beta^{(m)}_3\,\text{age}^{\prime\prime}  \\
+V[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{male}] & = {\sigma^{2}}^{(m)}
+\ \\
+E[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{female}] & = \beta^{(f)}_0 + \beta^{(f)}_1\,\text{age} + \beta^{(f)}_2\,\text{age}^{\prime} + \beta^{(f)}_3\,\text{age}^{\prime\prime}  \\
+V[\text{BPSysAve}\mid \text{age}, \text{sex}=\text{female}] & = {\sigma^{2}}^{(f)}
+\end{align*}$$
+
+```{r}
+
+# Filter the data to create two separate models
+fit_male   <- ols(BPSysAve ~ rcs(Age, age_knots), data = nhanes |> filter(Gender == "male"))
+fit_female <- ols(BPSysAve ~ rcs(Age, age_knots), data = nhanes |> filter(Gender == "female"))
+
+print(fit_male)
+print(fit_female)
+
+# Observe that the variances are different
+c(sigma_male = fit_male$stats["Sigma"], sigma_female = fit_female$stats["Sigma"])
+```
+
+Now check out what happens when we compare the predictions between the fully separate model and the full interaction model.
+```{r}
+pred_separate <- ifelse(nhanes$Gender == "male",
+                         predict(fit_male,   nhanes),
+                         predict(fit_female, nhanes))
+pred_interaction <- predict(fit_int_gender, nhanes)
+
+all.equal(as.numeric(pred_separate), as.numeric(pred_interaction))
+```
+
+If there are exactly two groups, then "no sharing" (fully separate models) and "full interaction on shape" are the same mean model. Since full interactino gives every group its own spline coefficients and intercept, thats also what fitting two regressions does. The only differnce is the variance term, where now we have one for each group.
+
+The full interaction model will be different if we regularize the interaction terms (seen later) or move to more than two groups, because there are partial sharing opportunities.
+

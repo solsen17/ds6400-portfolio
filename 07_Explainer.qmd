@@ -1,0 +1,34 @@
+# Motivation and Review
+
+Let's simply recall everything from the [prior module](07_Homework.qmd) and the related resource [https://tgstewart.cloud/ipm/interactions.html](https://tgstewart.cloud/ipm/interactions.html), which gives us reasoning for pursuing this. We'll continue working with the NHANES data and the same variables of interest. Toward the end of the module we observed two things:
+
+1. Lasso zeroes out individual coefficients, so a group can end up "partially pooled", for example, the race group of 'Hispanic' could end up with 2/4 deviation terms. That doesn't have a clean meaning when we're working with the coefficients, so we'd prefer to have a "group lasso" penalty that could zero things out altogether!
+
+2. If we have more than 2 groups, there's a lot of possible sharing structures between full sharing (all one model) and no sharing (all separate models). Shrinking toward the average doesn't reveal a potential structure like for the race group like 'Hispanic and Mexican share a curve', but "fusion" can do this!
+
+So let's explore both of these methods.
+
+# Group Lasso
+
+Let's start with recalling the lasso formula
+
+$$\hat{\beta}_{\text{lasso}} = \underset{\beta}{\arg\min}\  \|Y - X\beta\|_2^2 + \lambda\|\beta\|_1$$
+where $\|\beta\|_1 = \sum_j |\beta_j|$ is the $L_1$ norm. 
+
+A key attribute of the lasso is that some coefficients are exactly zero, so variable selection is performed.
+
+Previously, we were cool with that in general, but now we have blown up our model with interaction terms and groups and we want to be a little bit more strategic about which terms we drop. For example, if we're going to drop the terms for $Age*I(hispanic)$ and $Age^2 * I(hispanic)$, then we may want to just drop all the terms associated with $I(hispanic)$ from the model, or remove the group. An example full interaction model with `Race1` like the one described is shown below:
+
+$$\begin{align*}
+E[\text{BPSysAve}\mid \text{age}, \text{race}] & = \beta_0 + \beta_1\,\text{age} + \beta_2\,\text{age}^{\prime} + \beta_3\,\text{age}^{\prime\prime}\\
+&+ \beta_4\,I(\text{hispanic}) + \beta_5\,\text{age}\cdot I(\text{hispanic}) + \beta_6\,\text{age}^{\prime}\cdot I(\text{hispanic}) + \beta_7\,\text{age}^{\prime\prime}\cdot I(\text{hispanic})  \\
+&+ \beta_8\,I(\text{mexican}) + \beta_9\,\text{age}\cdot I(\text{mexican}) + \beta_{10}\,\text{age}^{\prime}\cdot I(\text{mexican}) + \beta_{11}\,\text{age}^{\prime\prime}\cdot I(\text{mexican})  \\
+&+ \beta_{12}\,I(\text{white}) + \beta_{13}\,\text{age}\cdot I(\text{white}) + \beta_{14}\,\text{age}^{\prime}\cdot I(\text{white}) + \beta_{15}\,\text{age}^{\prime\prime}\cdot I(\text{white})  \\
+&+ \beta_{16}\,I(\text{other}) + \beta_{17}\,\text{age}\cdot I(\text{other}) + \beta_{18}\,\text{age}^{\prime}\cdot I(\text{other}) + \beta_{19}\,\text{age}^{\prime\prime}\cdot I(\text{other})  \\
+V[\text{BPSysAve}\mid \text{age}, \text{race}] & = \sigma^2
+\end{align*}$$
+
+
+
+# Fusion
+
