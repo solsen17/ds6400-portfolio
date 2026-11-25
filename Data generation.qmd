@@ -81,9 +81,9 @@ summary(lm1)
 
 We got a result! But what does that mean? What did we actually provide it? Is this useful to us at all?
 
-What we expected to provide was some version of 
+What we expected to get was some version of 
 
-$$E[y|X] = B1*X1 + B2*X2 + B3*X3$$, but what really happened was categorical variables rather than continuous variables.
+$$E[y|X] = B0 + B1*X1 + B2*X2 + B3*X3$$, but what really happened was categorical variables rather than continuous variables.
 
 This was an additive model with no interaction terms. Under the hood, R made a design matrix $X$. Check out what it looks like below:
 
@@ -99,4 +99,29 @@ If we'd prefer to use a cell means, unweighted average deviaiton, or weighted av
 
 We want to be deliberate in our selection of which parameterization to use as we proceed forward.
 
+For a quick fun exploration, i'm going to test this with a cell means parameterization on a full interation model.
 
+[INCORRECT - this would be for a situation with continuous variables, but we're categorical]
+This model is $$E[y|X] = B1*X1 + B2*X2 + B3*X3 + B12*X1*X2 + B13*X1*X3 + B23*X2*X3$$, where we've taken away the intercept term and made an interaction term between each combination of predictors.
+
+So this model is actually...
+```{r}
+
+lm_cell_full <- lm(Y ~ X_1:X_2:X_3 - 1, data = sample_data)
+summary(lm_cell_full)
+model.matrix(Y ~ X_1:X_2:X_3 - 1, data = sample_data) |> head()
+
+```
+
+I'm actually not sure that i'm interpreting this right / understanding what's getting created...
+I'm not! more research to do...
+
+Take a look at this later...
+```{r}
+
+X_t <- model.matrix(~ X_1 + X_2 + X_3, data = sample_data)[, -1]
+X_s <- model.matrix(~ X_1 + X_2 + X_3, data = sample_data,
+        contrasts.arg = list(X_1 = contr.sum, X_2 = contr.sum, X_3 = contr.sum))[, -1]
+
+X_s |> head()
+```

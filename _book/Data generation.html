@@ -575,8 +575,8 @@ F-statistic: 5.254 on 30 and 169 DF,  p-value: 1.044e-12</code></pre>
 </div>
 </div>
 <p>We got a result! But what does that mean? What did we actually provide it? Is this useful to us at all?</p>
-<p>What we expected to provide was some version of</p>
-<p><span class="math display">\[E[y|X] = B1*X1 + B2*X2 + B3*X3\]</span>, but what really happened was categorical variables rather than continuous variables.</p>
+<p>What we expected to get was some version of</p>
+<p><span class="math display">\[E[y|X] = B0 + B1*X1 + B2*X2 + B3*X3\]</span>, but what really happened was categorical variables rather than continuous variables.</p>
 <p>This was an additive model with no interaction terms. Under the hood, R made a design matrix <span class="math inline">\(X\)</span>. Check out what it looks like below:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model.matrix</span>(Y <span class="sc">~</span> X_1 <span class="sc">+</span> X_2 <span class="sc">+</span> X_3, <span class="at">data =</span> sample_data) <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -607,6 +607,1625 @@ F-statistic: 5.254 on 30 and 169 DF,  p-value: 1.044e-12</code></pre>
 <p>You can see that for each group, R dropped the first level to serve as the reference category. The intercept represents the predicted mean of Y when all three variables are at there respective reference levels simultaneously. This is often referred to as the reference cell parameterization. So each parameter we see in the output is actually a difference from the reference level.</p>
 <p>If we’d prefer to use a cell means, unweighted average deviaiton, or weighted average deviaiton, then we could adjust our function call to use one of these instead.</p>
 <p>We want to be deliberate in our selection of which parameterization to use as we proceed forward.</p>
+<p>For a quick fun exploration, i’m going to test this with a cell means parameterization on a full interation model.</p>
+<p>[INCORRECT - this would be for a situation with continuous variables, but we’re categorical] This model is <span class="math display">\[E[y|X] = B1*X1 + B2*X2 + B3*X3 + B12*X1*X2 + B13*X1*X3 + B23*X2*X3\]</span>, where we’ve taken away the intercept term and made an interaction term between each combination of predictors.</p>
+<p>So this model is actually…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lm_cell_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> X_1<span class="sc">:</span>X_2<span class="sc">:</span>X_3 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> sample_data)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_cell_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ X_1:X_2:X_3 - 1, data = sample_data)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-1.075  0.000  0.000  0.000  1.446 
+
+Coefficients: (431 not defined because of singularities)
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+X_11:X_21:X_31    0.75560    0.86800   0.871 0.390714    
+X_12:X_21:X_31         NA         NA      NA       NA    
+X_13:X_21:X_31         NA         NA      NA       NA    
+X_11:X_22:X_31         NA         NA      NA       NA    
+X_12:X_22:X_31         NA         NA      NA       NA    
+X_13:X_22:X_31         NA         NA      NA       NA    
+X_11:X_23:X_31         NA         NA      NA       NA    
+X_12:X_23:X_31         NA         NA      NA       NA    
+X_13:X_23:X_31         NA         NA      NA       NA    
+X_11:X_24:X_31         NA         NA      NA       NA    
+X_12:X_24:X_31         NA         NA      NA       NA    
+X_13:X_24:X_31         NA         NA      NA       NA    
+X_11:X_25:X_31         NA         NA      NA       NA    
+X_12:X_25:X_31         NA         NA      NA       NA    
+X_13:X_25:X_31         NA         NA      NA       NA    
+X_11:X_26:X_31         NA         NA      NA       NA    
+X_12:X_26:X_31         NA         NA      NA       NA    
+X_13:X_26:X_31    2.52715    0.61377   4.117 0.000263 ***
+X_11:X_27:X_31         NA         NA      NA       NA    
+X_12:X_27:X_31         NA         NA      NA       NA    
+X_13:X_27:X_31         NA         NA      NA       NA    
+X_11:X_28:X_31    2.85706    0.86800   3.292 0.002492 ** 
+X_12:X_28:X_31    3.78470    0.86800   4.360 0.000133 ***
+X_13:X_28:X_31         NA         NA      NA       NA    
+X_11:X_29:X_31         NA         NA      NA       NA    
+X_12:X_29:X_31         NA         NA      NA       NA    
+X_13:X_29:X_31         NA         NA      NA       NA    
+X_11:X_210:X_31        NA         NA      NA       NA    
+X_12:X_210:X_31        NA         NA      NA       NA    
+X_13:X_210:X_31        NA         NA      NA       NA    
+X_11:X_21:X_32         NA         NA      NA       NA    
+X_12:X_21:X_32         NA         NA      NA       NA    
+X_13:X_21:X_32         NA         NA      NA       NA    
+X_11:X_22:X_32         NA         NA      NA       NA    
+X_12:X_22:X_32         NA         NA      NA       NA    
+X_13:X_22:X_32         NA         NA      NA       NA    
+X_11:X_23:X_32         NA         NA      NA       NA    
+X_12:X_23:X_32   -0.35954    0.86800  -0.414 0.681566    
+X_13:X_23:X_32    1.14774    0.86800   1.322 0.195749    
+X_11:X_24:X_32    1.15529    0.86800   1.331 0.192901    
+X_12:X_24:X_32         NA         NA      NA       NA    
+X_13:X_24:X_32         NA         NA      NA       NA    
+X_11:X_25:X_32         NA         NA      NA       NA    
+X_12:X_25:X_32    1.25369    0.86800   1.444 0.158674    
+X_13:X_25:X_32    2.65828    0.86800   3.063 0.004510 ** 
+X_11:X_26:X_32         NA         NA      NA       NA    
+X_12:X_26:X_32    3.54539    0.86800   4.085 0.000289 ***
+X_13:X_26:X_32         NA         NA      NA       NA    
+X_11:X_27:X_32         NA         NA      NA       NA    
+X_12:X_27:X_32         NA         NA      NA       NA    
+X_13:X_27:X_32         NA         NA      NA       NA    
+X_11:X_28:X_32         NA         NA      NA       NA    
+X_12:X_28:X_32         NA         NA      NA       NA    
+X_13:X_28:X_32    3.49314    0.86800   4.024 0.000341 ***
+X_11:X_29:X_32    2.45402    0.86800   2.827 0.008152 ** 
+X_12:X_29:X_32         NA         NA      NA       NA    
+X_13:X_29:X_32    1.97459    0.61377   3.217 0.003027 ** 
+X_11:X_210:X_32   1.47967    0.86800   1.705 0.098257 .  
+X_12:X_210:X_32   3.72288    0.86800   4.289 0.000163 ***
+X_13:X_210:X_32        NA         NA      NA       NA    
+X_11:X_21:X_33   -1.74299    0.86800  -2.008 0.053419 .  
+X_12:X_21:X_33         NA         NA      NA       NA    
+X_13:X_21:X_33         NA         NA      NA       NA    
+X_11:X_22:X_33         NA         NA      NA       NA    
+X_12:X_22:X_33         NA         NA      NA       NA    
+X_13:X_22:X_33    0.58043    0.86800   0.669 0.508638    
+X_11:X_23:X_33         NA         NA      NA       NA    
+X_12:X_23:X_33         NA         NA      NA       NA    
+X_13:X_23:X_33         NA         NA      NA       NA    
+X_11:X_24:X_33    1.02901    0.86800   1.185 0.244828    
+X_12:X_24:X_33         NA         NA      NA       NA    
+X_13:X_24:X_33         NA         NA      NA       NA    
+X_11:X_25:X_33    1.09185    0.86800   1.258 0.217822    
+X_12:X_25:X_33         NA         NA      NA       NA    
+X_13:X_25:X_33         NA         NA      NA       NA    
+X_11:X_26:X_33         NA         NA      NA       NA    
+X_12:X_26:X_33         NA         NA      NA       NA    
+X_13:X_26:X_33         NA         NA      NA       NA    
+X_11:X_27:X_33   -0.74427    0.86800  -0.857 0.397772    
+X_12:X_27:X_33    3.91271    0.86800   4.508 8.76e-05 ***
+X_13:X_27:X_33         NA         NA      NA       NA    
+X_11:X_28:X_33    3.49517    0.86800   4.027 0.000339 ***
+X_12:X_28:X_33         NA         NA      NA       NA    
+X_13:X_28:X_33         NA         NA      NA       NA    
+X_11:X_29:X_33    2.20584    0.86800   2.541 0.016265 *  
+X_12:X_29:X_33         NA         NA      NA       NA    
+X_13:X_29:X_33         NA         NA      NA       NA    
+X_11:X_210:X_33   1.95764    0.86800   2.255 0.031315 *  
+X_12:X_210:X_33        NA         NA      NA       NA    
+X_13:X_210:X_33        NA         NA      NA       NA    
+X_11:X_21:X_34         NA         NA      NA       NA    
+X_12:X_21:X_34         NA         NA      NA       NA    
+X_13:X_21:X_34         NA         NA      NA       NA    
+X_11:X_22:X_34    0.93431    0.86800   1.076 0.290055    
+X_12:X_22:X_34         NA         NA      NA       NA    
+X_13:X_22:X_34         NA         NA      NA       NA    
+X_11:X_23:X_34    1.11370    0.86800   1.283 0.208979    
+X_12:X_23:X_34         NA         NA      NA       NA    
+X_13:X_23:X_34         NA         NA      NA       NA    
+X_11:X_24:X_34    1.84357    0.86800   2.124 0.041758 *  
+X_12:X_24:X_34         NA         NA      NA       NA    
+X_13:X_24:X_34         NA         NA      NA       NA    
+X_11:X_25:X_34         NA         NA      NA       NA    
+X_12:X_25:X_34         NA         NA      NA       NA    
+X_13:X_25:X_34         NA         NA      NA       NA    
+X_11:X_26:X_34         NA         NA      NA       NA    
+X_12:X_26:X_34    0.24549    0.86800   0.283 0.779193    
+X_13:X_26:X_34         NA         NA      NA       NA    
+X_11:X_27:X_34         NA         NA      NA       NA    
+X_12:X_27:X_34    1.76981    0.86800   2.039 0.050059 .  
+X_13:X_27:X_34         NA         NA      NA       NA    
+X_11:X_28:X_34         NA         NA      NA       NA    
+X_12:X_28:X_34         NA         NA      NA       NA    
+X_13:X_28:X_34    1.27843    0.86800   1.473 0.150874    
+X_11:X_29:X_34         NA         NA      NA       NA    
+X_12:X_29:X_34         NA         NA      NA       NA    
+X_13:X_29:X_34         NA         NA      NA       NA    
+X_11:X_210:X_34        NA         NA      NA       NA    
+X_12:X_210:X_34   2.69418    0.86800   3.104 0.004057 ** 
+X_13:X_210:X_34        NA         NA      NA       NA    
+X_11:X_21:X_35         NA         NA      NA       NA    
+X_12:X_21:X_35    0.15596    0.61377   0.254 0.801096    
+X_13:X_21:X_35   -0.72967    0.86800  -0.841 0.406989    
+X_11:X_22:X_35         NA         NA      NA       NA    
+X_12:X_22:X_35         NA         NA      NA       NA    
+X_13:X_22:X_35         NA         NA      NA       NA    
+X_11:X_23:X_35         NA         NA      NA       NA    
+X_12:X_23:X_35    2.73918    0.86800   3.156 0.003550 ** 
+X_13:X_23:X_35    1.89851    0.86800   2.187 0.036393 *  
+X_11:X_24:X_35         NA         NA      NA       NA    
+X_12:X_24:X_35    2.25383    0.86800   2.597 0.014269 *  
+X_13:X_24:X_35         NA         NA      NA       NA    
+X_11:X_25:X_35    0.74642    0.86800   0.860 0.396430    
+X_12:X_25:X_35         NA         NA      NA       NA    
+X_13:X_25:X_35         NA         NA      NA       NA    
+X_11:X_26:X_35         NA         NA      NA       NA    
+X_12:X_26:X_35         NA         NA      NA       NA    
+X_13:X_26:X_35         NA         NA      NA       NA    
+X_11:X_27:X_35    1.78017    0.86800   2.051 0.048811 *  
+X_12:X_27:X_35         NA         NA      NA       NA    
+X_13:X_27:X_35    3.15504    0.61377   5.140 1.44e-05 ***
+X_11:X_28:X_35    2.76215    0.86800   3.182 0.003315 ** 
+X_12:X_28:X_35    3.66122    0.86800   4.218 0.000199 ***
+X_13:X_28:X_35         NA         NA      NA       NA    
+X_11:X_29:X_35         NA         NA      NA       NA    
+X_12:X_29:X_35         NA         NA      NA       NA    
+X_13:X_29:X_35         NA         NA      NA       NA    
+X_11:X_210:X_35        NA         NA      NA       NA    
+X_12:X_210:X_35        NA         NA      NA       NA    
+X_13:X_210:X_35   4.28941    0.86800   4.942 2.54e-05 ***
+X_11:X_21:X_36         NA         NA      NA       NA    
+X_12:X_21:X_36         NA         NA      NA       NA    
+X_13:X_21:X_36         NA         NA      NA       NA    
+X_11:X_22:X_36    1.43477    0.61377   2.338 0.026037 *  
+X_12:X_22:X_36         NA         NA      NA       NA    
+X_13:X_22:X_36         NA         NA      NA       NA    
+X_11:X_23:X_36    0.99030    0.86800   1.141 0.262649    
+X_12:X_23:X_36         NA         NA      NA       NA    
+X_13:X_23:X_36         NA         NA      NA       NA    
+X_11:X_24:X_36         NA         NA      NA       NA    
+X_12:X_24:X_36    2.71357    0.86800   3.126 0.003830 ** 
+X_13:X_24:X_36         NA         NA      NA       NA    
+X_11:X_25:X_36    0.81743    0.86800   0.942 0.353608    
+X_12:X_25:X_36         NA         NA      NA       NA    
+X_13:X_25:X_36         NA         NA      NA       NA    
+X_11:X_26:X_36         NA         NA      NA       NA    
+X_12:X_26:X_36         NA         NA      NA       NA    
+X_13:X_26:X_36         NA         NA      NA       NA    
+X_11:X_27:X_36         NA         NA      NA       NA    
+X_12:X_27:X_36         NA         NA      NA       NA    
+X_13:X_27:X_36         NA         NA      NA       NA    
+X_11:X_28:X_36         NA         NA      NA       NA    
+X_12:X_28:X_36         NA         NA      NA       NA    
+X_13:X_28:X_36    2.10404    0.86800   2.424 0.021377 *  
+X_11:X_29:X_36         NA         NA      NA       NA    
+X_12:X_29:X_36         NA         NA      NA       NA    
+X_13:X_29:X_36         NA         NA      NA       NA    
+X_11:X_210:X_36        NA         NA      NA       NA    
+X_12:X_210:X_36   3.30422    0.86800   3.807 0.000623 ***
+X_13:X_210:X_36   1.19550    0.86800   1.377 0.178283    
+X_11:X_21:X_37    0.95440    0.86800   1.100 0.279997    
+X_12:X_21:X_37         NA         NA      NA       NA    
+X_13:X_21:X_37         NA         NA      NA       NA    
+X_11:X_22:X_37         NA         NA      NA       NA    
+X_12:X_22:X_37         NA         NA      NA       NA    
+X_13:X_22:X_37         NA         NA      NA       NA    
+X_11:X_23:X_37         NA         NA      NA       NA    
+X_12:X_23:X_37         NA         NA      NA       NA    
+X_13:X_23:X_37         NA         NA      NA       NA    
+X_11:X_24:X_37         NA         NA      NA       NA    
+X_12:X_24:X_37         NA         NA      NA       NA    
+X_13:X_24:X_37    0.30124    0.86800   0.347 0.730894    
+X_11:X_25:X_37         NA         NA      NA       NA    
+X_12:X_25:X_37         NA         NA      NA       NA    
+X_13:X_25:X_37         NA         NA      NA       NA    
+X_11:X_26:X_37         NA         NA      NA       NA    
+X_12:X_26:X_37         NA         NA      NA       NA    
+X_13:X_26:X_37         NA         NA      NA       NA    
+X_11:X_27:X_37         NA         NA      NA       NA    
+X_12:X_27:X_37         NA         NA      NA       NA    
+X_13:X_27:X_37         NA         NA      NA       NA    
+X_11:X_28:X_37         NA         NA      NA       NA    
+X_12:X_28:X_37         NA         NA      NA       NA    
+X_13:X_28:X_37         NA         NA      NA       NA    
+X_11:X_29:X_37         NA         NA      NA       NA    
+X_12:X_29:X_37         NA         NA      NA       NA    
+X_13:X_29:X_37         NA         NA      NA       NA    
+X_11:X_210:X_37        NA         NA      NA       NA    
+X_12:X_210:X_37        NA         NA      NA       NA    
+X_13:X_210:X_37   2.21980    0.86800   2.557 0.015659 *  
+X_11:X_21:X_38    0.92842    0.86800   1.070 0.293054    
+X_12:X_21:X_38         NA         NA      NA       NA    
+X_13:X_21:X_38         NA         NA      NA       NA    
+X_11:X_22:X_38         NA         NA      NA       NA    
+X_12:X_22:X_38         NA         NA      NA       NA    
+X_13:X_22:X_38         NA         NA      NA       NA    
+X_11:X_23:X_38         NA         NA      NA       NA    
+X_12:X_23:X_38         NA         NA      NA       NA    
+X_13:X_23:X_38    0.89638    0.61377   1.460 0.154225    
+X_11:X_24:X_38    2.16189    0.86800   2.491 0.018316 *  
+X_12:X_24:X_38         NA         NA      NA       NA    
+X_13:X_24:X_38         NA         NA      NA       NA    
+X_11:X_25:X_38         NA         NA      NA       NA    
+X_12:X_25:X_38         NA         NA      NA       NA    
+X_13:X_25:X_38         NA         NA      NA       NA    
+X_11:X_26:X_38    0.24817    0.86800   0.286 0.776846    
+X_12:X_26:X_38         NA         NA      NA       NA    
+X_13:X_26:X_38    2.65362    0.86800   3.057 0.004573 ** 
+X_11:X_27:X_38         NA         NA      NA       NA    
+X_12:X_27:X_38         NA         NA      NA       NA    
+X_13:X_27:X_38         NA         NA      NA       NA    
+X_11:X_28:X_38         NA         NA      NA       NA    
+X_12:X_28:X_38         NA         NA      NA       NA    
+X_13:X_28:X_38         NA         NA      NA       NA    
+X_11:X_29:X_38         NA         NA      NA       NA    
+X_12:X_29:X_38         NA         NA      NA       NA    
+X_13:X_29:X_38    5.40064    0.86800   6.222 6.54e-07 ***
+X_11:X_210:X_38        NA         NA      NA       NA    
+X_12:X_210:X_38   2.20590    0.61377   3.594 0.001113 ** 
+X_13:X_210:X_38        NA         NA      NA       NA    
+X_11:X_21:X_39         NA         NA      NA       NA    
+X_12:X_21:X_39         NA         NA      NA       NA    
+X_13:X_21:X_39    1.61861    0.86800   1.865 0.071707 .  
+X_11:X_22:X_39         NA         NA      NA       NA    
+X_12:X_22:X_39    1.91514    0.86800   2.206 0.034896 *  
+X_13:X_22:X_39         NA         NA      NA       NA    
+X_11:X_23:X_39         NA         NA      NA       NA    
+X_12:X_23:X_39         NA         NA      NA       NA    
+X_13:X_23:X_39         NA         NA      NA       NA    
+X_11:X_24:X_39    1.57608    0.86800   1.816 0.079091 .  
+X_12:X_24:X_39    0.21247    0.86800   0.245 0.808236    
+X_13:X_24:X_39         NA         NA      NA       NA    
+X_11:X_25:X_39         NA         NA      NA       NA    
+X_12:X_25:X_39         NA         NA      NA       NA    
+X_13:X_25:X_39         NA         NA      NA       NA    
+X_11:X_26:X_39    3.17564    0.86800   3.659 0.000934 ***
+X_12:X_26:X_39         NA         NA      NA       NA    
+X_13:X_26:X_39    2.16857    0.61377   3.533 0.001311 ** 
+X_11:X_27:X_39         NA         NA      NA       NA    
+X_12:X_27:X_39    2.77365    0.86800   3.195 0.003202 ** 
+X_13:X_27:X_39         NA         NA      NA       NA    
+X_11:X_28:X_39         NA         NA      NA       NA    
+X_12:X_28:X_39         NA         NA      NA       NA    
+X_13:X_28:X_39    4.03226    0.86800   4.645 5.92e-05 ***
+X_11:X_29:X_39         NA         NA      NA       NA    
+X_12:X_29:X_39         NA         NA      NA       NA    
+X_13:X_29:X_39    2.42922    0.61377   3.958 0.000411 ***
+X_11:X_210:X_39   4.98536    0.86800   5.744 2.55e-06 ***
+X_12:X_210:X_39        NA         NA      NA       NA    
+X_13:X_210:X_39        NA         NA      NA       NA    
+X_11:X_21:X_310        NA         NA      NA       NA    
+X_12:X_21:X_310  -0.65032    0.61377  -1.060 0.297532    
+X_13:X_21:X_310        NA         NA      NA       NA    
+X_11:X_22:X_310   1.61250    0.61377   2.627 0.013263 *  
+X_12:X_22:X_310        NA         NA      NA       NA    
+X_13:X_22:X_310        NA         NA      NA       NA    
+X_11:X_23:X_310        NA         NA      NA       NA    
+X_12:X_23:X_310        NA         NA      NA       NA    
+X_13:X_23:X_310        NA         NA      NA       NA    
+X_11:X_24:X_310        NA         NA      NA       NA    
+X_12:X_24:X_310        NA         NA      NA       NA    
+X_13:X_24:X_310        NA         NA      NA       NA    
+X_11:X_25:X_310        NA         NA      NA       NA    
+X_12:X_25:X_310   0.37600    0.86800   0.433 0.667885    
+X_13:X_25:X_310   1.53772    0.86800   1.772 0.086297 .  
+X_11:X_26:X_310        NA         NA      NA       NA    
+X_12:X_26:X_310        NA         NA      NA       NA    
+X_13:X_26:X_310        NA         NA      NA       NA    
+X_11:X_27:X_310        NA         NA      NA       NA    
+X_12:X_27:X_310        NA         NA      NA       NA    
+X_13:X_27:X_310        NA         NA      NA       NA    
+X_11:X_28:X_310        NA         NA      NA       NA    
+X_12:X_28:X_310        NA         NA      NA       NA    
+X_13:X_28:X_310        NA         NA      NA       NA    
+X_11:X_29:X_310        NA         NA      NA       NA    
+X_12:X_29:X_310   2.87265    0.86800   3.310 0.002377 ** 
+X_13:X_29:X_310   3.27589    0.86800   3.774 0.000682 ***
+X_11:X_210:X_310       NA         NA      NA       NA    
+X_12:X_210:X_310       NA         NA      NA       NA    
+X_13:X_210:X_310  3.35421    0.86800   3.864 0.000532 ***
+X_11:X_21:X_311        NA         NA      NA       NA    
+X_12:X_21:X_311        NA         NA      NA       NA    
+X_13:X_21:X_311   0.63925    0.86800   0.736 0.466984    
+X_11:X_22:X_311        NA         NA      NA       NA    
+X_12:X_22:X_311   0.97675    0.86800   1.125 0.269103    
+X_13:X_22:X_311        NA         NA      NA       NA    
+X_11:X_23:X_311   0.68533    0.86800   0.790 0.435788    
+X_12:X_23:X_311        NA         NA      NA       NA    
+X_13:X_23:X_311   1.78667    0.86800   2.058 0.048043 *  
+X_11:X_24:X_311        NA         NA      NA       NA    
+X_12:X_24:X_311   1.78133    0.86800   2.052 0.048674 *  
+X_13:X_24:X_311        NA         NA      NA       NA    
+X_11:X_25:X_311   1.39436    0.86800   1.606 0.118324    
+X_12:X_25:X_311        NA         NA      NA       NA    
+X_13:X_25:X_311        NA         NA      NA       NA    
+X_11:X_26:X_311        NA         NA      NA       NA    
+X_12:X_26:X_311        NA         NA      NA       NA    
+X_13:X_26:X_311        NA         NA      NA       NA    
+X_11:X_27:X_311        NA         NA      NA       NA    
+X_12:X_27:X_311        NA         NA      NA       NA    
+X_13:X_27:X_311        NA         NA      NA       NA    
+X_11:X_28:X_311        NA         NA      NA       NA    
+X_12:X_28:X_311        NA         NA      NA       NA    
+X_13:X_28:X_311        NA         NA      NA       NA    
+X_11:X_29:X_311        NA         NA      NA       NA    
+X_12:X_29:X_311   1.24992    0.86800   1.440 0.159891    
+X_13:X_29:X_311        NA         NA      NA       NA    
+X_11:X_210:X_311  3.22778    0.61377   5.259 1.02e-05 ***
+X_12:X_210:X_311  2.53530    0.86800   2.921 0.006457 ** 
+X_13:X_210:X_311  3.45281    0.86800   3.978 0.000388 ***
+X_11:X_21:X_312  -0.81810    0.61377  -1.333 0.192273    
+X_12:X_21:X_312        NA         NA      NA       NA    
+X_13:X_21:X_312        NA         NA      NA       NA    
+X_11:X_22:X_312        NA         NA      NA       NA    
+X_12:X_22:X_312        NA         NA      NA       NA    
+X_13:X_22:X_312        NA         NA      NA       NA    
+X_11:X_23:X_312        NA         NA      NA       NA    
+X_12:X_23:X_312        NA         NA      NA       NA    
+X_13:X_23:X_312        NA         NA      NA       NA    
+X_11:X_24:X_312   2.39753    0.86800   2.762 0.009567 ** 
+X_12:X_24:X_312        NA         NA      NA       NA    
+X_13:X_24:X_312        NA         NA      NA       NA    
+X_11:X_25:X_312   2.21024    0.61377   3.601 0.001092 ** 
+X_12:X_25:X_312  -0.03579    0.86800  -0.041 0.967377    
+X_13:X_25:X_312        NA         NA      NA       NA    
+X_11:X_26:X_312        NA         NA      NA       NA    
+X_12:X_26:X_312        NA         NA      NA       NA    
+X_13:X_26:X_312   2.70258    0.50114   5.393 6.96e-06 ***
+X_11:X_27:X_312   2.92268    0.86800   3.367 0.002041 ** 
+X_12:X_27:X_312   3.77201    0.61377   6.146 8.11e-07 ***
+X_13:X_27:X_312        NA         NA      NA       NA    
+X_11:X_28:X_312   1.02737    0.86800   1.184 0.245565    
+X_12:X_28:X_312        NA         NA      NA       NA    
+X_13:X_28:X_312   1.77697    0.86800   2.047 0.049194 *  
+X_11:X_29:X_312        NA         NA      NA       NA    
+X_12:X_29:X_312        NA         NA      NA       NA    
+X_13:X_29:X_312   1.98115    0.86800   2.282 0.029480 *  
+X_11:X_210:X_312       NA         NA      NA       NA    
+X_12:X_210:X_312  1.73121    0.86800   1.994 0.054956 .  
+X_13:X_210:X_312  3.15433    0.86800   3.634 0.000998 ***
+X_11:X_21:X_313        NA         NA      NA       NA    
+X_12:X_21:X_313        NA         NA      NA       NA    
+X_13:X_21:X_313        NA         NA      NA       NA    
+X_11:X_22:X_313   0.71140    0.86800   0.820 0.418708    
+X_12:X_22:X_313        NA         NA      NA       NA    
+X_13:X_22:X_313   2.63140    0.86800   3.032 0.004881 ** 
+X_11:X_23:X_313        NA         NA      NA       NA    
+X_12:X_23:X_313        NA         NA      NA       NA    
+X_13:X_23:X_313   0.74286    0.86800   0.856 0.398656    
+X_11:X_24:X_313        NA         NA      NA       NA    
+X_12:X_24:X_313   1.65591    0.86800   1.908 0.065726 .  
+X_13:X_24:X_313   1.06296    0.86800   1.225 0.229947    
+X_11:X_25:X_313        NA         NA      NA       NA    
+X_12:X_25:X_313        NA         NA      NA       NA    
+X_13:X_25:X_313        NA         NA      NA       NA    
+X_11:X_26:X_313        NA         NA      NA       NA    
+X_12:X_26:X_313   0.21037    0.86800   0.242 0.810096    
+X_13:X_26:X_313        NA         NA      NA       NA    
+X_11:X_27:X_313        NA         NA      NA       NA    
+X_12:X_27:X_313   1.00649    0.86800   1.160 0.255086    
+X_13:X_27:X_313        NA         NA      NA       NA    
+X_11:X_28:X_313        NA         NA      NA       NA    
+X_12:X_28:X_313   4.07358    0.86800   4.693 5.17e-05 ***
+X_13:X_28:X_313        NA         NA      NA       NA    
+X_11:X_29:X_313   1.07927    0.86800   1.243 0.223042    
+X_12:X_29:X_313        NA         NA      NA       NA    
+X_13:X_29:X_313   2.41131    0.86800   2.778 0.009202 ** 
+X_11:X_210:X_313       NA         NA      NA       NA    
+X_12:X_210:X_313  2.03305    0.86800   2.342 0.025768 *  
+X_13:X_210:X_313  2.45685    0.61377   4.003 0.000362 ***
+X_11:X_21:X_314   0.71972    0.86800   0.829 0.413344    
+X_12:X_21:X_314        NA         NA      NA       NA    
+X_13:X_21:X_314   1.02585    0.86800   1.182 0.246248    
+X_11:X_22:X_314        NA         NA      NA       NA    
+X_12:X_22:X_314        NA         NA      NA       NA    
+X_13:X_22:X_314  -0.91119    0.86800  -1.050 0.301943    
+X_11:X_23:X_314   0.56663    0.86800   0.653 0.518699    
+X_12:X_23:X_314   0.94291    0.61377   1.536 0.134619    
+X_13:X_23:X_314   1.83338    0.86800   2.112 0.042827 *  
+X_11:X_24:X_314        NA         NA      NA       NA    
+X_12:X_24:X_314   2.22259    0.86800   2.561 0.015541 *  
+X_13:X_24:X_314   2.14447    0.86800   2.471 0.019192 *  
+X_11:X_25:X_314        NA         NA      NA       NA    
+X_12:X_25:X_314        NA         NA      NA       NA    
+X_13:X_25:X_314        NA         NA      NA       NA    
+X_11:X_26:X_314        NA         NA      NA       NA    
+X_12:X_26:X_314        NA         NA      NA       NA    
+X_13:X_26:X_314        NA         NA      NA       NA    
+X_11:X_27:X_314        NA         NA      NA       NA    
+X_12:X_27:X_314   3.91735    0.61377   6.382 4.15e-07 ***
+X_13:X_27:X_314        NA         NA      NA       NA    
+X_11:X_28:X_314        NA         NA      NA       NA    
+X_12:X_28:X_314        NA         NA      NA       NA    
+X_13:X_28:X_314        NA         NA      NA       NA    
+X_11:X_29:X_314        NA         NA      NA       NA    
+X_12:X_29:X_314        NA         NA      NA       NA    
+X_13:X_29:X_314        NA         NA      NA       NA    
+X_11:X_210:X_314       NA         NA      NA       NA    
+X_12:X_210:X_314       NA         NA      NA       NA    
+X_13:X_210:X_314  3.04256    0.61377   4.957 2.43e-05 ***
+X_11:X_21:X_315        NA         NA      NA       NA    
+X_12:X_21:X_315   0.61942    0.50114   1.236 0.225734    
+X_13:X_21:X_315        NA         NA      NA       NA    
+X_11:X_22:X_315        NA         NA      NA       NA    
+X_12:X_22:X_315        NA         NA      NA       NA    
+X_13:X_22:X_315        NA         NA      NA       NA    
+X_11:X_23:X_315        NA         NA      NA       NA    
+X_12:X_23:X_315        NA         NA      NA       NA    
+X_13:X_23:X_315        NA         NA      NA       NA    
+X_11:X_24:X_315        NA         NA      NA       NA    
+X_12:X_24:X_315        NA         NA      NA       NA    
+X_13:X_24:X_315        NA         NA      NA       NA    
+X_11:X_25:X_315        NA         NA      NA       NA    
+X_12:X_25:X_315        NA         NA      NA       NA    
+X_13:X_25:X_315        NA         NA      NA       NA    
+X_11:X_26:X_315   2.01939    0.86800   2.326 0.026702 *  
+X_12:X_26:X_315   2.07085    0.61377   3.374 0.002005 ** 
+X_13:X_26:X_315   1.14165    0.86800   1.315 0.198065    
+X_11:X_27:X_315        NA         NA      NA       NA    
+X_12:X_27:X_315        NA         NA      NA       NA    
+X_13:X_27:X_315        NA         NA      NA       NA    
+X_11:X_28:X_315        NA         NA      NA       NA    
+X_12:X_28:X_315        NA         NA      NA       NA    
+X_13:X_28:X_315        NA         NA      NA       NA    
+X_11:X_29:X_315        NA         NA      NA       NA    
+X_12:X_29:X_315        NA         NA      NA       NA    
+X_13:X_29:X_315   1.35056    0.86800   1.556 0.129872    
+X_11:X_210:X_315  3.57935    0.86800   4.124 0.000259 ***
+X_12:X_210:X_315  3.34278    0.86800   3.851 0.000552 ***
+X_13:X_210:X_315       NA         NA      NA       NA    
+X_11:X_21:X_316        NA         NA      NA       NA    
+X_12:X_21:X_316  -0.40462    0.86800  -0.466 0.644368    
+X_13:X_21:X_316        NA         NA      NA       NA    
+X_11:X_22:X_316   0.59401    0.86800   0.684 0.498845    
+X_12:X_22:X_316   2.11292    0.86800   2.434 0.020878 *  
+X_13:X_22:X_316        NA         NA      NA       NA    
+X_11:X_23:X_316  -0.04934    0.86800  -0.057 0.955030    
+X_12:X_23:X_316        NA         NA      NA       NA    
+X_13:X_23:X_316   0.60974    0.86800   0.702 0.487628    
+X_11:X_24:X_316        NA         NA      NA       NA    
+X_12:X_24:X_316        NA         NA      NA       NA    
+X_13:X_24:X_316        NA         NA      NA       NA    
+X_11:X_25:X_316        NA         NA      NA       NA    
+X_12:X_25:X_316        NA         NA      NA       NA    
+X_13:X_25:X_316        NA         NA      NA       NA    
+X_11:X_26:X_316   2.12302    0.86800   2.446 0.020324 *  
+X_12:X_26:X_316   0.80643    0.61377   1.314 0.198522    
+X_13:X_26:X_316        NA         NA      NA       NA    
+X_11:X_27:X_316        NA         NA      NA       NA    
+X_12:X_27:X_316        NA         NA      NA       NA    
+X_13:X_27:X_316        NA         NA      NA       NA    
+X_11:X_28:X_316        NA         NA      NA       NA    
+X_12:X_28:X_316   1.28568    0.86800   1.481 0.148648    
+X_13:X_28:X_316        NA         NA      NA       NA    
+X_11:X_29:X_316        NA         NA      NA       NA    
+X_12:X_29:X_316        NA         NA      NA       NA    
+X_13:X_29:X_316        NA         NA      NA       NA    
+X_11:X_210:X_316       NA         NA      NA       NA    
+X_12:X_210:X_316       NA         NA      NA       NA    
+X_13:X_210:X_316       NA         NA      NA       NA    
+X_11:X_21:X_317   2.52107    0.86800   2.904 0.006727 ** 
+X_12:X_21:X_317        NA         NA      NA       NA    
+X_13:X_21:X_317        NA         NA      NA       NA    
+X_11:X_22:X_317   0.43595    0.86800   0.502 0.619040    
+X_12:X_22:X_317        NA         NA      NA       NA    
+X_13:X_22:X_317        NA         NA      NA       NA    
+X_11:X_23:X_317        NA         NA      NA       NA    
+X_12:X_23:X_317        NA         NA      NA       NA    
+X_13:X_23:X_317        NA         NA      NA       NA    
+X_11:X_24:X_317   2.46613    0.86800   2.841 0.007875 ** 
+X_12:X_24:X_317   2.45760    0.86800   2.831 0.008069 ** 
+X_13:X_24:X_317        NA         NA      NA       NA    
+X_11:X_25:X_317        NA         NA      NA       NA    
+X_12:X_25:X_317        NA         NA      NA       NA    
+X_13:X_25:X_317        NA         NA      NA       NA    
+X_11:X_26:X_317        NA         NA      NA       NA    
+X_12:X_26:X_317        NA         NA      NA       NA    
+X_13:X_26:X_317   2.30607    0.61377   3.757 0.000714 ***
+X_11:X_27:X_317        NA         NA      NA       NA    
+X_12:X_27:X_317        NA         NA      NA       NA    
+X_13:X_27:X_317        NA         NA      NA       NA    
+X_11:X_28:X_317        NA         NA      NA       NA    
+X_12:X_28:X_317   2.01096    0.86800   2.317 0.027293 *  
+X_13:X_28:X_317   2.14256    0.86800   2.468 0.019290 *  
+X_11:X_29:X_317        NA         NA      NA       NA    
+X_12:X_29:X_317        NA         NA      NA       NA    
+X_13:X_29:X_317        NA         NA      NA       NA    
+X_11:X_210:X_317       NA         NA      NA       NA    
+X_12:X_210:X_317  1.78723    0.61377   2.912 0.006603 ** 
+X_13:X_210:X_317       NA         NA      NA       NA    
+X_11:X_21:X_318        NA         NA      NA       NA    
+X_12:X_21:X_318   0.28621    0.86800   0.330 0.743815    
+X_13:X_21:X_318        NA         NA      NA       NA    
+X_11:X_22:X_318        NA         NA      NA       NA    
+X_12:X_22:X_318        NA         NA      NA       NA    
+X_13:X_22:X_318        NA         NA      NA       NA    
+X_11:X_23:X_318   0.02089    0.86800   0.024 0.980951    
+X_12:X_23:X_318        NA         NA      NA       NA    
+X_13:X_23:X_318        NA         NA      NA       NA    
+X_11:X_24:X_318        NA         NA      NA       NA    
+X_12:X_24:X_318        NA         NA      NA       NA    
+X_13:X_24:X_318   3.34202    0.86800   3.850 0.000553 ***
+X_11:X_25:X_318        NA         NA      NA       NA    
+X_12:X_25:X_318        NA         NA      NA       NA    
+X_13:X_25:X_318        NA         NA      NA       NA    
+X_11:X_26:X_318        NA         NA      NA       NA    
+X_12:X_26:X_318        NA         NA      NA       NA    
+X_13:X_26:X_318        NA         NA      NA       NA    
+X_11:X_27:X_318   2.78541    0.61377   4.538 8.03e-05 ***
+X_12:X_27:X_318        NA         NA      NA       NA    
+X_13:X_27:X_318   2.91901    0.61377   4.756 4.32e-05 ***
+X_11:X_28:X_318        NA         NA      NA       NA    
+X_12:X_28:X_318        NA         NA      NA       NA    
+X_13:X_28:X_318        NA         NA      NA       NA    
+X_11:X_29:X_318   3.72618    0.86800   4.293 0.000161 ***
+X_12:X_29:X_318   2.12263    0.86800   2.445 0.020345 *  
+X_13:X_29:X_318   2.11181    0.86800   2.433 0.020940 *  
+X_11:X_210:X_318       NA         NA      NA       NA    
+X_12:X_210:X_318  4.58955    0.86800   5.288 9.42e-06 ***
+X_13:X_210:X_318       NA         NA      NA       NA    
+X_11:X_21:X_319        NA         NA      NA       NA    
+X_12:X_21:X_319        NA         NA      NA       NA    
+X_13:X_21:X_319        NA         NA      NA       NA    
+X_11:X_22:X_319        NA         NA      NA       NA    
+X_12:X_22:X_319   0.35904    0.86800   0.414 0.681988    
+X_13:X_22:X_319        NA         NA      NA       NA    
+X_11:X_23:X_319        NA         NA      NA       NA    
+X_12:X_23:X_319   2.05099    0.61377   3.342 0.002184 ** 
+X_13:X_23:X_319        NA         NA      NA       NA    
+X_11:X_24:X_319        NA         NA      NA       NA    
+X_12:X_24:X_319   1.31265    0.86800   1.512 0.140592    
+X_13:X_24:X_319        NA         NA      NA       NA    
+X_11:X_25:X_319        NA         NA      NA       NA    
+X_12:X_25:X_319        NA         NA      NA       NA    
+X_13:X_25:X_319        NA         NA      NA       NA    
+X_11:X_26:X_319   3.26646    0.86800   3.763 0.000702 ***
+X_12:X_26:X_319        NA         NA      NA       NA    
+X_13:X_26:X_319        NA         NA      NA       NA    
+X_11:X_27:X_319        NA         NA      NA       NA    
+X_12:X_27:X_319        NA         NA      NA       NA    
+X_13:X_27:X_319        NA         NA      NA       NA    
+X_11:X_28:X_319        NA         NA      NA       NA    
+X_12:X_28:X_319   1.65226    0.86800   1.904 0.066292 .  
+X_13:X_28:X_319        NA         NA      NA       NA    
+X_11:X_29:X_319   6.68975    0.86800   7.707 1.08e-08 ***
+X_12:X_29:X_319   3.37277    0.86800   3.886 0.000501 ***
+X_13:X_29:X_319        NA         NA      NA       NA    
+X_11:X_210:X_319  2.55378    0.86800   2.942 0.006121 ** 
+X_12:X_210:X_319       NA         NA      NA       NA    
+X_13:X_210:X_319       NA         NA      NA       NA    
+X_11:X_21:X_320  -1.10886    0.86800  -1.277 0.210916    
+X_12:X_21:X_320   0.72629    0.86800   0.837 0.409142    
+X_13:X_21:X_320        NA         NA      NA       NA    
+X_11:X_22:X_320        NA         NA      NA       NA    
+X_12:X_22:X_320        NA         NA      NA       NA    
+X_13:X_22:X_320        NA         NA      NA       NA    
+X_11:X_23:X_320        NA         NA      NA       NA    
+X_12:X_23:X_320   3.35668    0.86800   3.867 0.000528 ***
+X_13:X_23:X_320        NA         NA      NA       NA    
+X_11:X_24:X_320   2.47284    0.86800   2.849 0.007726 ** 
+X_12:X_24:X_320        NA         NA      NA       NA    
+X_13:X_24:X_320        NA         NA      NA       NA    
+X_11:X_25:X_320  -0.02296    0.86800  -0.026 0.979062    
+X_12:X_25:X_320        NA         NA      NA       NA    
+X_13:X_25:X_320        NA         NA      NA       NA    
+X_11:X_26:X_320        NA         NA      NA       NA    
+X_12:X_26:X_320   3.52611    0.86800   4.062 0.000307 ***
+X_13:X_26:X_320        NA         NA      NA       NA    
+X_11:X_27:X_320        NA         NA      NA       NA    
+X_12:X_27:X_320        NA         NA      NA       NA    
+X_13:X_27:X_320        NA         NA      NA       NA    
+X_11:X_28:X_320        NA         NA      NA       NA    
+X_12:X_28:X_320        NA         NA      NA       NA    
+X_13:X_28:X_320        NA         NA      NA       NA    
+X_11:X_29:X_320   3.09395    0.61377   5.041 1.91e-05 ***
+X_12:X_29:X_320        NA         NA      NA       NA    
+X_13:X_29:X_320   2.79005    0.86800   3.214 0.003049 ** 
+X_11:X_210:X_320  3.35794    0.86800   3.869 0.000526 ***
+X_12:X_210:X_320       NA         NA      NA       NA    
+X_13:X_210:X_320       NA         NA      NA       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.868 on 31 degrees of freedom
+Multiple R-squared:  0.9786,    Adjusted R-squared:  0.8618 
+F-statistic: 8.382 on 169 and 31 DF,  p-value: 1.226e-09</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model.matrix</span>(Y <span class="sc">~</span> X_1<span class="sc">:</span>X_2<span class="sc">:</span>X_3 <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> sample_data) <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  X_11:X_21:X_31 X_12:X_21:X_31 X_13:X_21:X_31 X_11:X_22:X_31 X_12:X_22:X_31
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_31 X_11:X_23:X_31 X_12:X_23:X_31 X_13:X_23:X_31 X_11:X_24:X_31
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_31 X_13:X_24:X_31 X_11:X_25:X_31 X_12:X_25:X_31 X_13:X_25:X_31
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_31 X_12:X_26:X_31 X_13:X_26:X_31 X_11:X_27:X_31 X_12:X_27:X_31
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_31 X_11:X_28:X_31 X_12:X_28:X_31 X_13:X_28:X_31 X_11:X_29:X_31
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_31 X_13:X_29:X_31 X_11:X_210:X_31 X_12:X_210:X_31 X_13:X_210:X_31
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_32 X_12:X_21:X_32 X_13:X_21:X_32 X_11:X_22:X_32 X_12:X_22:X_32
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_32 X_11:X_23:X_32 X_12:X_23:X_32 X_13:X_23:X_32 X_11:X_24:X_32
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_32 X_13:X_24:X_32 X_11:X_25:X_32 X_12:X_25:X_32 X_13:X_25:X_32
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_32 X_12:X_26:X_32 X_13:X_26:X_32 X_11:X_27:X_32 X_12:X_27:X_32
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_32 X_11:X_28:X_32 X_12:X_28:X_32 X_13:X_28:X_32 X_11:X_29:X_32
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_32 X_13:X_29:X_32 X_11:X_210:X_32 X_12:X_210:X_32 X_13:X_210:X_32
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_33 X_12:X_21:X_33 X_13:X_21:X_33 X_11:X_22:X_33 X_12:X_22:X_33
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_33 X_11:X_23:X_33 X_12:X_23:X_33 X_13:X_23:X_33 X_11:X_24:X_33
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_33 X_13:X_24:X_33 X_11:X_25:X_33 X_12:X_25:X_33 X_13:X_25:X_33
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_33 X_12:X_26:X_33 X_13:X_26:X_33 X_11:X_27:X_33 X_12:X_27:X_33
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_33 X_11:X_28:X_33 X_12:X_28:X_33 X_13:X_28:X_33 X_11:X_29:X_33
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_33 X_13:X_29:X_33 X_11:X_210:X_33 X_12:X_210:X_33 X_13:X_210:X_33
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_34 X_12:X_21:X_34 X_13:X_21:X_34 X_11:X_22:X_34 X_12:X_22:X_34
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_34 X_11:X_23:X_34 X_12:X_23:X_34 X_13:X_23:X_34 X_11:X_24:X_34
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_34 X_13:X_24:X_34 X_11:X_25:X_34 X_12:X_25:X_34 X_13:X_25:X_34
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_34 X_12:X_26:X_34 X_13:X_26:X_34 X_11:X_27:X_34 X_12:X_27:X_34
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_34 X_11:X_28:X_34 X_12:X_28:X_34 X_13:X_28:X_34 X_11:X_29:X_34
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_34 X_13:X_29:X_34 X_11:X_210:X_34 X_12:X_210:X_34 X_13:X_210:X_34
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_35 X_12:X_21:X_35 X_13:X_21:X_35 X_11:X_22:X_35 X_12:X_22:X_35
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_35 X_11:X_23:X_35 X_12:X_23:X_35 X_13:X_23:X_35 X_11:X_24:X_35
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_35 X_13:X_24:X_35 X_11:X_25:X_35 X_12:X_25:X_35 X_13:X_25:X_35
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_35 X_12:X_26:X_35 X_13:X_26:X_35 X_11:X_27:X_35 X_12:X_27:X_35
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_35 X_11:X_28:X_35 X_12:X_28:X_35 X_13:X_28:X_35 X_11:X_29:X_35
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_35 X_13:X_29:X_35 X_11:X_210:X_35 X_12:X_210:X_35 X_13:X_210:X_35
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_36 X_12:X_21:X_36 X_13:X_21:X_36 X_11:X_22:X_36 X_12:X_22:X_36
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_36 X_11:X_23:X_36 X_12:X_23:X_36 X_13:X_23:X_36 X_11:X_24:X_36
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_36 X_13:X_24:X_36 X_11:X_25:X_36 X_12:X_25:X_36 X_13:X_25:X_36
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_36 X_12:X_26:X_36 X_13:X_26:X_36 X_11:X_27:X_36 X_12:X_27:X_36
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_36 X_11:X_28:X_36 X_12:X_28:X_36 X_13:X_28:X_36 X_11:X_29:X_36
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_36 X_13:X_29:X_36 X_11:X_210:X_36 X_12:X_210:X_36 X_13:X_210:X_36
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_37 X_12:X_21:X_37 X_13:X_21:X_37 X_11:X_22:X_37 X_12:X_22:X_37
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_37 X_11:X_23:X_37 X_12:X_23:X_37 X_13:X_23:X_37 X_11:X_24:X_37
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_37 X_13:X_24:X_37 X_11:X_25:X_37 X_12:X_25:X_37 X_13:X_25:X_37
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_37 X_12:X_26:X_37 X_13:X_26:X_37 X_11:X_27:X_37 X_12:X_27:X_37
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_37 X_11:X_28:X_37 X_12:X_28:X_37 X_13:X_28:X_37 X_11:X_29:X_37
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_37 X_13:X_29:X_37 X_11:X_210:X_37 X_12:X_210:X_37 X_13:X_210:X_37
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_38 X_12:X_21:X_38 X_13:X_21:X_38 X_11:X_22:X_38 X_12:X_22:X_38
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_38 X_11:X_23:X_38 X_12:X_23:X_38 X_13:X_23:X_38 X_11:X_24:X_38
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_38 X_13:X_24:X_38 X_11:X_25:X_38 X_12:X_25:X_38 X_13:X_25:X_38
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_38 X_12:X_26:X_38 X_13:X_26:X_38 X_11:X_27:X_38 X_12:X_27:X_38
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_38 X_11:X_28:X_38 X_12:X_28:X_38 X_13:X_28:X_38 X_11:X_29:X_38
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_38 X_13:X_29:X_38 X_11:X_210:X_38 X_12:X_210:X_38 X_13:X_210:X_38
+1              0              0               0               0               0
+2              0              0               0               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_39 X_12:X_21:X_39 X_13:X_21:X_39 X_11:X_22:X_39 X_12:X_22:X_39
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_22:X_39 X_11:X_23:X_39 X_12:X_23:X_39 X_13:X_23:X_39 X_11:X_24:X_39
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_24:X_39 X_13:X_24:X_39 X_11:X_25:X_39 X_12:X_25:X_39 X_13:X_25:X_39
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              1              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_11:X_26:X_39 X_12:X_26:X_39 X_13:X_26:X_39 X_11:X_27:X_39 X_12:X_27:X_39
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_13:X_27:X_39 X_11:X_28:X_39 X_12:X_28:X_39 X_13:X_28:X_39 X_11:X_29:X_39
+1              0              0              0              0              0
+2              0              0              0              0              0
+3              0              0              0              0              0
+4              0              0              0              0              0
+5              0              0              0              0              0
+6              0              0              0              0              0
+  X_12:X_29:X_39 X_13:X_29:X_39 X_11:X_210:X_39 X_12:X_210:X_39 X_13:X_210:X_39
+1              0              0               0               0               0
+2              0              0               1               0               0
+3              0              0               0               0               0
+4              0              0               0               0               0
+5              0              0               0               0               0
+6              0              0               0               0               0
+  X_11:X_21:X_310 X_12:X_21:X_310 X_13:X_21:X_310 X_11:X_22:X_310
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_22:X_310 X_13:X_22:X_310 X_11:X_23:X_310 X_12:X_23:X_310
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_23:X_310 X_11:X_24:X_310 X_12:X_24:X_310 X_13:X_24:X_310
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_25:X_310 X_12:X_25:X_310 X_13:X_25:X_310 X_11:X_26:X_310
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_26:X_310 X_13:X_26:X_310 X_11:X_27:X_310 X_12:X_27:X_310
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_27:X_310 X_11:X_28:X_310 X_12:X_28:X_310 X_13:X_28:X_310
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_29:X_310 X_12:X_29:X_310 X_13:X_29:X_310 X_11:X_210:X_310
+1               0               0               0                0
+2               0               0               0                0
+3               0               0               0                0
+4               0               0               0                0
+5               0               0               0                0
+6               0               0               1                0
+  X_12:X_210:X_310 X_13:X_210:X_310 X_11:X_21:X_311 X_12:X_21:X_311
+1                0                0               0               0
+2                0                0               0               0
+3                0                0               0               0
+4                0                0               0               0
+5                0                0               0               0
+6                0                0               0               0
+  X_13:X_21:X_311 X_11:X_22:X_311 X_12:X_22:X_311 X_13:X_22:X_311
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_23:X_311 X_12:X_23:X_311 X_13:X_23:X_311 X_11:X_24:X_311
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_24:X_311 X_13:X_24:X_311 X_11:X_25:X_311 X_12:X_25:X_311
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_25:X_311 X_11:X_26:X_311 X_12:X_26:X_311 X_13:X_26:X_311
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_27:X_311 X_12:X_27:X_311 X_13:X_27:X_311 X_11:X_28:X_311
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_28:X_311 X_13:X_28:X_311 X_11:X_29:X_311 X_12:X_29:X_311
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_29:X_311 X_11:X_210:X_311 X_12:X_210:X_311 X_13:X_210:X_311
+1               0                0                0                0
+2               0                0                0                0
+3               0                0                0                0
+4               0                0                0                0
+5               0                0                0                0
+6               0                0                0                0
+  X_11:X_21:X_312 X_12:X_21:X_312 X_13:X_21:X_312 X_11:X_22:X_312
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_22:X_312 X_13:X_22:X_312 X_11:X_23:X_312 X_12:X_23:X_312
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_23:X_312 X_11:X_24:X_312 X_12:X_24:X_312 X_13:X_24:X_312
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_25:X_312 X_12:X_25:X_312 X_13:X_25:X_312 X_11:X_26:X_312
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_26:X_312 X_13:X_26:X_312 X_11:X_27:X_312 X_12:X_27:X_312
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_27:X_312 X_11:X_28:X_312 X_12:X_28:X_312 X_13:X_28:X_312
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_29:X_312 X_12:X_29:X_312 X_13:X_29:X_312 X_11:X_210:X_312
+1               0               0               0                0
+2               0               0               0                0
+3               0               0               0                0
+4               0               0               0                0
+5               0               0               0                0
+6               0               0               0                0
+  X_12:X_210:X_312 X_13:X_210:X_312 X_11:X_21:X_313 X_12:X_21:X_313
+1                0                0               0               0
+2                0                0               0               0
+3                0                0               0               0
+4                0                0               0               0
+5                0                0               0               0
+6                0                0               0               0
+  X_13:X_21:X_313 X_11:X_22:X_313 X_12:X_22:X_313 X_13:X_22:X_313
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_23:X_313 X_12:X_23:X_313 X_13:X_23:X_313 X_11:X_24:X_313
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_24:X_313 X_13:X_24:X_313 X_11:X_25:X_313 X_12:X_25:X_313
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_25:X_313 X_11:X_26:X_313 X_12:X_26:X_313 X_13:X_26:X_313
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_27:X_313 X_12:X_27:X_313 X_13:X_27:X_313 X_11:X_28:X_313
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_28:X_313 X_13:X_28:X_313 X_11:X_29:X_313 X_12:X_29:X_313
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_29:X_313 X_11:X_210:X_313 X_12:X_210:X_313 X_13:X_210:X_313
+1               0                0                0                0
+2               0                0                0                0
+3               0                0                0                0
+4               0                0                0                0
+5               0                0                0                0
+6               0                0                0                0
+  X_11:X_21:X_314 X_12:X_21:X_314 X_13:X_21:X_314 X_11:X_22:X_314
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_22:X_314 X_13:X_22:X_314 X_11:X_23:X_314 X_12:X_23:X_314
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_23:X_314 X_11:X_24:X_314 X_12:X_24:X_314 X_13:X_24:X_314
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_25:X_314 X_12:X_25:X_314 X_13:X_25:X_314 X_11:X_26:X_314
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_26:X_314 X_13:X_26:X_314 X_11:X_27:X_314 X_12:X_27:X_314
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_27:X_314 X_11:X_28:X_314 X_12:X_28:X_314 X_13:X_28:X_314
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_29:X_314 X_12:X_29:X_314 X_13:X_29:X_314 X_11:X_210:X_314
+1               0               0               0                0
+2               0               0               0                0
+3               0               0               0                0
+4               0               0               0                0
+5               0               0               0                0
+6               0               0               0                0
+  X_12:X_210:X_314 X_13:X_210:X_314 X_11:X_21:X_315 X_12:X_21:X_315
+1                0                0               0               0
+2                0                0               0               0
+3                0                0               0               0
+4                0                0               0               0
+5                0                0               0               0
+6                0                0               0               0
+  X_13:X_21:X_315 X_11:X_22:X_315 X_12:X_22:X_315 X_13:X_22:X_315
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_23:X_315 X_12:X_23:X_315 X_13:X_23:X_315 X_11:X_24:X_315
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_24:X_315 X_13:X_24:X_315 X_11:X_25:X_315 X_12:X_25:X_315
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_25:X_315 X_11:X_26:X_315 X_12:X_26:X_315 X_13:X_26:X_315
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_27:X_315 X_12:X_27:X_315 X_13:X_27:X_315 X_11:X_28:X_315
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_28:X_315 X_13:X_28:X_315 X_11:X_29:X_315 X_12:X_29:X_315
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_29:X_315 X_11:X_210:X_315 X_12:X_210:X_315 X_13:X_210:X_315
+1               0                0                0                0
+2               0                0                0                0
+3               0                0                0                0
+4               1                0                0                0
+5               0                0                0                0
+6               0                0                0                0
+  X_11:X_21:X_316 X_12:X_21:X_316 X_13:X_21:X_316 X_11:X_22:X_316
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_22:X_316 X_13:X_22:X_316 X_11:X_23:X_316 X_12:X_23:X_316
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_23:X_316 X_11:X_24:X_316 X_12:X_24:X_316 X_13:X_24:X_316
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_25:X_316 X_12:X_25:X_316 X_13:X_25:X_316 X_11:X_26:X_316
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_26:X_316 X_13:X_26:X_316 X_11:X_27:X_316 X_12:X_27:X_316
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_27:X_316 X_11:X_28:X_316 X_12:X_28:X_316 X_13:X_28:X_316
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_29:X_316 X_12:X_29:X_316 X_13:X_29:X_316 X_11:X_210:X_316
+1               0               0               0                0
+2               0               0               0                0
+3               0               0               0                0
+4               0               0               0                0
+5               0               0               0                0
+6               0               0               0                0
+  X_12:X_210:X_316 X_13:X_210:X_316 X_11:X_21:X_317 X_12:X_21:X_317
+1                0                0               0               0
+2                0                0               0               0
+3                0                0               0               0
+4                0                0               0               0
+5                0                0               0               0
+6                0                0               0               0
+  X_13:X_21:X_317 X_11:X_22:X_317 X_12:X_22:X_317 X_13:X_22:X_317
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_23:X_317 X_12:X_23:X_317 X_13:X_23:X_317 X_11:X_24:X_317
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_24:X_317 X_13:X_24:X_317 X_11:X_25:X_317 X_12:X_25:X_317
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_25:X_317 X_11:X_26:X_317 X_12:X_26:X_317 X_13:X_26:X_317
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               1
+6               0               0               0               0
+  X_11:X_27:X_317 X_12:X_27:X_317 X_13:X_27:X_317 X_11:X_28:X_317
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_28:X_317 X_13:X_28:X_317 X_11:X_29:X_317 X_12:X_29:X_317
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_29:X_317 X_11:X_210:X_317 X_12:X_210:X_317 X_13:X_210:X_317
+1               0                0                0                0
+2               0                0                0                0
+3               0                0                0                0
+4               0                0                0                0
+5               0                0                0                0
+6               0                0                0                0
+  X_11:X_21:X_318 X_12:X_21:X_318 X_13:X_21:X_318 X_11:X_22:X_318
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_22:X_318 X_13:X_22:X_318 X_11:X_23:X_318 X_12:X_23:X_318
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_23:X_318 X_11:X_24:X_318 X_12:X_24:X_318 X_13:X_24:X_318
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_25:X_318 X_12:X_25:X_318 X_13:X_25:X_318 X_11:X_26:X_318
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_26:X_318 X_13:X_26:X_318 X_11:X_27:X_318 X_12:X_27:X_318
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_27:X_318 X_11:X_28:X_318 X_12:X_28:X_318 X_13:X_28:X_318
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_29:X_318 X_12:X_29:X_318 X_13:X_29:X_318 X_11:X_210:X_318
+1               0               0               0                0
+2               0               0               0                0
+3               0               0               0                0
+4               0               0               0                0
+5               0               0               0                0
+6               0               0               0                0
+  X_12:X_210:X_318 X_13:X_210:X_318 X_11:X_21:X_319 X_12:X_21:X_319
+1                1                0               0               0
+2                0                0               0               0
+3                0                0               0               0
+4                0                0               0               0
+5                0                0               0               0
+6                0                0               0               0
+  X_13:X_21:X_319 X_11:X_22:X_319 X_12:X_22:X_319 X_13:X_22:X_319
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_23:X_319 X_12:X_23:X_319 X_13:X_23:X_319 X_11:X_24:X_319
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_24:X_319 X_13:X_24:X_319 X_11:X_25:X_319 X_12:X_25:X_319
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_25:X_319 X_11:X_26:X_319 X_12:X_26:X_319 X_13:X_26:X_319
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_27:X_319 X_12:X_27:X_319 X_13:X_27:X_319 X_11:X_28:X_319
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_28:X_319 X_13:X_28:X_319 X_11:X_29:X_319 X_12:X_29:X_319
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_29:X_319 X_11:X_210:X_319 X_12:X_210:X_319 X_13:X_210:X_319
+1               0                0                0                0
+2               0                0                0                0
+3               0                0                0                0
+4               0                0                0                0
+5               0                0                0                0
+6               0                0                0                0
+  X_11:X_21:X_320 X_12:X_21:X_320 X_13:X_21:X_320 X_11:X_22:X_320
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_22:X_320 X_13:X_22:X_320 X_11:X_23:X_320 X_12:X_23:X_320
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_23:X_320 X_11:X_24:X_320 X_12:X_24:X_320 X_13:X_24:X_320
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_25:X_320 X_12:X_25:X_320 X_13:X_25:X_320 X_11:X_26:X_320
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_12:X_26:X_320 X_13:X_26:X_320 X_11:X_27:X_320 X_12:X_27:X_320
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_13:X_27:X_320 X_11:X_28:X_320 X_12:X_28:X_320 X_13:X_28:X_320
+1               0               0               0               0
+2               0               0               0               0
+3               0               0               0               0
+4               0               0               0               0
+5               0               0               0               0
+6               0               0               0               0
+  X_11:X_29:X_320 X_12:X_29:X_320 X_13:X_29:X_320 X_11:X_210:X_320
+1               0               0               0                0
+2               0               0               0                0
+3               0               0               0                0
+4               0               0               0                0
+5               0               0               0                0
+6               0               0               0                0
+  X_12:X_210:X_320 X_13:X_210:X_320
+1                0                0
+2                0                0
+3                0                0
+4                0                0
+5                0                0
+6                0                0</code></pre>
+</div>
+</div>
+<p>I’m actually not sure that i’m interpreting this right / understanding what’s getting created… I’m not! more research to do…</p>
+<p>Take a look at this later…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X_t <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> X_1 <span class="sc">+</span> X_2 <span class="sc">+</span> X_3, <span class="at">data =</span> sample_data)[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> X_1 <span class="sc">+</span> X_2 <span class="sc">+</span> X_3, <span class="at">data =</span> sample_data,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">contrasts.arg =</span> <span class="fu">list</span>(<span class="at">X_1 =</span> contr.sum, <span class="at">X_2 =</span> contr.sum, <span class="at">X_3 =</span> contr.sum))[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>X_s <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  X_11 X_12 X_21 X_22 X_23 X_24 X_25 X_26 X_27 X_28 X_29 X_31 X_32 X_33 X_34
+1    0    1   -1   -1   -1   -1   -1   -1   -1   -1   -1    0    0    0    0
+2    1    0   -1   -1   -1   -1   -1   -1   -1   -1   -1    0    0    0    0
+3    0    1    0    0    0    1    0    0    0    0    0    0    0    0    0
+4   -1   -1    0    0    0    0    0    0    0    0    1    0    0    0    0
+5   -1   -1    0    0    0    0    0    1    0    0    0    0    0    0    0
+6   -1   -1    0    0    0    0    0    0    0    0    1    0    0    0    0
+  X_35 X_36 X_37 X_38 X_39 X_310 X_311 X_312 X_313 X_314 X_315 X_316 X_317
+1    0    0    0    0    0     0     0     0     0     0     0     0     0
+2    0    0    0    0    1     0     0     0     0     0     0     0     0
+3    0    0    0    0    1     0     0     0     0     0     0     0     0
+4    0    0    0    0    0     0     0     0     0     0     1     0     0
+5    0    0    0    0    0     0     0     0     0     0     0     0     1
+6    0    0    0    0    0     1     0     0     0     0     0     0     0
+  X_318 X_319
+1     1     0
+2     0     0
+3     0     0
+4     0     0
+5     0     0
+6     0     0</code></pre>
+</div>
+</div>
 
 
 
